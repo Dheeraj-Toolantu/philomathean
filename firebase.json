@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "hosting": {
     "site": "philomathean-a2c93",
@@ -15,3 +16,22 @@
     ]
   }
 }
+=======
+{
+  "hosting": {
+    "site": "philomathean-a2c93",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+>>>>>>> df8e7b9 (Initial Philomathean website)
