@@ -1,0 +1,12 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() { return request.auth != null && request.auth.token.admin == true; }
+    match /past-papers/{resourceId}/{fileName} {
+      allow read: if isAdmin() || (resource.metadata.published == 'true' && resource.metadata.access == 'free');
+      allow create: if isAdmin() && request.resource.contentType == 'application/pdf' && request.resource.size <= 25 * 1024 * 1024;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+  }
+}

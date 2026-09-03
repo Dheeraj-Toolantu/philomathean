@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "philomathean-a2c93"
-  }
+    "default": "philomathean-a2c93",
+    "philomathean-a2c93": "philomathean-a2c93"
+  },
+  "targets": {},
+  "etags": {}
 }

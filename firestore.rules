@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() { return request.auth != null && request.auth.token.admin == true; }
+    match /results/{resultId} {
+      allow read: if isAdmin() || (resource.data.published == true);
+      allow create, update, delete: if isAdmin();
+    }
+    match /pastPaperResources/{paperId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /publicPastPapers/{paperId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /auditLogs/{logId} { allow read: if isAdmin(); allow write: if false; }
+  }
+}
