@@ -43,7 +43,12 @@ Represents a downloadable PDF and its searchable public metadata.
 |---|---|---:|---|
 | `title` | string | yes | Trimmed, non-empty, length-limited |
 | `pathway` | enum | yes | `IGCSE`, `AS & A Level`, `SAT / ACT`, `IBDP`, or `MYP` |
-| `subject` | string | yes | Trimmed, non-empty subject or paper category |
+| `subjectName` | string | yes | Trimmed, non-empty subject name, e.g. `Mathematics` |
+| `subjectCode` | string | no | Trimmed syllabus code, e.g. `0580`; combined with `subjectName` for display as `subject` |
+| `paperType` | enum | yes | `year-wise` or `topic-wise`; determines the browsing hierarchy under a subject |
+| `year` | number | when `paperType` is `year-wise` | Four-digit exam year |
+| `session` | enum | when `paperType` is `year-wise` | `Feb-March`, `May-June`, or `Oct-Nov` |
+| `topic` | string | when `paperType` is `topic-wise` | Trimmed, non-empty topic label, e.g. `Algebra` |
 | `filePath` | string | yes | Server-generated Storage path, never arbitrary client path |
 | `fileName` | string | yes | Sanitized display filename |
 | `contentType` | string | yes | Must be `application/pdf` |
@@ -55,6 +60,8 @@ Represents a downloadable PDF and its searchable public metadata.
 | `createdBy` | string | yes | Administrator UID; private to admin/audit access |
 | `updatedBy` | string | yes | Administrator UID; private to admin/audit access |
 | `version` | number | yes | Incremented on each successful update |
+
+Public browsing hierarchy: Pathway -> Subject (`subjectName` + `subjectCode`) -> Year -> Exam session (for `year-wise` papers), or Pathway -> Subject -> Topic-wise (for `topic-wise` papers).
 
 Lifecycle: `pending -> published`; `published -> replacing -> published` on file replacement; any active state can move to `failed` on an incomplete mutation or `deleted` after confirmed deletion. Failed and deleted resources are not publicly listed or downloadable.
 
