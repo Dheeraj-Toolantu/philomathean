@@ -27,3 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Bulk past-paper upload reports
+past-paper-upload-report*.csv
