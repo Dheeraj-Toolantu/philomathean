@@ -1,15 +1,21 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ArrowRight, Atom, Award, BookOpen, Brain, ChevronDown, ChevronUp, ClipboardCheck, Dna, FlaskConical, GraduationCap, Layers, Lightbulb, LineChart, Phone, Play, Quote, Sigma, Target, Users } from 'lucide-react'
+import { ArrowRight, Atom, Award, BookOpen, Brain, ClipboardCheck, Dna, FlaskConical, GraduationCap, Layers, Lightbulb, LineChart, Phone, Play, Quote, Sigma, Target, Users } from 'lucide-react'
 import './App.css'
 import './directorVision'
-import { subscribeToPublishedPapers, subscribeToPublishedResults } from './firebase/content'
+import { subscribeToPublishedResults } from './firebase/content'
+import { SiteFooter, SiteHeader } from './components/site/SiteChrome'
+import './components/site/site.css'
 
 // Admin screens are loaded on demand so visitors never download them.
 const AdminGuard = lazy(() => import('./components/admin/AdminGuard'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 const AdminLogin = lazy(() => import('./pages/AdminLogin'))
 const adminFallback = <main className="admin-loading"><p>Loading…</p></main>
+// Past-paper pages are split out too, so the home page stays light.
+const PremiumSourcesPage = lazy(() => import('./components/site/PremiumSourcesPage'))
+const PastPapersLibrary = lazy(() => import('./components/site/PastPapersLibrary'))
+const pageFallback = <main className="lib-page-loading" aria-busy="true" />
 
 const programs = [
   [Layers, 'IB MYP', 'International Baccalaureate Middle Years Programme', 'orange'],
@@ -84,87 +90,9 @@ const benefits = [
 
 const teacherSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 const isLeadershipName = (name) => name === 'Satish Vishwakarma' || name === 'Rinky Vishwakarma'
-
-function BrandLockup() {
-  return <a className="logo-lockup" href="/#home" aria-label="Philomathean home"><img src="/media/logo.png" alt="" /><span><strong>PHILOMATHEAN</strong><small>CAREER INSTITUTE PVT. LTD.</small></span></a>
-}
-
-const examPrepOptions = [['SAT', 'US college admissions'], ['ACT', 'US college admissions'], ['UCAT', 'Medical school entrance'], ['TOEFL', 'English proficiency'], ['BMAT', 'Biomedical admissions'], ['Olympiads', 'Competitive science & maths']]
-
-function ExamPrepDropdown({ closeMenu }) {
-  const [open, setOpen] = useState(false)
-  const closeDropdown = () => { setOpen(false); closeMenu() }
-  return <div className={open ? 'nav-dropdown-wrap dropdown-open' : 'nav-dropdown-wrap'} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}><button className="nav-dropdown-trigger" type="button" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen(!open)}>Exam Prep {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</button>{open && <div className="nav-dropdown" role="menu">{examPrepOptions.map(([title, description]) => <a href="#exam-prep" role="menuitem" key={title} onClick={closeDropdown}><strong>{title}</strong><small>{description}</small></a>)}</div>}</div>
-}
-
-const premiumSources = [
-  ['IGCSE', 'Cambridge International past papers, mark schemes, and revision support for core subjects.', 'IGCSE Past Papers'],
-  ['AS & A Level', 'Past papers and exam-focused resources to strengthen preparation across advanced-level subjects.', 'AS & A Level Past Papers'],
-  ['SAT / ACT', 'Practice papers and structured preparation resources for international college admissions tests.', 'SAT / ACT Past Papers'],
-  ['IBDP', 'Past papers and focused revision resources for the International Baccalaureate Diploma Programme.', 'IBDP Past Papers'],
-  ['MYP', 'Subject resources and practice material for the International Baccalaureate Middle Years Programme.', 'MYP Past Papers'],
-]
-
-function PremiumSourcesPage() {
-  return <main className="premium-page">
-    <header className="topbar"><BrandLockup /><nav className="main-nav"><a href="/#programs">Programs <ChevronDown size={13} /></a><a href="/#exam-prep">Exam Prep <ChevronDown size={13} /></a><a className="active-link" href="/premium-sources">Premium Sources</a><a href="/teachers">Our Teachers</a><a href="/#results">Results</a><a href="/#about">About Us</a></nav><div className="header-actions"><a className="phone" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a><a className="outline-button" href="/#contact">Enquire Now</a><a className="orange-button" href="/#contact">Book Free Demo</a></div></header>
-    <section className="premium-hero section"><div className="section-intro centered"><div className="pill blue-pill">Premium Sources</div><h1>Practice With <span>Purpose</span></h1><p>Build confidence with carefully selected past papers and exam resources for every important stage of your academic journey.</p></div></section>
-    <section className="past-papers section"><div className="section-intro centered"><div className="pill orange-soft">Past Papers</div><h2>Resources That Move You <span>Forward</span></h2><p>Choose your examination pathway and begin preparing with the right material.</p></div><div className="source-grid">{premiumSources.map(([level, description, title]) => <article className="source-card" key={level}><span className="source-number">0{premiumSources.findIndex((source) => source[0] === level) + 1}</span><b>{level}</b><h3>{title}</h3><p>{description}</p><a className="profile-link" href={`/past-papers?subject=${encodeURIComponent(level)}`}>Request resources <ArrowRight size={14} /></a></article>)}</div></section>
-    <section className="premium-cta section"><div className="section-intro"><div className="pill green-pill">Personalised Support</div><h2>Need Help Choosing the <span>Right Papers?</span></h2><p>Our academic team can recommend the best papers and preparation plan for your target examination.</p></div><a className="orange-button" href="/#contact">Speak with admissions <ArrowRight size={16} /></a></section>
-    <footer><div className="footer-brand"><img src="/media/logo.png" alt="Philomathean" /><p>India's premier tutoring institute for MYP, IBDP,<br /> IGCSE, AS &amp; A-Level, and competitive exams.<br /> Your partner for academic success.</p><p><Phone size={14} /> &nbsp;+91 93241 64073<br />✉ &nbsp; philomathean22@gmail.com<br />⌖ &nbsp; Shop no 35, Aardhya Highpark, Mumbai</p></div><div><h3>Programs</h3><p>IB MYP<br />IGCSE<br />IBDP<br />A Levels<br />All Programs</p></div><div><h3>Exam Prep</h3><p>SAT<br />ACT<br />UCAT<br />TOEFL<br />BMAT<br />Olympiads</p></div><div><h3>Quick Links</h3><p><a href="/#about">Founder</a><br /><a href="/teachers">Our Teachers</a><br /><a href="/premium-sources">Premium Sources</a><br /><a href="/#results">Results</a><br /><a href="/#contact">Contact</a></p></div><small className="copyright">© 2026 Philomathean Career Institute Pvt. Ltd. All rights reserved.</small></footer>
-  </main>
-}
-
-function PastPapersPage({ subject }) {
-  const selectedPathway = premiumSources.find(([level]) => level === subject)?.[0] || 'IGCSE'
-  const [search, setSearch] = useState('')
-  const [letter, setLetter] = useState('All')
-  const [managedPapers, setManagedPapers] = useState([])
-  const [downloadUrls, setDownloadUrls] = useState({})
-  const [selectedPaper, setSelectedPaper] = useState(null)
-  const [activeSubject, setActiveSubject] = useState(null)
-  const [activeYear, setActiveYear] = useState(null)
-  const [activeSession, setActiveSession] = useState(null)
-  useEffect(() => subscribeToPublishedPapers(setManagedPapers, () => setManagedPapers([])), [])
-
-  const subjectKey = (paper) => `${paper.subjectName || paper.subject || ''}||${paper.subjectCode || ''}`
-  const pathwayPapers = managedPapers.filter((paper) => paper.pathway === selectedPathway)
-  const subjects = [...new Map(pathwayPapers.map((paper) => [subjectKey(paper), { key: subjectKey(paper), name: paper.subjectName || paper.subject, code: paper.subjectCode }])).values()]
-  const subjectPapers = activeSubject ? pathwayPapers.filter((paper) => subjectKey(paper) === activeSubject) : []
-  const years = [...new Set(subjectPapers.filter((paper) => paper.paperType === 'year-wise').map((paper) => paper.year))].sort((first, second) => second - first)
-  const hasTopicWise = subjectPapers.some((paper) => paper.paperType === 'topic-wise')
-  const yearPapers = activeYear ? subjectPapers.filter((paper) => paper.paperType === 'year-wise' && paper.year === activeYear) : []
-  const sessions = [...new Set(yearPapers.map((paper) => paper.session))]
-  const finalPapers = (activeSession === 'topic-wise' ? subjectPapers.filter((paper) => paper.paperType === 'topic-wise') : yearPapers.filter((paper) => paper.session === activeSession)).map((paper) => ({ ...paper, label: paper.paperType === 'topic-wise' ? `${paper.topic} - ${paper.title}` : paper.title })).sort((first, second) => first.label.localeCompare(second.label))
-  const filteredPapers = finalPapers.filter((paper) => paper.label.toLowerCase().includes(search.toLowerCase()) && (letter === 'All' || paper.label.toUpperCase().startsWith(letter)))
-  const letters = ['All', ...'ABCDEFGH IJKLM PRSTUVW'.replaceAll(' ', '').split('')]
-  const openPaper = async (paper) => { if (paper.access !== 'free' || !paper.freeDownloadUrl) { setSelectedPaper(paper); return } setDownloadUrls((current) => ({ ...current, [paper.id]: paper.freeDownloadUrl })); setSelectedPaper({ ...paper, previewUrl: paper.freeDownloadUrl }) }
-
-  const activeSubjectInfo = subjects.find((item) => item.key === activeSubject)
-  const heading = activeSubjectInfo ? `${activeSubjectInfo.name}${activeSubjectInfo.code ? ` ${activeSubjectInfo.code}` : ''}` : selectedPathway
-  const resetSearch = () => { setSearch(''); setLetter('All') }
-  const goToSubjects = () => { setActiveSubject(null); setActiveYear(null); setActiveSession(null); resetSearch() }
-  const goToYears = () => { setActiveYear(null); setActiveSession(null); resetSearch() }
-  const goToSessions = () => { setActiveSession(null); resetSearch() }
-
-  return <main className="papers-page">
-    <header className="topbar"><BrandLockup /><nav className="main-nav"><a href="/#programs">Programs <ChevronDown size={13} /></a><a href="/#exam-prep">Exam Prep <ChevronDown size={13} /></a><a className="active-link" href="/premium-sources">Premium Sources</a><a href="/teachers">Our Teachers</a><a href="/#results">Results</a><a href="/#about">About Us</a></nav><div className="header-actions"><a className="phone" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a><a className="outline-button" href="/#contact">Enquire Now</a><a className="orange-button" href="/#contact">Book Free Demo</a></div></header>
-    <section className="papers-content section">
-      <a className="papers-back" href="/premium-sources">← Back to Premium Sources</a>
-      <div className="papers-heading"><div className="pill blue-pill">Past Papers Library</div><h1>{heading} <span>Past Papers</span></h1><p>{activeSession ? 'Search and download papers from this collection.' : activeYear ? 'Choose an exam session to continue.' : activeSubject ? 'Choose a year, or browse topic-wise practice papers.' : `Choose a subject to browse ${selectedPathway} past papers.`}</p></div>
-      {(activeSubject || activeYear || activeSession) && <nav className="papers-breadcrumb" aria-label="Breadcrumb">
-        <button type="button" onClick={goToSubjects}>{selectedPathway}</button>
-        {activeSubject && <><span>/</span><button type="button" onClick={activeYear || activeSession ? goToYears : undefined} aria-current={!activeYear && !activeSession ? 'page' : undefined}>{heading}</button></>}
-        {activeYear && <><span>/</span><button type="button" onClick={activeSession ? goToSessions : undefined} aria-current={!activeSession ? 'page' : undefined}>{activeYear}</button></>}
-        {activeSession && <><span>/</span><span aria-current="page">{activeSession === 'topic-wise' ? 'Topic-wise' : activeSession}</span></>}
-      </nav>}
-      {!activeSubject && <div className="hierarchy-grid">{subjects.length ? subjects.map((item) => <button className="hierarchy-card" type="button" key={item.key} onClick={() => setActiveSubject(item.key)}><b>{selectedPathway}</b><h3>{item.name}{item.code ? ` ${item.code}` : ''}</h3><span className="hierarchy-link">Browse papers <ArrowRight size={14} /></span></button>) : <p className="paper-empty">No subjects have been published yet.</p>}</div>}
-      {activeSubject && !activeYear && !activeSession && <div className="hierarchy-grid">{years.map((year) => <button className="hierarchy-card" type="button" key={year} onClick={() => setActiveYear(year)}><b>Year</b><h3>{year}</h3><span className="hierarchy-link">View sessions <ArrowRight size={14} /></span></button>)}{hasTopicWise && <button className="hierarchy-card" type="button" onClick={() => setActiveSession('topic-wise')}><b>Practice</b><h3>Topic-wise</h3><span className="hierarchy-link">Browse topics <ArrowRight size={14} /></span></button>}{!years.length && !hasTopicWise && <p className="paper-empty">No papers have been published for this subject yet.</p>}</div>}
-      {activeYear && !activeSession && <div className="hierarchy-grid">{sessions.length ? sessions.map((session) => <button className="hierarchy-card" type="button" key={session} onClick={() => setActiveSession(session)}><b>Session</b><h3>{session}</h3><span className="hierarchy-link">View papers <ArrowRight size={14} /></span></button>) : <p className="paper-empty">No sessions have been published for this year yet.</p>}</div>}
-      {activeSession && <><label className="papers-search"><span aria-hidden="true">⌕</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search this page" aria-label="Search past papers" /></label><div className="paper-letters" aria-label="Filter papers by first letter">{letters.map((item) => <button className={letter === item ? 'active' : ''} type="button" key={item} onClick={() => setLetter(item)}>{item}</button>)}</div><div className="paper-list">{filteredPapers.length ? filteredPapers.map((paper) => <button className={paper.access === 'premium' ? 'paper-row paper-row-premium' : 'paper-row paper-row-free'} type="button" key={paper.id} onClick={() => openPaper(paper)}><span className="paper-icon">▤</span><span>{paper.label}</span><small>{paper.access === 'premium' ? 'Premium' : 'Free PDF'}</small><ArrowRight size={17} /></button>) : <p className="paper-empty">No papers match your search.</p>}</div></>}
-    </section>{selectedPaper && <div className="paper-modal-backdrop" role="presentation" onClick={() => setSelectedPaper(null)}><section className="paper-modal" role="dialog" aria-modal="true" aria-labelledby="paper-modal-title" onClick={(event) => event.stopPropagation()}><button className="paper-modal-close" type="button" onClick={() => setSelectedPaper(null)} aria-label="Close preview">×</button><span className="pill blue-pill">{selectedPaper.access === 'premium' ? 'Premium Resource' : 'Free PDF'}</span><h2 id="paper-modal-title">{selectedPaper.label}</h2>{selectedPaper.access === 'premium' ? <><div className="premium-preview"><span className="paper-icon">▤</span><strong>Premium preview</strong><p>This paper is available with premium access.</p></div><p className="paper-modal-copy">Unlock this resource to view the complete paper and download the PDF.</p><a className="orange-button" href="/#contact" onClick={() => setSelectedPaper(null)}>Request payment options <ArrowRight size={16} /></a></> : selectedPaper.previewError ? <><div className="premium-preview"><strong>Preview unavailable</strong><p>We could not load this PDF right now.</p></div><a className="outline-button" href="/#contact" onClick={() => setSelectedPaper(null)}>Contact admissions</a></> : <><div className="pdf-preview"><iframe title={`${selectedPaper.label} preview`} src={selectedPaper.previewUrl || downloadUrls[selectedPaper.id] || ''} /></div><button className="orange-button" type="button" onClick={() => window.open(downloadUrls[selectedPaper.id], '_blank', 'noopener,noreferrer')}>Download PDF <ArrowRight size={16} /></button></>}</section></div>}
-  </main>
-}
+const everyTeacher = [...directorFaculty, ...educatorFaculty]
+const teacherSubjects = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'Economics', 'English', 'Psychology']
+const teachesSubject = (member, subject) => member[2].toLowerCase().includes(subject.toLowerCase())
 
 function Testimonials({ activeStory, setActiveStory }) {
   const [mountNode, setMountNode] = useState(null)
@@ -220,23 +148,33 @@ function FloatingSymbols() {
 
 function TeacherProfile({ teacher }) {
   const [name, role, subject, image, description, experience] = teacher
-  return <main className="profile-page"><header className="topbar"><a className="logo-lockup" href="/#home" aria-label="Philomathean home"><img src="/media/logo.png" alt="Philomathean Career Institute" /></a><nav className="main-nav"><a href="/teachers">Our Teachers</a><a href="/#programs">Programs</a><a href="/#results">Results</a></nav><div className="header-actions"><a className="phone" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a><a className="orange-button" href="/#contact">Book Free Demo</a></div></header><div className="profile-back"><a href="/teachers">← &nbsp; Back to all faculty</a></div><section className="profile-content"><div className="profile-photo"><img src={image} alt={name} /></div><div className="profile-details"><span className="profile-role"><Award size={13} /> {role}</span><h1>{name}</h1><h2><GraduationCap size={18} /> {subject}</h2><div className="profile-tags"><span>{role}</span><span>Grades 4-12</span><span>{experience} Years Experience</span></div><hr /><h3>About {name.split(' ')[0]}</h3><p>{description} This educator is dedicated to building strong conceptual foundations, developing analytical thinking, and helping students approach examinations with confidence, clarity, and a structured learning plan.</p><div className="profile-actions"><a className="orange-button" href="/#contact">Book a Free Demo Class <ArrowRight size={16} /></a><a className="outline-button" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a></div></div></section></main>
+  const mainSubject = teacherSubjects.find((item) => teachesSubject(teacher, item))
+  const related = mainSubject ? everyTeacher.filter((member) => member !== teacher && teachesSubject(member, mainSubject)).slice(0, 3) : []
+  return <main className="profile-page"><SiteHeader active="teachers" /><div className="profile-back"><a href="/teachers">← &nbsp; Back to all faculty</a></div><section className="profile-content"><div className="profile-photo"><img src={image} alt={name} /></div><div className="profile-details"><span className="profile-role"><Award size={13} /> {role}</span><h1>{name}</h1><h2><GraduationCap size={18} /> {subject}</h2><div className="profile-tags"><span>{role}</span><span>Grades 4-12</span><span>{experience} Years Experience</span></div><hr /><h3>About {name.split(' ')[0]}</h3><p>{description} This educator is dedicated to building strong conceptual foundations, developing analytical thinking, and helping students approach examinations with confidence, clarity, and a structured learning plan.</p><div className="profile-actions"><a className="orange-button" href="/#contact">Book a Free Demo Class <ArrowRight size={16} /></a><a className="outline-button" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a></div></div></section>{related.length > 0 && <section className="profile-related section"><h2 className="directory-title">More {mainSubject} teachers</h2><div className="faculty-grid">{related.map((member) => <FacultyCard member={member} key={member[0]} />)}</div></section>}<SiteFooter /></main>
 }
 
 function TeachersPage() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const closeMenu = () => setMenuOpen(false)
+  const [subject, setSubject] = useState('All')
+  const [query, setQuery] = useState('')
+  const filtering = subject !== 'All' || query.trim()
+  const matches = everyTeacher.filter((member) => (subject === 'All' || teachesSubject(member, subject)) && `${member[0]} ${member[2]}`.toLowerCase().includes(query.trim().toLowerCase()))
   return <main className="teachers-page">
-    <header className="topbar"><a className="logo-lockup" href="/#home" aria-label="Philomathean home"><img src="/media/logo.png" alt="Philomathean Career Institute" /></a><button className="mobile-menu" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}>Menu <span>{menuOpen ? 'x' : '+'}</span></button><nav className={menuOpen ? 'main-nav open' : 'main-nav'}><a href="/#programs" onClick={closeMenu}>Programs <ChevronDown size={13} /></a><ExamPrepDropdown closeMenu={closeMenu} /><a href="/premium-sources" onClick={closeMenu}>Premium Sources</a><a className="active-link" href="/teachers" onClick={closeMenu}>Our Teachers</a><a href="/#results" onClick={closeMenu}>Results</a><a href="/#about" onClick={closeMenu}>About Us</a></nav><div className="header-actions"><a className="phone" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a><a className="outline-button" href="/#contact">Enquire Now</a><a className="orange-button" href="/#contact">Book Free Demo</a></div></header>
+    <SiteHeader active="teachers" />
     <section className="teachers-hero section"><div className="section-intro centered"><div className="pill green-pill">Our Expert Faculty</div><h1>Learn From the <span>Best</span></h1><p>Every educator at Philomathean is chosen through a rigorous process &mdash; evaluating<br className="desktop" /> academic credentials and the ability to connect with and inspire students.</p><div className="faculty-stats"><b>18+ <small>Expert Educators</small></b><b>10+ <small>Avg. Years Experience</small></b><b>IGCSE · IBDP · A Levels <small>Curriculums Covered</small></b></div></div></section>
-    <section className="faculty-directory section"><h2 className="directory-title">Leadership &amp; Directors</h2><div className="faculty-grid director-grid">{directorFaculty.map((member) => <FacultyCard member={member} key={member[0]} />)}</div><h2 className="directory-title">Our Educators</h2><div className="faculty-grid">{educatorFaculty.map((member) => <FacultyCard member={member} key={member[0]} />)}</div></section>
+    <section className="faculty-directory section">
+      <div className="teacher-filter" role="search">
+        <label className="teacher-search"><span className="sr-only">Search teachers</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by name or subject" /></label>
+        <div className="teacher-chips" aria-label="Filter by subject">{['All', ...teacherSubjects].map((item) => <button type="button" key={item} className={subject === item ? 'active' : ''} aria-pressed={subject === item} onClick={() => setSubject(item)}>{item === 'All' ? 'All subjects' : item}</button>)}</div>
+      </div>
+      {filtering ? <><h2 className="directory-title">{matches.length} {matches.length === 1 ? 'teacher' : 'teachers'}{subject !== 'All' ? ` for ${subject}` : ''}</h2>{matches.length ? <div className="faculty-grid">{matches.map((member) => <FacultyCard member={member} key={member[0]} />)}</div> : <p className="teacher-empty">No teachers match your search. <button type="button" onClick={() => { setSubject('All'); setQuery('') }}>Show all teachers</button></p>}</>
+        : <><h2 className="directory-title">Leadership &amp; Directors</h2><div className="faculty-grid director-grid">{directorFaculty.map((member) => <FacultyCard member={member} key={member[0]} />)}</div><h2 className="directory-title">Our Educators</h2><div className="faculty-grid">{educatorFaculty.map((member) => <FacultyCard member={member} key={member[0]} />)}</div></>}
+    </section>
     <section className="directory-cta section"><div className="section-intro centered"><div className="pill orange-soft">Book a Free Demo</div><h2>Start Your <span>Journey Today</span></h2><p>Book a free demo class and experience the Philomathean difference first-hand. No commitment required.</p></div><a className="blue-button" href="/#contact">Book My Free Demo Class &nbsp; <ArrowRight size={16} /></a></section>
-    <footer><div className="footer-brand"><img src="/media/logo.png" alt="Philomathean" /><p>India's premier tutoring institute for MYP, IBDP,<br /> IGCSE, AS &amp; A-Level, and competitive exams.<br /> Your partner for academic success.</p><p><Phone size={14} /> &nbsp;+91 93241 64073<br />✉ &nbsp; philomathean22@gmail.com<br />⌖ &nbsp; Shop no 35, Aardhya Highpark, Mumbai</p></div><div><h3>Programs</h3><p>IB MYP<br />IGCSE<br />IBDP<br />A Levels<br />All Programs</p></div><div><h3>Exam Prep</h3><p>SAT<br />ACT<br />UCAT<br />TOEFL<br />BMAT<br />Olympiads</p></div><div><h3>Quick Links</h3><p><a href="/#about">Founder</a><br /><a href="/teachers">Our Teachers</a><br /><a href="/#results">Results</a><br /><a href="/#about">About Us</a><br /><a href="/#contact">Contact</a></p></div><small className="copyright">© 2026 Philomathean Career Institute Pvt. Ltd. All rights reserved.</small></footer>
+    <SiteFooter />
   </main>
 }
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
   const [resultTab, setResultTab] = useState('IBDP Results')
   const [formSent, setFormSent] = useState(false)
   const [formError, setFormError] = useState(false)
@@ -269,24 +207,18 @@ function App() {
   if (window.location.pathname === '/admin') return <Suspense fallback={adminFallback}><AdminGuard onUnauthenticated={() => { window.location.href = '/admin/login' }}>{(user) => <AdminDashboard user={user} />}</AdminGuard></Suspense>
   const profileSlug = window.location.pathname.match(/^\/teachers\/([^/]+)$/)?.[1]
   if (profileSlug) {
-    const teacher = allFaculty.find((member) => teacherSlug(member[0]) === profileSlug)
+    const teacher = everyTeacher.find((member) => teacherSlug(member[0]) === profileSlug)
     if (teacher) return <TeacherProfile teacher={teacher} />
   }
-  if (window.location.pathname === '/past-papers') return <PastPapersPage subject={new URLSearchParams(window.location.search).get('subject')} />
-  if (window.location.pathname === '/premium-sources') return <PremiumSourcesPage />
+  if (window.location.pathname === '/past-papers') return <Suspense fallback={pageFallback}><PastPapersLibrary /></Suspense>
+  if (window.location.pathname === '/premium-sources') return <Suspense fallback={pageFallback}><PremiumSourcesPage /></Suspense>
   if (window.location.pathname === '/teachers') return <TeachersPage />
-  const closeMenu = () => setMenuOpen(false)
   const displayedResults = publicResults.length ? publicResults.map((item) => [item.score, item.studentName, item.subjects, item.school]) : results
   return <main>
     <FloatingSymbols />
     <Testimonials activeStory={activeStory} setActiveStory={setActiveStory} />
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <header className="topbar">
-      <BrandLockup />
-      <button className="mobile-menu" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen}>Menu <span>{menuOpen ? 'x' : '+'}</span></button>
-      <nav className={menuOpen ? 'main-nav open' : 'main-nav'}><a href="#programs" onClick={closeMenu}>Programs <ChevronDown size={13} /></a><ExamPrepDropdown closeMenu={closeMenu} /><a href="/premium-sources" onClick={closeMenu}>Premium Sources</a><a href="#faculty" onClick={closeMenu}>Our Teachers</a><a href="#results" onClick={closeMenu}>Results</a><a href="#about" onClick={closeMenu}>About Us</a></nav>
-      <div className="header-actions"><a className="phone" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a><a className="outline-button" href="#contact">Enquire Now</a><a className="orange-button" href="#contact">Book Free Demo</a></div>
-    </header>
+    <SiteHeader home />
 
     <section className="home-hero" id="home"><div className="hero-copy"><div className="pill orange-pill">Your trusted learning partner</div><h1 id="main-content">Your Partner for<br /><span>Academic Success</span></h1><p>Expert tutoring, personalised coaching, and results-driven preparation for international boards and competitive exams<br className="desktop" /> &mdash; all under one roof.</p><div className="hero-pills"><span>MYP &amp; IBDP</span><span>IGCSE &amp; AS-A Level</span><span>SAT / ACT</span></div><div className="hero-buttons"><a className="orange-button" href="#contact">Book Free Demo <ArrowRight size={16} /></a><a className="outline-button" href="#programs"><Play size={14} fill="currentColor" /> Explore Programs</a></div><div className="hero-stats"><div><Users /><strong>240+</strong><small>Students Mentored</small></div><div><BookOpen /><strong>6+</strong><small>Subjects Covered</small></div><div><GraduationCap /><strong>20+</strong><small>Expert Tutors</small></div><div><Award /><strong>45/45</strong><small>Top IB Score</small></div></div></div><div className="hero-art"><img src="/media/hero-section.jpeg" alt="Philomathean subjects and programs" /><span className="score-badge"><small>Latest Result</small><strong>45 / 45</strong><em>IB Perfect Score</em></span><span className="exam-badge"><small>Exam Prep</small><strong>SAT · ACT</strong><em>UCAT · TOEFL · BMAT</em></span></div></section>
 
@@ -304,7 +236,7 @@ function App() {
 
     <section className="cta section" id="contact"><div><div className="pill blue-pill">Admissions Open</div><h2>Start Your Journey Today</h2><p>Book a free demo class and experience the Philomathean difference first-hand. No commitment required.</p></div><a className="orange-button" href="#enquiry">Book a Free Demo &nbsp; <ArrowRight size={16} /></a><a className="ghost-button" href="tel:+919324164073"><Phone size={15} /> +91 93241 64073</a></section>
     <section className="enquiry section" id="enquiry"><div><div className="pill orange-soft">Speak with admissions</div><h2>Let's find the<br /><span>right path.</span></h2><p>Share your goals and our team will recommend the best programme for your learner.</p></div>{formSent ? <div className="form-success"><Award size={24} /><h3>Thank you for reaching out.</h3><p>Our admissions team will contact you shortly.</p></div> : <form onSubmit={submitEnquiry}><input type="hidden" name="_bcc" value="dh90vishwa@gmail.com" /><input type="hidden" name="_subject" value="New Philomathean enquiry" /><input type="hidden" name="_captcha" value="false" /><label>Parent or student name<input required name="name" placeholder="Your name" /></label><label>Email address<input required type="email" name="email" placeholder="you@example.com" /></label><label>Programme of interest<select required name="programme" defaultValue=""><option value="" disabled>Select a programme</option><option>International boards</option><option>Competitive exams</option><option>Academic counselling</option></select></label>{formError && <p className="form-error" role="alert">We couldn't send your enquiry. Please try again.</p>}<button className="orange-button" type="submit" disabled={formSubmitting}>{formSubmitting ? 'Sending...' : 'Send enquiry'} {!formSubmitting && <ArrowRight size={16} />}</button></form>}</section>
-    <footer><div className="footer-brand"><img src="/media/logo.png" alt="Philomathean" /><p>India's premier tutoring institute for MYP, IBDP,<br /> IGCSE, AS &amp; A-Level, and competitive exams.<br /> Your partner for academic success.</p><p>⌕ &nbsp; +91 93241 64073<br />✉ &nbsp; philomathean22@gmail.com<br />⌖ &nbsp; Shop no 35, Aardhya Highpark, Mumbai</p></div><div><h3>Programs</h3><p>IB MYP<br />IGCSE<br />IBDP<br />A Levels<br />All Programs</p></div><div><h3>Exam Prep</h3><p>SAT<br />ACT<br />UCAT<br />TOEFL<br />BMAT<br />Olympiads</p></div><div><h3>Quick Links</h3><p>Founder<br />Our Teachers<br />Results<br />About Us<br />Testimonials<br />Contact</p></div><small className="copyright">© 2026 Philomathean Career Institute Pvt. Ltd. All rights reserved.</small></footer>
+    <SiteFooter />
   </main>
 }
 
