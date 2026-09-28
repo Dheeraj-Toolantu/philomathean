@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDocs, limit, onSnapshot, orderBy, query, runTransaction, serverTimestamp, setDoc, where, writeBatch } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, limit, onSnapshot, orderBy, query, runTransaction, serverTimestamp, startAfter, where, writeBatch } from 'firebase/firestore'
 import { db } from './config'
 
 const resultsCollection = collection(db, 'results')
@@ -44,12 +44,6 @@ const normalize = (snapshot, publicView = false) => snapshot.docs.map((item) => 
 
 export const subscribeToPublishedResults = (onChange, onError) => onSnapshot(query(resultsCollection, where('published', '==', true), orderBy('sortOrder'), limit(100)), (snapshot) => onChange(normalize(snapshot)), onError)
 export const subscribeToPublishedPapers = (onChange, onError) => onSnapshot(query(publicPapersCollection, where('published', '==', true), limit(250)), (snapshot) => onChange(normalize(snapshot, true).filter((paper) => paper.status === 'published')), onError)
-export const getAdminResults = async () => normalize(await getDocs(query(resultsCollection, orderBy('sortOrder'), limit(250))))
-export const getAdminPapers = async () => normalize(await getDocs(query(papersCollection, limit(250)))).sort((first, second) => (second.updatedAt?.seconds || 0) - (first.updatedAt?.seconds || 0))
-export const ensurePublicPaper = (paper, freeDownloadUrl) => {
-	const normalized = parseLegacyPaperMetadata(paper)
-	return setDoc(doc(db, 'publicPastPapers', paper.id), { title: normalized.title, pathway: normalized.pathway, subjectName: normalized.subjectName, subjectCode: normalized.subjectCode || null, subject: normalized.subject, paperType: normalized.paperType, year: normalized.paperType === 'year-wise' ? Number(normalized.year) : null, session: normalized.paperType === 'year-wise' ? normalized.session : null, topic: normalized.paperType === 'topic-wise' ? normalized.topic : null, access: normalized.access || 'premium', freeDownloadUrl: normalized.access === 'free' ? (freeDownloadUrl || null) : null, status: normalized.status || 'published', published: normalized.published !== false, previewAvailable: false, resourceId: paper.id, version: normalized.version || 1, updatedAt: serverTimestamp() }, { merge: true })
-}
 
 export const createResult = (values, uid) => addDoc(resultsCollection, { ...values, published: Boolean(values.published), sortOrder: Number(values.sortOrder) || 0, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
 export const updateResult = (id, values, uid, version) => runTransaction(db, async (transaction) => { const resultRef = doc(db, 'results', id); const snapshot = await transaction.get(resultRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(resultRef, { ...values, published: Boolean(values.published), sortOrder: Number(values.sortOrder) || 0, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }) })
@@ -67,7 +61,32 @@ const paperFields = (values) => ({
 	topic: values.paperType === 'topic-wise' ? values.topic.trim() : null,
 	access: values.access,
 })
-const publicPaper = (values, id, version) => ({ ...paperFields(values), status: 'published', published: true, previewAvailable: false, resourceId: id, version, updatedAt: serverTimestamp() })
-export const createPaper = (values, uid, filePath, fileName, fileSize) => { const paperRef = doc(papersCollection); const batch = writeBatch(db); batch.set(paperRef, { ...paperFields(values), filePath, fileName, fileSize, contentType: 'application/pdf', status: 'published', published: true, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); batch.set(doc(publicPapersCollection, paperRef.id), publicPaper(values, paperRef.id, 1)); return batch.commit() }
-export const updatePaper = (id, values, uid, version, fileDetails = {}) => runTransaction(db, async (transaction) => { const paperRef = doc(db, 'pastPaperResources', id); const publicRef = doc(db, 'publicPastPapers', id); const snapshot = await transaction.get(paperRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(paperRef, { ...paperFields(values), ...fileDetails, status: 'published', published: true, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }); transaction.set(publicRef, publicPaper(values, id, version + 1)) })
+const publicPaper = (values, id, version, freeDownloadUrl) => ({ ...paperFields(values), freeDownloadUrl: values.access === 'free' ? (freeDownloadUrl || null) : null, status: 'published', published: values.published !== false, previewAvailable: false, resourceId: id, version, updatedAt: serverTimestamp() })
+export const createPaper = async (values, uid, filePath, fileName, fileSize, freeDownloadUrl) => { const paperRef = doc(papersCollection); const batch = writeBatch(db); batch.set(paperRef, { ...paperFields(values), filePath, fileName, fileSize, contentType: 'application/pdf', status: 'published', published: values.published !== false, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); batch.set(doc(publicPapersCollection, paperRef.id), publicPaper(values, paperRef.id, 1, freeDownloadUrl)); await batch.commit(); return paperRef.id }
+export const updatePaper = (id, values, uid, version, fileDetails = {}, freeDownloadUrl) => runTransaction(db, async (transaction) => { const paperRef = doc(db, 'pastPaperResources', id); const publicRef = doc(db, 'publicPastPapers', id); const snapshot = await transaction.get(paperRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(paperRef, { ...paperFields(values), ...fileDetails, status: 'published', published: values.published !== false, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }); transaction.set(publicRef, publicPaper(values, id, version + 1, freeDownloadUrl)) })
 export const removePaper = (id) => { const batch = writeBatch(db); batch.delete(doc(db, 'pastPaperResources', id)); batch.delete(doc(db, 'publicPastPapers', id)); return batch.commit() }
+
+// Admin listing. Papers are listed from the normalised public mirror (every paper has one, hidden ones
+// included) so filters work on legacy records too; the full private record is loaded only when needed.
+const paperConstraints = (filters = {}) => Object.entries(filters).filter(([, value]) => value !== '' && value != null).map(([field, value]) => where(field, '==', field === 'year' ? Number(value) : value))
+const pageRow = (item) => ({ id: item.id, ...parseLegacyPaperMetadata(item.data()) })
+const updatedAtSeconds = (item) => item.updatedAt?.seconds || 0
+
+export const getAdminPapersPage = async ({ filters, pageSize, cursor }) => {
+	const constraints = paperConstraints(filters)
+	try {
+		const snapshot = await getDocs(query(publicPapersCollection, ...constraints, orderBy('updatedAt', 'desc'), ...(cursor ? [startAfter(cursor)] : []), limit(pageSize)))
+		return { items: snapshot.docs.map(pageRow), cursor: snapshot.docs.at(-1) }
+	} catch (error) {
+		// Until the composite indexes in firestore.indexes.json are deployed, filter on the server and order in memory.
+		if (error.code !== 'failed-precondition' || !constraints.length) throw error
+		const offset = typeof cursor === 'number' ? cursor : 0
+		const items = (await getDocs(query(publicPapersCollection, ...constraints))).docs.map(pageRow).sort((first, second) => updatedAtSeconds(second) - updatedAtSeconds(first))
+		return { items: items.slice(offset, offset + pageSize), cursor: offset + pageSize }
+	}
+}
+export const countAdminPapers = async (filters) => (await getCountFromServer(query(publicPapersCollection, ...paperConstraints(filters)))).data().count
+export const getAdminPaper = async (id) => { const snapshot = await getDoc(doc(db, 'pastPaperResources', id)); if (!snapshot.exists()) throw new Error('NOT_FOUND'); return { id: snapshot.id, ...parseLegacyPaperMetadata(snapshot.data()) } }
+
+export const getAdminResultsPage = async ({ pageSize, cursor }) => { const snapshot = await getDocs(query(resultsCollection, orderBy('sortOrder'), ...(cursor ? [startAfter(cursor)] : []), limit(pageSize))); return { items: snapshot.docs.map((item) => ({ id: item.id, ...item.data() })), cursor: snapshot.docs.at(-1) } }
+export const countAdminResults = async () => (await getCountFromServer(resultsCollection)).data().count

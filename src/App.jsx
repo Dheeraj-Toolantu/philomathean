@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowRight, Atom, Award, BookOpen, Brain, ChevronDown, ChevronUp, ClipboardCheck, Dna, FlaskConical, GraduationCap, Layers, Lightbulb, LineChart, Phone, Play, Quote, Sigma, Target, Users } from 'lucide-react'
 import './App.css'
 import './directorVision'
-import AdminGuard from './components/admin/AdminGuard'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminLogin from './pages/AdminLogin'
 import { subscribeToPublishedPapers, subscribeToPublishedResults } from './firebase/content'
+
+// Admin screens are loaded on demand so visitors never download them.
+const AdminGuard = lazy(() => import('./components/admin/AdminGuard'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const adminFallback = <main className="admin-loading"><p>Loading…</p></main>
 
 const programs = [
   [Layers, 'IB MYP', 'International Baccalaureate Middle Years Programme', 'orange'],
@@ -262,8 +265,8 @@ function App() {
       setFormSubmitting(false)
     }
   }
-  if (window.location.pathname === '/admin/login') return <AdminLogin />
-  if (window.location.pathname === '/admin') return <AdminGuard onUnauthenticated={() => { window.location.href = '/admin/login' }}>{(user) => <AdminDashboard user={user} />}</AdminGuard>
+  if (window.location.pathname === '/admin/login') return <Suspense fallback={adminFallback}><AdminLogin /></Suspense>
+  if (window.location.pathname === '/admin') return <Suspense fallback={adminFallback}><AdminGuard onUnauthenticated={() => { window.location.href = '/admin/login' }}>{(user) => <AdminDashboard user={user} />}</AdminGuard></Suspense>
   const profileSlug = window.location.pathname.match(/^\/teachers\/([^/]+)$/)?.[1]
   if (profileSlug) {
     const teacher = allFaculty.find((member) => teacherSlug(member[0]) === profileSlug)

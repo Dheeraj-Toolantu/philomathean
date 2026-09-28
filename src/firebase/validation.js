@@ -4,7 +4,7 @@ export const MAX_PDF_BYTES = 25 * 1024 * 1024
 export const PAPER_TYPES = ['year-wise', 'topic-wise']
 export const EXAM_SESSIONS = ['Feb-March', 'May-June', 'Oct-Nov']
 const latestPaperYear = new Date().getFullYear() + 1
-export const PAPER_YEARS = Array.from({ length: latestPaperYear - 2014 }, (_, index) => latestPaperYear - index)
+export const PAPER_YEARS = Array.from({ length: latestPaperYear - 2009 }, (_, index) => latestPaperYear - index)
 
 export const validateResult = (values) => {
   const errors = {}
