@@ -1,0 +1,7 @@
+# Subjects to download from the PapaCambridge IGCSE listing — one search per line.
+# Every word must appear in the subject's name or code, e.g. "Mathematics 0444" finds
+# "Mathematics - 0444" but not "Mathematics - 0580". Lines starting with # are ignored.
+# Each subject's PDFs are saved to past-papers/igcse/<search-text>/ (e.g. mathematics-0444).
+
+Mathematics 0444
+Accounting 0452
