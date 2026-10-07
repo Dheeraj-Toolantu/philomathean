@@ -1,12 +1,12 @@
 // Runs the downloader end to end against a small local imitation of the PapaCambridge listing.
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
-import { mkdtemp, readdir, readFile } from 'node:fs/promises'
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
 import { isAdRequest } from '../ads.js'
-import { folderKey, isPdfLink, isSubfolderLink, matchesSearch, parseFileFilter, pdfFileName, run } from '../download-past-papers.js'
+import { folderKey, isPdfLink, isSubfolderLink, matchesSearch, parseFileFilter, parseSearchTerms, pdfFileName, readSearchTerms, run } from '../download-past-papers.js'
 
 const pdf = (label) => Buffer.from(`%PDF-1.4\n% ${label}\n%%EOF\n`)
 
@@ -114,14 +114,14 @@ test('searches for the subject and downloads only its valid PDFs, once', async (
   }
   try {
     const first = await run(config)
-    assert.deepEqual(first, { downloaded: 2, skipped: 0, failed: 1 })
+    assert.deepEqual(first, { downloaded: 2, skipped: 0, failed: 1, notFound: [] })
     const files = (await readdir(outDir)).sort()
     assert.deepEqual(files, ['0452_s23_ms_12.pdf', '0452_s23_qp_12.pdf', 'manifest.json'])
     const manifest = JSON.parse(await readFile(path.join(outDir, 'manifest.json'), 'utf8'))
     assert.equal(Object.keys(manifest.files).length, 2)
 
     const second = await run(config)
-    assert.deepEqual(second, { downloaded: 0, skipped: 2, failed: 1 })
+    assert.deepEqual(second, { downloaded: 0, skipped: 2, failed: 1, notFound: [] })
   } finally {
     server.close()
   }
@@ -155,7 +155,7 @@ test('closes the vignette ad and downloads only the solved 0444 papers', async (
       headless: true,
       chromiumPath: process.env.CHROMIUM_PATH,
     })
-    assert.deepEqual(summary, { downloaded: 2, skipped: 0, failed: 0 })
+    assert.deepEqual(summary, { downloaded: 2, skipped: 0, failed: 0, notFound: [] })
     assert.deepEqual((await readdir(outDir)).sort(), ['0444_w24_ms_12.pdf', '0444_w24_ms_22.pdf', 'manifest.json'])
     assert.ok(server.adsDismissed >= 1, 'the dismiss button inside the ad was clicked')
   } finally {
@@ -192,7 +192,7 @@ test('keeps opening subfolders, however deep, until it reaches the PDFs', async 
   try {
     const config = await physicsConfig(server)
     const summary = await run(config)
-    assert.deepEqual(summary, { downloaded: 3, skipped: 0, failed: 0 })
+    assert.deepEqual(summary, { downloaded: 3, skipped: 0, failed: 0, notFound: [] })
     assert.deepEqual((await readdir(config.outDir)).sort(), ['0625_s23_ms_41.pdf', '0625_s23_ms_42.pdf', '0625_w22_ms_41.pdf', 'manifest.json'])
     const opened = server.opened.filter((page) => page.includes('physics'))
     assert.equal(new Set(opened).size, opened.length, 'no folder is opened twice')
@@ -205,7 +205,7 @@ test('stops opening folders once MAX_FILES PDFs are downloaded', async () => {
   const server = await startServer()
   try {
     const summary = await run(await physicsConfig(server, { maxFiles: 1 }))
-    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0 })
+    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0, notFound: [] })
     assert.ok(!server.opened.some((page) => page.includes('0625-2022')), 'the 2022 folders were never opened')
   } finally {
     server.close()
@@ -216,7 +216,45 @@ test('MAX_DEPTH still limits how deep it goes when set', async () => {
   const server = await startServer()
   try {
     const summary = await run(await physicsConfig(server, { maxDepth: 2 }))
-    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0 })
+    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0, notFound: [] })
+  } finally {
+    server.close()
+  }
+})
+
+test('reads one search term per line, ignoring comments, blanks and duplicates', async () => {
+  const text = '# subjects\n\nMathematics 0444\n  Physics   0625  \r\nmathematics 0444\n# Biology 0610\nAccounting\n'
+  assert.deepEqual(parseSearchTerms(text), ['Mathematics 0444', 'Physics 0625', 'Accounting'])
+  const dir = await mkdtemp(path.join(tmpdir(), 'terms-'))
+  await writeFile(path.join(dir, 'empty.txt'), '# nothing yet\n')
+  await assert.rejects(readSearchTerms(path.join(dir, 'empty.txt')), /no search terms/)
+  await assert.rejects(readSearchTerms(path.join(dir, 'missing.txt')), /not found/)
+  assert.ok((await readSearchTerms(new URL('../search-terms.txt', import.meta.url).pathname)).length >= 1, 'the shipped file has a term')
+})
+
+test('runs every search term into its own folder and carries on past a term with no match', async () => {
+  const server = await startServer()
+  try {
+    const outDir = await mkdtemp(path.join(tmpdir(), 'past-papers-'))
+    const summary = await run({
+      ...(await physicsConfig(server)),
+      outDir,
+      fileFilter: null,
+      searchTerms: ['Physics 0625', 'Chemistry 0620', 'Accounting'],
+    })
+    assert.deepEqual(summary, { downloaded: 5, skipped: 0, failed: 1, notFound: ['Chemistry 0620'] })
+    assert.deepEqual((await readdir(outDir)).sort(), ['accounting', 'physics-0625'])
+    assert.deepEqual((await readdir(path.join(outDir, 'physics-0625'))).sort(), ['0625_s23_ms_41.pdf', '0625_s23_ms_42.pdf', '0625_w22_ms_41.pdf', 'manifest.json'])
+    assert.deepEqual((await readdir(path.join(outDir, 'accounting'))).sort(), ['0452_s23_ms_12.pdf', '0452_s23_qp_12.pdf', 'manifest.json'])
+  } finally {
+    server.close()
+  }
+})
+
+test('fails when none of the search terms match a subject', async () => {
+  const server = await startServer()
+  try {
+    await assert.rejects(run({ ...(await physicsConfig(server)), searchTerms: ['Chemistry 0620'] }), /None of the search terms/)
   } finally {
     server.close()
   }

@@ -1,5 +1,7 @@
-# Searches PapaCambridge for a subject, downloads the matching PDFs (closing any ads that appear) and
-# commits them, unchanged, under past-papers/igcse/<subject>/ on the branch the workflow was started on.
+# Reads automation/past-papers/search-terms.txt (one subject per line), searches PapaCambridge for
+# each, opens every folder and subfolder of the results, downloads the PDFs (closing any ads that
+# appear) and commits them, unchanged, under past-papers/igcse/<search-text>/ on the branch the
+# workflow was started on. To change what is downloaded, edit search-terms.txt and run this again.
 # Start it from Actions → "Save past papers to repo" → Run workflow.
 name: Save past papers to repo
 
@@ -7,15 +9,15 @@ on:
   workflow_dispatch:
     inputs:
       search_term:
-        description: Subject to search for on the IGCSE listing
-        default: Mathematics 0444
-        required: true
+        description: Search just this subject instead of the list in search-terms.txt (leave empty to use the file)
+        default: ''
+        required: false
       file_filter:
-        description: '"solved" for mark schemes / solved papers, a regex, or empty for every PDF'
-        default: solved
+        description: Leave empty for every PDF, "solved" for mark schemes only, or a regex
+        default: ''
         required: false
       max_files:
-        description: Stop after this many new PDFs (0 = no limit)
+        description: Stop after this many new PDFs per search term (0 = no limit)
         default: '0'
         required: true
 
@@ -60,5 +62,5 @@ jobs:
             echo "No new past papers to commit."
             exit 0
           fi
-          git commit -m "Add IGCSE ${SEARCH_TERM} past papers"
+          git commit -m "Add IGCSE past papers${SEARCH_TERM:+ for ${SEARCH_TERM}}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
