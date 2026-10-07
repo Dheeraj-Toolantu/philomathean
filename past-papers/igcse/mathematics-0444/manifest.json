@@ -23,6 +23,18 @@
       "bytes": 361260,
       "sha256": "62b786ca5230c8b2999c6327aa418006e6cc8ec31ab19752d044fb8c6101a6d1",
       "downloadedAt": "2026-10-07T10:48:16.403Z"
+    },
+    "0444_s24_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_er.pdf",
+      "bytes": 291777,
+      "sha256": "5d3777c0aac395a93be1f76d13efd50cfecbc8a17ae6b16e6abbe3edf7ccca62",
+      "downloadedAt": "2026-10-07T10:57:53.936Z"
+    },
+    "0444_s24_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_gt.pdf",
+      "bytes": 93193,
+      "sha256": "05ff323886673553edd324dc37d9fe7c05ec77c921bb3280d83687f20372cb79",
+      "downloadedAt": "2026-10-07T10:57:55.752Z"
     }
   }
 }
