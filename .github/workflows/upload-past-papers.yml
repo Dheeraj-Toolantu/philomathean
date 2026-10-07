@@ -1,0 +1,90 @@
+# Downloads a subject's CAIE question papers from PapaCambridge on the runner and uploads them to the
+# website (Firebase Storage + Firestore) with functions/scripts/bulk-upload-past-papers.cjs.
+# Nothing is committed: the PDFs exist only on the runner and are discarded when the job ends.
+#
+# Requires the FIREBASE_UPLOAD_SERVICE_ACCOUNT repository secret: a service-account JSON key with the
+# Cloud Datastore User, Storage Object Admin and Firebase Authentication Viewer roles.
+# Start it from Actions → "Upload past papers" → Run workflow. The default is a dry run that only reports.
+name: Upload past papers
+
+on:
+  workflow_dispatch:
+    inputs:
+      search_term:
+        description: Subject to search for on the IGCSE listing
+        default: Accounting
+        required: true
+      max_files:
+        description: Stop after this many downloaded PDFs (0 = no limit)
+        default: '5'
+        required: true
+      file_filter:
+        description: Regex a PDF file name must match (question papers only by default)
+        default: '_qp_'
+        required: true
+      access:
+        description: Who can open the uploaded papers
+        type: choice
+        options: [premium, free]
+        default: premium
+      dry_run:
+        description: Only report what would be uploaded
+        type: boolean
+        default: true
+
+concurrency:
+  group: upload-past-papers
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Set working folders outside the repository
+        run: |
+          echo "DOWNLOAD_DIR=$RUNNER_TEMP/past-papers/download" >> "$GITHUB_ENV"
+          echo "STAGING_DIR=$RUNNER_TEMP/past-papers/staging" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            automation/past-papers/package-lock.json
+            functions/package-lock.json
+      - name: Install dependencies
+        run: |
+          npm ci --prefix automation/past-papers
+          npm ci --prefix functions
+          npx --prefix automation/past-papers playwright install --with-deps chromium
+      - name: Download PDFs
+        working-directory: automation/past-papers
+        env:
+          SEARCH_TERM: ${{ inputs.search_term }}
+          MAX_FILES: ${{ inputs.max_files }}
+          FILE_FILTER: ${{ inputs.file_filter }}
+        run: OUT_DIR="$DOWNLOAD_DIR" npm run download
+      - name: Rename question papers for the uploader
+        env:
+          SEARCH_TERM: ${{ inputs.search_term }}
+        run: node automation/past-papers/prepare-for-upload.js "$DOWNLOAD_DIR" "$STAGING_DIR" --pathway IGCSE --subject "$SEARCH_TERM"
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_UPLOAD_SERVICE_ACCOUNT }}
+      - name: Upload to the website
+        working-directory: functions
+        env:
+          ACCESS: ${{ inputs.access }}
+          UPLOAD_FLAG: ${{ !inputs.dry_run && '--upload' || '' }}
+        run: node scripts/bulk-upload-past-papers.cjs --dir "$STAGING_DIR" --access "$ACCESS" --report "$RUNNER_TEMP/past-paper-upload-report.csv" $UPLOAD_FLAG
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: past-paper-upload-report
+          path: ${{ runner.temp }}/past-paper-upload-report.csv
+          if-no-files-found: ignore
+          retention-days: 30
