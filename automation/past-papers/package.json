@@ -1,0 +1,14 @@
+{
+  "name": "philomathean-past-paper-downloader",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Browser automation that searches PapaCambridge for a subject and downloads its past-paper PDFs one by one.",
+  "scripts": {
+    "download": "node download-past-papers.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}
