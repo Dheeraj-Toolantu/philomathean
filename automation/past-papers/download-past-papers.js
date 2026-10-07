@@ -1,5 +1,6 @@
 // Opens the PapaCambridge IGCSE listing in a real browser, searches for a subject (default
 // "Accounting"), walks the matching subject pages and downloads every PDF one at a time.
+// Advertisements are blocked, and any that still appear are closed (see ads.js).
 // Files are validated (HTTP 200, %PDF header, size limit), de-duplicated by name and recorded in
 // manifest.json so re-runs only fetch new papers.
 //
@@ -10,10 +11,14 @@
 //   MAX_FILES       stop after this many new downloads    default 0 (no limit)
 //   MAX_DEPTH       how many link levels below a subject  default 3
 //   DELAY_MS        pause between requests                default 1500
-//   FILE_FILTER     regex a PDF file name must match      default "" (all)
+//   FILE_FILTER     regex a PDF's file name or link text  default "" (all)
+//                   must match; "solved" is a shortcut for mark schemes / solved papers
+//   BLOCK_ADS       "false" to let ads load (they are     default true
+//                   still closed when they appear)
 //   HEADLESS        "false" to watch the browser          default true
 //   CHROMIUM_PATH   use a pre-installed Chromium binary   optional
 import { chromium } from 'playwright'
+import { blockAds, dismissAds, watchForAds } from './ads.js'
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -21,6 +26,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024
+// Mark schemes are CAIE's worked answers ("_ms_" in the file name); also accept links labelled solved.
+export const SOLVED_FILTER = /_ms_|solved|mark\s*scheme|answers?\b/i
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 
 export const slugify = (value) =>
@@ -46,18 +53,31 @@ export const isPdfLink = (href) => {
   }
 }
 
+// A subject link matches when every word of the search term appears in its text or URL,
+// so "Mathematics 0444" matches "Mathematics - US (0444)" and /igcse-mathematics-us-0444.
+export const matchesSearch = (searchTerm, text, href) => {
+  const haystack = `${text} ${decodeURIComponent(new URL(href).pathname)}`.toLowerCase()
+  return searchTerm.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).every((word) => haystack.includes(word))
+}
+
+export const parseFileFilter = (value) => {
+  if (!value) return null
+  return value.trim().toLowerCase() === 'solved' ? SOLVED_FILTER : new RegExp(value, 'i')
+}
+
 export const isPdfBuffer = (buffer) => buffer.length > 4 && buffer.subarray(0, 5).toString('latin1') === '%PDF-'
 
 const readConfig = () => {
   const searchTerm = (process.env.SEARCH_TERM || 'Accounting').trim()
   return {
     searchTerm,
-    startUrl: process.env.START_URL || 'https://pastpapers.papacambridge.com/papers/caie/igcse?theme=lightTheme',
+    startUrl: (process.env.START_URL || 'https://pastpapers.papacambridge.com/papers/caie/igcse?theme=lightTheme').split('#')[0],
     outDir: path.resolve(repoRoot, process.env.OUT_DIR || path.join('past-papers', 'igcse', slugify(searchTerm))),
     maxFiles: Number(process.env.MAX_FILES || 0),
     maxDepth: Number(process.env.MAX_DEPTH || 3),
     delayMs: Number(process.env.DELAY_MS ?? 1500),
-    fileFilter: process.env.FILE_FILTER ? new RegExp(process.env.FILE_FILTER, 'i') : null,
+    fileFilter: parseFileFilter(process.env.FILE_FILTER),
+    blockAds: process.env.BLOCK_ADS !== 'false',
     headless: process.env.HEADLESS !== 'false',
     chromiumPath: process.env.CHROMIUM_PATH || undefined,
   }
@@ -71,6 +91,7 @@ const collectLinks = (page) =>
 // Types the term into the site's search box and returns links to the subjects it matches.
 // Falls back to filtering the listing's own links when no search box is found.
 const findSubjectLinks = async (page, searchTerm) => {
+  await dismissAds(page)
   const search = page
     .locator('input[type="search"], input[placeholder*="search" i], input[name*="search" i], input[aria-label*="search" i]')
     .first()
@@ -83,20 +104,17 @@ const findSubjectLinks = async (page, searchTerm) => {
     console.warn('No search box found; filtering the listing links instead.')
   }
 
-  const term = searchTerm.toLowerCase()
   const startHost = new URL(page.url()).host
   const seen = new Set()
   return (await collectLinks(page)).filter(({ href, text }) => {
     if (seen.has(href) || isPdfLink(href)) return false
-    const url = new URL(href)
-    const matches = text.toLowerCase().includes(term) || decodeURIComponent(url.pathname).toLowerCase().includes(slugify(term))
-    if (!matches || url.host !== startHost) return false
+    if (new URL(href).host !== startHost || !matchesSearch(searchTerm, text, href)) return false
     seen.add(href)
     return true
   })
 }
 
-// Breadth-first walk of the pages below a subject page, collecting PDF links.
+// Breadth-first walk of the pages below a subject page, collecting PDF links and their link text.
 const crawlSubject = async (page, subjectUrl, { maxDepth, delayMs }) => {
   const root = new URL(subjectUrl)
   const prefix = root.pathname.replace(/\/$/, '')
@@ -113,13 +131,14 @@ const crawlSubject = async (page, subjectUrl, { maxDepth, delayMs }) => {
       try {
         await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
         await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
+        await dismissAds(page)
       } catch (error) {
         console.warn(`  ! could not open ${pageUrl}: ${error.message}`)
         continue
       }
-      for (const { href } of await collectLinks(page)) {
+      for (const { href, text } of await collectLinks(page)) {
         if (isPdfLink(href)) {
-          if (!pdfs.has(href)) pdfs.set(href, pdfFileName(href))
+          if (!pdfs.has(href)) pdfs.set(href, { name: pdfFileName(href), text })
           continue
         }
         const url = new URL(href)
@@ -146,10 +165,13 @@ export const run = async (config = readConfig()) => {
   const browser = await chromium.launch({ headless: config.headless, executablePath: config.chromiumPath })
   try {
     const context = await browser.newContext({ acceptDownloads: true })
+    if (config.blockAds) await blockAds(context)
     const page = await context.newPage()
+    await watchForAds(page)
     console.log(`Opening ${config.startUrl}`)
     await page.goto(config.startUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
     await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
+    await dismissAds(page)
 
     const subjects = await findSubjectLinks(page, config.searchTerm)
     if (!subjects.length) throw new Error(`No subject matching "${config.searchTerm}" was found on ${config.startUrl}`)
@@ -159,13 +181,13 @@ export const run = async (config = readConfig()) => {
     const allPdfs = new Map()
     for (const { href } of subjects) {
       console.log(`Crawling ${href}`)
-      for (const [pdfUrl, name] of await crawlSubject(page, href, config)) allPdfs.set(pdfUrl, name)
+      for (const [pdfUrl, link] of await crawlSubject(page, href, config)) allPdfs.set(pdfUrl, link)
     }
     console.log(`Found ${allPdfs.size} PDF link(s).`)
 
-    for (const [pdfUrl, name] of allPdfs) {
+    for (const [pdfUrl, { name, text }] of allPdfs) {
       if (config.maxFiles && summary.downloaded >= config.maxFiles) break
-      if (config.fileFilter && !config.fileFilter.test(name)) continue
+      if (config.fileFilter && !config.fileFilter.test(`${name} ${text}`)) continue
       const target = path.join(config.outDir, name)
       if (existsSync(target) || manifest.files[name]) {
         summary.skipped += 1
