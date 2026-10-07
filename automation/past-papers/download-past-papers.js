@@ -1,5 +1,6 @@
 // Opens the PapaCambridge IGCSE listing in a real browser, searches for a subject (default
-// "Accounting"), walks the matching subject pages and downloads every PDF one at a time.
+// "Accounting") and opens the subject's folders, and every subfolder inside them, until it reaches
+// the PDFs, downloading each folder's PDFs one at a time as soon as that folder is opened.
 // Advertisements are blocked, and any that still appear are closed (see ads.js).
 // Files are validated (HTTP 200, %PDF header, size limit), de-duplicated by name and recorded in
 // manifest.json so re-runs only fetch new papers.
@@ -9,7 +10,9 @@
 //   START_URL       listing page to search on             default PapaCambridge IGCSE listing
 //   OUT_DIR         where PDFs are written                default <repo>/past-papers/igcse/<subject-slug>
 //   MAX_FILES       stop after this many new downloads    default 0 (no limit)
-//   MAX_DEPTH       how many link levels below a subject  default 3
+//   MAX_DEPTH       how many subfolder levels to open     default 0 (no limit: keep opening
+//                   below a subject                       subfolders until there are none left)
+//   MAX_PAGES       safety cap on folders opened per run  default 5000
 //   DELAY_MS        pause between requests                default 1500
 //   FILE_FILTER     regex a PDF's file name or link text  default "" (all)
 //                   must match; "solved" is a shortcut for mark schemes / solved papers
@@ -74,7 +77,8 @@ const readConfig = () => {
     startUrl: (process.env.START_URL || 'https://pastpapers.papacambridge.com/papers/caie/igcse?theme=lightTheme').split('#')[0],
     outDir: path.resolve(repoRoot, process.env.OUT_DIR || path.join('past-papers', 'igcse', slugify(searchTerm))),
     maxFiles: Number(process.env.MAX_FILES || 0),
-    maxDepth: Number(process.env.MAX_DEPTH || 3),
+    maxDepth: Number(process.env.MAX_DEPTH || 0),
+    maxPages: Number(process.env.MAX_PAGES || 5000),
     delayMs: Number(process.env.DELAY_MS ?? 1500),
     fileFilter: parseFileFilter(process.env.FILE_FILTER),
     blockAds: process.env.BLOCK_ADS !== 'false',
@@ -114,41 +118,69 @@ const findSubjectLinks = async (page, searchTerm) => {
   })
 }
 
-// Breadth-first walk of the pages below a subject page, collecting PDF links and their link text.
-const crawlSubject = async (page, subjectUrl, { maxDepth, delayMs }) => {
-  const root = new URL(subjectUrl)
-  const prefix = root.pathname.replace(/\/$/, '')
-  const visited = new Set()
-  const pdfs = new Map()
-  let frontier = [subjectUrl]
+// Identifies a folder page regardless of #fragments, trailing slashes or the site's theme switch,
+// so the same folder is never opened twice.
+export const folderKey = (href) => {
+  const url = new URL(href)
+  url.hash = ''
+  url.searchParams.delete('theme')
+  url.searchParams.sort()
+  url.pathname = url.pathname.replace(/\/+$/, '') || '/'
+  return url.href
+}
 
-  for (let depth = 0; depth <= maxDepth && frontier.length; depth += 1) {
-    const next = []
-    for (const pageUrl of frontier) {
-      const key = pageUrl.split('#')[0]
-      if (visited.has(key)) continue
-      visited.add(key)
-      try {
-        await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 })
-        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
-        await dismissAds(page)
-      } catch (error) {
-        console.warn(`  ! could not open ${pageUrl}: ${error.message}`)
-        continue
-      }
-      for (const { href, text } of await collectLinks(page)) {
-        if (isPdfLink(href)) {
-          if (!pdfs.has(href)) pdfs.set(href, { name: pdfFileName(href), text })
-          continue
-        }
-        const url = new URL(href)
-        if (url.host === root.host && url.pathname.startsWith(prefix) && !visited.has(href.split('#')[0])) next.push(href)
-      }
-      await sleep(delayMs)
+// A subfolder is any link on the same site whose path continues the subject's path,
+// e.g. /papers/caie/igcse-mathematics-0444 → /papers/caie/igcse-mathematics-0444-2024-may-june.
+export const isSubfolderLink = (href, subjectUrl) => {
+  if (isPdfLink(href)) return false
+  const url = new URL(href)
+  const root = new URL(subjectUrl)
+  const prefix = root.pathname.replace(/\/+$/, '')
+  return url.host === root.host && url.pathname.startsWith(prefix) && folderKey(href) !== folderKey(subjectUrl)
+}
+
+// Depth-first walk of a subject: opens a folder, hands back the PDFs in it, then opens each of its
+// subfolders the same way, for as many levels as the site has (or MAX_DEPTH when set).
+// `visited` is shared across subjects so a folder is opened at most once per run.
+async function* walkFolders(page, subjectUrl, { maxDepth, maxPages, delayMs }, visited) {
+  const lastSegment = (href) => new URL(href).pathname.replace(/\/+$/, '').split('/').pop()
+  const stack = [{ url: subjectUrl, depth: 0, trail: [lastSegment(subjectUrl)] }]
+  while (stack.length) {
+    const { url, depth, trail } = stack.pop()
+    const key = folderKey(url)
+    if (visited.has(key)) continue
+    if (visited.size >= maxPages) {
+      console.warn(`  ! stopped after opening ${maxPages} folders (MAX_PAGES)`)
+      return
     }
-    frontier = next
+    visited.add(key)
+    try {
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+      await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {})
+      await dismissAds(page)
+    } catch (error) {
+      console.warn(`  ! could not open ${url}: ${error.message}`)
+      continue
+    }
+
+    const pdfs = new Map()
+    const subfolders = new Map()
+    for (const { href, text } of await collectLinks(page)) {
+      if (isPdfLink(href)) {
+        if (!pdfs.has(href)) pdfs.set(href, { url: href, name: pdfFileName(href), text })
+      } else if (isSubfolderLink(href, subjectUrl) && !visited.has(folderKey(href)) && !subfolders.has(folderKey(href))) {
+        subfolders.set(folderKey(href), href)
+      }
+    }
+    const folder = trail.join(' › ')
+    console.log(`${'  '.repeat(depth)}▸ ${folder}: ${pdfs.size} PDF(s), ${subfolders.size} subfolder(s)`)
+    await sleep(delayMs)
+
+    yield* pdfs.values()
+    if (maxDepth && depth >= maxDepth) continue
+    // Pushed in reverse so subfolders are opened in the order they appear on the page.
+    for (const child of [...subfolders.values()].reverse()) stack.push({ url: child, depth: depth + 1, trail: [...trail, lastSegment(child)] })
   }
-  return pdfs
 }
 
 const loadManifest = async (file) => {
@@ -178,43 +210,49 @@ export const run = async (config = readConfig()) => {
     console.log(`Found ${subjects.length} subject link(s) for "${config.searchTerm}":`)
     subjects.forEach(({ href, text }) => console.log(`  - ${text || href}`))
 
-    const allPdfs = new Map()
-    for (const { href } of subjects) {
-      console.log(`Crawling ${href}`)
-      for (const [pdfUrl, link] of await crawlSubject(page, href, config)) allPdfs.set(pdfUrl, link)
-    }
-    console.log(`Found ${allPdfs.size} PDF link(s).`)
-
-    for (const [pdfUrl, { name, text }] of allPdfs) {
-      if (config.maxFiles && summary.downloaded >= config.maxFiles) break
-      if (config.fileFilter && !config.fileFilter.test(`${name} ${text}`)) continue
-      const target = path.join(config.outDir, name)
-      if (existsSync(target) || manifest.files[name]) {
-        summary.skipped += 1
-        continue
-      }
-      try {
-        const response = await context.request.get(pdfUrl, { timeout: 120_000 })
-        if (!response.ok()) throw new Error(`HTTP ${response.status()}`)
-        const body = await response.body()
-        if (!isPdfBuffer(body)) throw new Error('response is not a PDF')
-        if (body.length > MAX_PDF_BYTES) throw new Error(`file is larger than ${MAX_PDF_BYTES} bytes`)
-        await writeFile(target, body)
-        manifest.files[name] = {
-          source: pdfUrl,
-          bytes: body.length,
-          sha256: createHash('sha256').update(body).digest('hex'),
-          downloadedAt: new Date().toISOString(),
+    const visited = new Set()
+    const seenPdfs = new Set()
+    let found = 0
+    subjects: for (const { href } of subjects) {
+      console.log(`Opening ${href}`)
+      for await (const { url: pdfUrl, name, text } of walkFolders(page, href, config, visited)) {
+        if (seenPdfs.has(pdfUrl)) continue
+        seenPdfs.add(pdfUrl)
+        found += 1
+        if (config.fileFilter && !config.fileFilter.test(`${name} ${text}`)) continue
+        const target = path.join(config.outDir, name)
+        if (existsSync(target) || manifest.files[name]) {
+          summary.skipped += 1
+          continue
         }
-        await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
-        summary.downloaded += 1
-        console.log(`  ✓ ${name} (${body.length} bytes)`)
-      } catch (error) {
-        summary.failed += 1
-        console.warn(`  ✗ ${name}: ${error.message}`)
+        try {
+          const response = await context.request.get(pdfUrl, { timeout: 120_000 })
+          if (!response.ok()) throw new Error(`HTTP ${response.status()}`)
+          const body = await response.body()
+          if (!isPdfBuffer(body)) throw new Error('response is not a PDF')
+          if (body.length > MAX_PDF_BYTES) throw new Error(`file is larger than ${MAX_PDF_BYTES} bytes`)
+          await writeFile(target, body)
+          manifest.files[name] = {
+            source: pdfUrl,
+            bytes: body.length,
+            sha256: createHash('sha256').update(body).digest('hex'),
+            downloadedAt: new Date().toISOString(),
+          }
+          await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
+          summary.downloaded += 1
+          console.log(`    ✓ ${name} (${body.length} bytes)`)
+        } catch (error) {
+          summary.failed += 1
+          console.warn(`    ✗ ${name}: ${error.message}`)
+        }
+        await sleep(config.delayMs)
+        if (config.maxFiles && summary.downloaded >= config.maxFiles) {
+          console.log(`Reached MAX_FILES=${config.maxFiles}; not opening further folders.`)
+          break subjects
+        }
       }
-      await sleep(config.delayMs)
     }
+    console.log(`Opened ${visited.size} folder(s) and found ${found} PDF link(s).`)
   } finally {
     await browser.close()
   }

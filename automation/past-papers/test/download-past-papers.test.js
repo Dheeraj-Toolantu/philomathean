@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
 import { isAdRequest } from '../ads.js'
-import { isPdfLink, matchesSearch, parseFileFilter, pdfFileName, run } from '../download-past-papers.js'
+import { folderKey, isPdfLink, isSubfolderLink, matchesSearch, parseFileFilter, pdfFileName, run } from '../download-past-papers.js'
 
 const pdf = (label) => Buffer.from(`%PDF-1.4\n% ${label}\n%%EOF\n`)
 
@@ -31,6 +31,7 @@ const pages = {
       <li><a href="/papers/caie/igcse-accounting-0452">Accounting (0452)</a></li>
       <li><a href="/papers/caie/igcse-mathematics-us-0444">Mathematics - US (0444)</a></li>
       <li><a href="/papers/caie/igcse-mathematics-0580">Mathematics (0580)</a></li>
+      <li><a href="/papers/caie/igcse-physics-0625?theme=lightTheme">Physics (0625)</a></li>
       <li><a href="/papers/caie/igcse-biology-0610">Biology (0610)</a></li>
     </ul>
     <script>
@@ -52,6 +53,19 @@ const pages = {
     <a href="/directories/CAIE/upload/0444_w24_ms_22.pdf">Mark scheme 22</a>
     <a href="/directories/CAIE/upload/0444_w24_er.pdf">Examiner report</a>`,
   '/papers/caie/igcse-mathematics-0580': `<a href="/directories/CAIE/upload/0580_w24_ms_12.pdf">Mark scheme</a>`,
+  // Physics 0625 nests its papers five folders deep: subject › year › session › paper › variant.
+  '/papers/caie/igcse-physics-0625': `<a href="/papers/caie/igcse-physics-0625-2023">2023</a>
+    <a href="/papers/caie/igcse-physics-0625-2022">2022</a>`,
+  '/papers/caie/igcse-physics-0625-2023': `<a href="/papers/caie/igcse-physics-0625">Back</a>
+    <a href="/papers/caie/igcse-physics-0625-2023/may-june">May June</a>`,
+  '/papers/caie/igcse-physics-0625-2023/may-june': `<a href="/papers/caie/igcse-physics-0625-2023/may-june/paper-4?theme=lightTheme">Paper 4</a>`,
+  '/papers/caie/igcse-physics-0625-2023/may-june/paper-4': `<a href="/papers/caie/igcse-physics-0625-2023/may-june/paper-4/variant-1/">Variant 1</a>
+    <a href="/papers/caie/igcse-physics-0625-2023/may-june/paper-4/variant-2">Variant 2</a>`,
+  '/papers/caie/igcse-physics-0625-2023/may-june/paper-4/variant-1': `<a href="/directories/CAIE/upload/0625_s23_ms_41.pdf">ms</a>
+    <a href="/papers/caie/igcse-physics-0625-2023/may-june">Up</a>`,
+  '/papers/caie/igcse-physics-0625-2023/may-june/paper-4/variant-2': `<a href="/directories/CAIE/upload/0625_s23_ms_42.pdf">ms</a>`,
+  '/papers/caie/igcse-physics-0625-2022': `<a href="/papers/caie/igcse-physics-0625-2022/oct-nov">Oct Nov</a>`,
+  '/papers/caie/igcse-physics-0625-2022/oct-nov': `<a href="/directories/CAIE/upload/0625_w22_ms_41.pdf">ms</a>`,
   '/papers/caie/igcse-biology-0610': `<a href="/directories/CAIE/upload/0610_s23_qp_11.pdf">bio</a>`,
 }
 
@@ -59,6 +73,11 @@ const startServer = () =>
   new Promise((resolve) => {
     const server = createServer((req, res) => {
       const url = new URL(req.url, 'http://localhost')
+      if (!url.pathname.endsWith('.pdf') && url.pathname !== '/download_file.php') {
+        server.opened = server.opened || []
+        server.opened.push(url.pathname.replace(/\/+$/, ''))
+      }
+      if (url.pathname.endsWith('/') && url.pathname.length > 1) url.pathname = url.pathname.replace(/\/+$/, '')
       if (url.pathname === '/ad-dismissed') { server.adsDismissed = (server.adsDismissed || 0) + 1; return res.end() }
       if (url.pathname === '/download_file.php') return res.end(pdf(url.searchParams.get('files')))
       if (url.pathname.endsWith('broken.pdf')) return res.end('<html>not a pdf</html>')
@@ -86,7 +105,8 @@ test('searches for the subject and downloads only its valid PDFs, once', async (
     startUrl: `http://localhost:${server.address().port}/papers/caie/igcse`,
     outDir,
     maxFiles: 0,
-    maxDepth: 3,
+    maxDepth: 0,
+    maxPages: 100,
     delayMs: 0,
     fileFilter: null,
     headless: true,
@@ -128,7 +148,8 @@ test('closes the vignette ad and downloads only the solved 0444 papers', async (
       outDir,
       blockAds: true,
       maxFiles: 0,
-      maxDepth: 3,
+      maxDepth: 0,
+    maxPages: 100,
       delayMs: 400,
       fileFilter: parseFileFilter('solved'),
       headless: true,
@@ -137,6 +158,65 @@ test('closes the vignette ad and downloads only the solved 0444 papers', async (
     assert.deepEqual(summary, { downloaded: 2, skipped: 0, failed: 0 })
     assert.deepEqual((await readdir(outDir)).sort(), ['0444_w24_ms_12.pdf', '0444_w24_ms_22.pdf', 'manifest.json'])
     assert.ok(server.adsDismissed >= 1, 'the dismiss button inside the ad was clicked')
+  } finally {
+    server.close()
+  }
+})
+
+test('folder helpers', () => {
+  const subject = 'https://x.test/papers/caie/igcse-physics-0625'
+  assert.equal(folderKey('https://x.test/a/b/?theme=lightTheme#google_vignette'), folderKey('https://x.test/a/b'))
+  assert.ok(isSubfolderLink('https://x.test/papers/caie/igcse-physics-0625-2023/may-june', subject))
+  assert.ok(!isSubfolderLink('https://x.test/papers/caie/igcse-physics-0625/?theme=lightTheme', subject))
+  assert.ok(!isSubfolderLink('https://x.test/papers/caie/igcse-biology-0610', subject))
+  assert.ok(!isSubfolderLink('https://x.test/directories/CAIE/upload/0625_s23_ms_41.pdf', subject))
+})
+
+const physicsConfig = async (server, overrides = {}) => ({
+  searchTerm: 'Physics 0625',
+  startUrl: `http://localhost:${server.address().port}/papers/caie/igcse`,
+  outDir: await mkdtemp(path.join(tmpdir(), 'past-papers-')),
+  blockAds: true,
+  maxFiles: 0,
+  maxDepth: 0,
+  maxPages: 100,
+  delayMs: 0,
+  fileFilter: parseFileFilter('solved'),
+  headless: true,
+  chromiumPath: process.env.CHROMIUM_PATH,
+  ...overrides,
+})
+
+test('keeps opening subfolders, however deep, until it reaches the PDFs', async () => {
+  const server = await startServer()
+  try {
+    const config = await physicsConfig(server)
+    const summary = await run(config)
+    assert.deepEqual(summary, { downloaded: 3, skipped: 0, failed: 0 })
+    assert.deepEqual((await readdir(config.outDir)).sort(), ['0625_s23_ms_41.pdf', '0625_s23_ms_42.pdf', '0625_w22_ms_41.pdf', 'manifest.json'])
+    const opened = server.opened.filter((page) => page.includes('physics'))
+    assert.equal(new Set(opened).size, opened.length, 'no folder is opened twice')
+  } finally {
+    server.close()
+  }
+})
+
+test('stops opening folders once MAX_FILES PDFs are downloaded', async () => {
+  const server = await startServer()
+  try {
+    const summary = await run(await physicsConfig(server, { maxFiles: 1 }))
+    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0 })
+    assert.ok(!server.opened.some((page) => page.includes('0625-2022')), 'the 2022 folders were never opened')
+  } finally {
+    server.close()
+  }
+})
+
+test('MAX_DEPTH still limits how deep it goes when set', async () => {
+  const server = await startServer()
+  try {
+    const summary = await run(await physicsConfig(server, { maxDepth: 2 }))
+    assert.deepEqual(summary, { downloaded: 1, skipped: 0, failed: 0 })
   } finally {
     server.close()
   }
