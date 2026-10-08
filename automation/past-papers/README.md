@@ -23,7 +23,36 @@ deep the site goes) until it reaches the PDFs. Each folder's PDFs are downloaded
 as that folder is opened, into `past-papers/igcse/<subject>/`. The log prints the folder tree as it goes,
 no folder is opened twice, and once `MAX_FILES` is reached no further folders are opened. Each file must return HTTP 200, start with `%PDF-` and be under 50 MB.
 Files already present (or listed in that folder's `manifest.json`) are skipped, so re-runs only add new papers.
-PDFs are saved exactly as downloaded.
+
+## Philomathean watermark and file names
+
+Every PDF is rebranded straight after it is downloaded (`rebrand-pdf.js`):
+
+- **PapaCambridge watermark removed**: the tiled background logo, the faint diagonal overlay, the
+  "PapaCambridge · papacambridge.com" footer, its hidden "Licensed for hosting on papacambridge.com /
+  Trace ID" text, and the PapaCambridge document properties and XMP metadata. The paper itself is untouched.
+- **Philomathean watermark added** to every page: the logo from [`logo.png`](../../logo.png) at the
+  repository root with "PHILOMATHEAN" beneath it, centred and faint, plus a small
+  "Philomathean Career Institute" footer. The PDF's title and author are set to Philomathean.
+- **Named after its year and content**:
+
+  | Downloaded as | Saved as |
+  | --- | --- |
+  | `0452_s23_qp_12.pdf` | `2023 May-June - Accounting 0452 - Question Paper - Paper 12.pdf` |
+  | `0452_w22_ms_21.pdf` | `2022 Oct-Nov - Accounting 0452 - Mark Scheme - Paper 21.pdf` |
+  | `0444_m24_er.pdf` | `2024 Feb-March - Mathematics 0444 - Examiner Report.pdf` |
+  | `0452_s26_gt.pdf` | `2026 May-June - Accounting 0452 - Grade Thresholds.pdf` |
+
+  The subject comes from the search term; the content type (question paper, mark scheme, examiner
+  report, grade thresholds, insert, specimen, …), session and year from the CAIE file name. Other names
+  fall back to the PDF's own title.
+
+`manifest.json` stays keyed by the original name and records the new one (`savedAs`), so re-runs still
+skip papers that were renamed. Set `REBRAND=false` to keep PDFs exactly as downloaded, or
+`WATERMARK_LOGO=path/to/logo.png` to stamp another logo.
+
+To rebrand a folder downloaded before this existed: `npm run rebrand -- ../../past-papers/igcse/accounting-0452`
+(add `--subject "Accounting 0452"` if the folder name isn't the search term).
 
 Search terms match on every word, so `Mathematics 0444` finds "Mathematics - US (0444)" but not 0580.
 `FILE_FILTER=solved` keeps only solved papers (CAIE mark schemes, `_ms_`, or links labelled solved / mark scheme / answers).
@@ -36,14 +65,14 @@ the script clicks or types, after every page load (`ads.js`). Set `BLOCK_ADS=fal
 
 Edit and commit `search-terms.txt`, then Actions → **Save past papers to repo** → **Run workflow**
 (`.github/workflows/save-past-papers.yml`). By default it downloads every PDF for every line of the file
-and commits them under `past-papers/igcse/<search-text>/` on the branch you run it from. Optional inputs:
+rebrands them (see above) and commits them under `past-papers/igcse/<search-text>/` on the branch you run it from. Optional inputs:
 a single search term (overrides the file), `solved` or a regex to filter PDFs, and a per-term file limit.
 
 ## Upload to the website from GitHub (recommended)
 
 Actions → **Upload past papers** → **Run workflow** (`.github/workflows/upload-past-papers.yml`). It
-downloads the subject's question papers on the runner, renames them with `prepare-for-upload.js`
-(`0452_s23_qp_12.pdf` → `IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf`) and uploads them, unchanged,
+downloads and rebrands the subject's question papers on the runner, renames them with `prepare-for-upload.js`
+(`0452_s23_qp_12.pdf` → `IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf`, found through `manifest.json`) and uploads them
 with `functions/scripts/bulk-upload-past-papers.cjs`. That script skips papers already on the site and
 PDFs whose printed paper code or session doesn't match the name. Nothing is committed to the repository.
 
@@ -65,6 +94,6 @@ SEARCH_TERM="Mathematics 0444" MAX_FILES=10 npm run download   # one subject onl
 ```
 
 Other settings: `START_URL`, `OUT_DIR` (with several terms, each gets a subfolder of it), `MAX_FILES` (per term), `MAX_DEPTH` (default 0 = keep opening subfolders until none are left), `MAX_PAGES` (safety cap, default 5000), `DELAY_MS` (default 1500),
-`FILE_FILTER` (`solved` or a regex on file name and link text), `BLOCK_ADS`, `HEADLESS=false` to watch the browser, `CHROMIUM_PATH`.
+`FILE_FILTER` (`solved` or a regex on file name and link text), `BLOCK_ADS`, `REBRAND`, `WATERMARK_LOGO`, `HEADLESS=false` to watch the browser, `CHROMIUM_PATH`.
 
-`npm test` runs the downloader against a local mock of the site.
+`npm test` runs the downloader against a local mock of the site and checks the rebranding on PDFs stamped the way PapaCambridge stamps them.

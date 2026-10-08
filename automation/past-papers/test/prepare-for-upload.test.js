@@ -31,3 +31,17 @@ test('leaves out mark schemes, examiner reports and specimen papers', async () =
   assert.deepEqual(skipped, ['0452_s23_ms_12.pdf'])
   assert.deepEqual(await readdir(staging), ['IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf'])
 })
+
+test('matches rebranded papers to their CAIE names through the manifest', async () => {
+  const source = await mkdtemp(path.join(tmpdir(), 'src-'))
+  const staging = path.join(await mkdtemp(path.join(tmpdir(), 'stage-')), 'out')
+  const renamed = '2023 May-June - Accounting 0452 - Question Paper - Paper 12.pdf'
+  await writeFile(path.join(source, renamed), '%PDF-1.4')
+  await writeFile(path.join(source, '2023 May-June - Accounting 0452 - Mark Scheme - Paper 12.pdf'), '%PDF-1.4')
+  await writeFile(path.join(source, 'manifest.json'), JSON.stringify({ files: {
+    '0452_s23_qp_12.pdf': { savedAs: renamed },
+    '0452_s23_ms_12.pdf': { savedAs: '2023 May-June - Accounting 0452 - Mark Scheme - Paper 12.pdf' },
+  } }))
+  const { copied } = await prepare(source, staging, { subject: 'Accounting' })
+  assert.deepEqual(copied, [{ from: renamed, to: 'IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf' }])
+})

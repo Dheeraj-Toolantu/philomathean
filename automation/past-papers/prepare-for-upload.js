@@ -1,11 +1,14 @@
 // Copies downloaded CAIE question papers (e.g. 0452_s23_qp_12.pdf) into a staging folder under the
 // names functions/scripts/bulk-upload-past-papers.cjs expects
 // (e.g. "IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf"). Files are copied unchanged.
+// Papers the downloader has already rebranded and renamed (e.g. "2023 May-June - Accounting 0452 -
+// Question Paper - Paper 12.pdf") are matched to their CAIE name through the folder's manifest.json.
 // Mark schemes, examiner reports, inserts and specimen papers are left out because the website
 // stores one PDF per paper code, session and year.
 //
 // Usage: node prepare-for-upload.js <download dir> <staging dir> [--pathway IGCSE] [--subject ACCOUNTING]
-import { copyFile, mkdir, readdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
+import { copyFile, mkdir, readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -20,12 +23,26 @@ export const uploadName = (fileName, { pathway = 'IGCSE', subject }) => {
   return `${pathway}-${subjectToken} - ${syllabus}-${variant} - ${SESSIONS[session.toLowerCase()]} 20${year}.pdf`
 }
 
+// Maps each renamed file back to the CAIE name it was downloaded as.
+const originalNames = async (sourceDir) => {
+  const manifestPath = path.join(sourceDir, 'manifest.json')
+  if (!existsSync(manifestPath)) return new Map()
+  let files = {}
+  try {
+    files = JSON.parse(await readFile(manifestPath, 'utf8')).files ?? {}
+  } catch {
+    console.warn(`${manifestPath} is not valid JSON; using the file names as they are.`)
+  }
+  return new Map(Object.entries(files).filter(([, entry]) => entry.savedAs).map(([original, entry]) => [entry.savedAs, original]))
+}
+
 export const prepare = async (sourceDir, stagingDir, options) => {
   await mkdir(stagingDir, { recursive: true })
+  const originals = await originalNames(sourceDir)
   const copied = []
   const skipped = []
   for (const fileName of (await readdir(sourceDir)).filter((name) => /\.pdf$/i.test(name)).sort()) {
-    const target = uploadName(fileName, options)
+    const target = uploadName(originals.get(fileName) ?? fileName, options)
     if (!target) {
       skipped.push(fileName)
       continue

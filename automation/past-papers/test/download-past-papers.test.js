@@ -6,9 +6,11 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
 import { isAdRequest } from '../ads.js'
+import { watermarkedPdf } from './fixtures.js'
 import { folderKey, isPdfLink, isSubfolderLink, matchesSearch, parseFileFilter, parseSearchTerms, pdfFileName, readSearchTerms, run } from '../download-past-papers.js'
 
 const pdf = (label) => Buffer.from(`%PDF-1.4\n% ${label}\n%%EOF\n`)
+const stampedPdf = await watermarkedPdf('mock')
 
 // Imitates Google's full-screen vignette ad: covers the page, disables scrolling, and can only be
 // closed with the dismiss button inside its iframe (which reports the click to the server).
@@ -79,9 +81,10 @@ const startServer = () =>
       }
       if (url.pathname.endsWith('/') && url.pathname.length > 1) url.pathname = url.pathname.replace(/\/+$/, '')
       if (url.pathname === '/ad-dismissed') { server.adsDismissed = (server.adsDismissed || 0) + 1; return res.end() }
-      if (url.pathname === '/download_file.php') return res.end(pdf(url.searchParams.get('files')))
+      const body = (label) => (server.stampedPdfs ? stampedPdf : pdf(label))
+      if (url.pathname === '/download_file.php') return res.end(body(url.searchParams.get('files')))
       if (url.pathname.endsWith('broken.pdf')) return res.end('<html>not a pdf</html>')
-      if (url.pathname.endsWith('.pdf')) return res.end(pdf(url.pathname))
+      if (url.pathname.endsWith('.pdf')) return res.end(body(url.pathname))
       const html = pages[url.pathname]
       res.writeHead(html ? 200 : 404, { 'content-type': 'text/html' })
       res.end(html || 'not found')
@@ -255,6 +258,27 @@ test('fails when none of the search terms match a subject', async () => {
   const server = await startServer()
   try {
     await assert.rejects(run({ ...(await physicsConfig(server)), searchTerms: ['Chemistry 0620'] }), /None of the search terms/)
+  } finally {
+    server.close()
+  }
+})
+
+test('rebrands each downloaded PDF and saves it under a name from its year and content', async () => {
+  const server = await startServer()
+  server.stampedPdfs = true
+  try {
+    const config = await physicsConfig(server, { searchTerm: 'Accounting', fileFilter: null, rebrand: true })
+    const first = await run(config)
+    assert.deepEqual(first, { downloaded: 2, skipped: 0, failed: 1, notFound: [] })
+    const saved = ['2023 May-June - Accounting 0452 - Mark Scheme - Paper 12.pdf', '2023 May-June - Accounting 0452 - Question Paper - Paper 12.pdf']
+    assert.deepEqual((await readdir(config.outDir)).sort(), [...saved, 'manifest.json'])
+    for (const name of saved) assert.doesNotMatch((await readFile(path.join(config.outDir, name))).toString('latin1'), /papacambridge/i)
+    const manifest = JSON.parse(await readFile(path.join(config.outDir, 'manifest.json'), 'utf8'))
+    assert.equal(manifest.files['0452_s23_qp_12.pdf'].savedAs, saved[1])
+    assert.equal(manifest.files['0452_s23_qp_12.pdf'].watermarkRemoved, true)
+
+    const second = await run(config)
+    assert.deepEqual(second, { downloaded: 0, skipped: 2, failed: 1, notFound: [] }, 'renamed papers are not downloaded again')
   } finally {
     server.close()
   }

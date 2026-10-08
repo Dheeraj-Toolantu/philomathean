@@ -3,12 +3,15 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Browser automation that searches PapaCambridge for a subject and downloads its past-paper PDFs one by one.",
+  "description": "Browser automation that searches PapaCambridge for a subject, downloads its past-paper PDFs one by one and rebrands them with the Philomathean watermark.",
   "scripts": {
     "download": "node download-past-papers.js",
+    "rebrand": "node rebrand-pdf.js",
     "test": "node --test test/*.test.js"
   },
   "dependencies": {
-    "playwright": "1.56.1"
+    "pdf-lib": "1.17.1",
+    "playwright": "1.56.1",
+    "pngjs": "7.0.0"
   }
 }
