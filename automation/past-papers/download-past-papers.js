@@ -4,6 +4,9 @@
 // Advertisements are blocked, and any that still appear are closed (see ads.js).
 // Files are validated (HTTP 200, %PDF header, size limit), de-duplicated by name and recorded in
 // manifest.json so re-runs only fetch new papers.
+// Each PDF is then rebranded (rebrand-pdf.js): the PapaCambridge watermark is removed, the
+// Philomathean logo watermark is added and the file is named after its year and content, e.g.
+// 0452_s23_ms_12.pdf → "2023 May-June - Accounting 0452 - Mark Scheme - Paper 12.pdf".
 //
 // Configuration (environment variables):
 //   SEARCH_TERMS_FILE  text file with one search term     default search-terms.txt next to
@@ -22,10 +25,14 @@
 //                   must match; "solved" is a shortcut for mark schemes / solved papers
 //   BLOCK_ADS       "false" to let ads load (they are     default true
 //                   still closed when they appear)
+//   REBRAND         "false" to keep PDFs exactly as        default true
+//                   downloaded, under their original names
+//   WATERMARK_LOGO  logo stamped on every page            default <repo>/logo.png
 //   HEADLESS        "false" to watch the browser          default true
 //   CHROMIUM_PATH   use a pre-installed Chromium binary   optional
 import { chromium } from 'playwright'
 import { blockAds, dismissAds, watchForAds } from './ads.js'
+import { DEFAULT_LOGO, loadWatermarkLogo, rebrandPdf } from './rebrand-pdf.js'
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -104,6 +111,8 @@ const readConfig = async () => {
     delayMs: Number(process.env.DELAY_MS ?? 1500),
     fileFilter: parseFileFilter(process.env.FILE_FILTER),
     blockAds: process.env.BLOCK_ADS !== 'false',
+    rebrand: process.env.REBRAND !== 'false',
+    logoPath: path.resolve(process.env.WATERMARK_LOGO || DEFAULT_LOGO),
     headless: process.env.HEADLESS !== 'false',
     chromiumPath: process.env.CHROMIUM_PATH || undefined,
   }
@@ -217,21 +226,35 @@ export const outDirFor = (config, term, termCount) => {
   return termCount > 1 ? path.join(config.outDir, slugify(term)) : config.outDir
 }
 
-const downloadPdf = async (context, { pdfUrl, name }, outDir, manifest) => {
+// Downloads one PDF and, unless rebranding is off, swaps the PapaCambridge watermark for the
+// Philomathean one and saves it under a name built from its year and content. The manifest stays
+// keyed by the original name so re-runs recognise papers already saved under their new names.
+const downloadPdf = async (context, { pdfUrl, name }, outDir, manifest, { rebrand, logoPath, term }) => {
   const response = await context.request.get(pdfUrl, { timeout: 120_000 })
   if (!response.ok()) throw new Error(`HTTP ${response.status()}`)
   const body = await response.body()
   if (!isPdfBuffer(body)) throw new Error('response is not a PDF')
   if (body.length > MAX_PDF_BYTES) throw new Error(`file is larger than ${MAX_PDF_BYTES} bytes`)
-  await writeFile(path.join(outDir, name), body)
-  manifest.files[name] = {
+  const entry = {
     source: pdfUrl,
     bytes: body.length,
     sha256: createHash('sha256').update(body).digest('hex'),
     downloadedAt: new Date().toISOString(),
   }
+  let saved = { bytes: body, name }
+  if (rebrand) {
+    try {
+      saved = await rebrandPdf(body, { fileName: name, subject: term, logoPath })
+    } catch (error) {
+      throw new Error(`could not rebrand: ${error.message}`)
+    }
+    Object.assign(entry, { savedAs: saved.name, watermarkRemoved: saved.removed > 0, savedBytes: saved.bytes.length })
+    if (!saved.removed) console.warn(`    ! ${name}: no PapaCambridge watermark found; added the Philomathean one anyway`)
+  }
+  await writeFile(path.join(outDir, saved.name), saved.bytes)
+  manifest.files[name] = entry
   await writeFile(path.join(outDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
-  return body.length
+  return { bytes: saved.bytes.length, savedAs: saved.name }
 }
 
 // Searches for one term, then opens every folder and subfolder of each matching subject and
@@ -268,9 +291,9 @@ const searchAndDownload = async (context, page, term, outDir, config) => {
         continue
       }
       try {
-        const bytes = await downloadPdf(context, { pdfUrl, name }, outDir, manifest)
+        const { bytes, savedAs } = await downloadPdf(context, { pdfUrl, name }, outDir, manifest, { ...config, term })
         summary.downloaded += 1
-        console.log(`    ✓ ${name} (${bytes} bytes)`)
+        console.log(`    ✓ ${name}${savedAs === name ? '' : ` → ${savedAs}`} (${bytes} bytes)`)
       } catch (error) {
         summary.failed += 1
         console.warn(`    ✗ ${name}: ${error.message}`)
@@ -293,6 +316,8 @@ export const run = async (config) => {
   const totals = { downloaded: 0, skipped: 0, failed: 0, notFound: [] }
   const errored = []
   console.log(`Search terms (${terms.length}): ${terms.map((term) => `"${term}"`).join(', ')}`)
+  // Fails before opening the browser when the watermark logo is missing or unreadable.
+  if (config.rebrand) await loadWatermarkLogo(config.logoPath ?? DEFAULT_LOGO)
 
   const browser = await chromium.launch({ headless: config.headless, executablePath: config.chromiumPath })
   try {

@@ -1,6 +1,7 @@
 # Reads automation/past-papers/search-terms.txt (one subject per line), searches PapaCambridge for
 # each, opens every folder and subfolder of the results, downloads the PDFs (closing any ads that
-# appear) and commits them, unchanged, under past-papers/igcse/<search-text>/ on the branch the
+# appear), swaps the PapaCambridge watermark for the Philomathean logo watermark, names each PDF
+# after its year and content (rebrand-pdf.js) and commits them under past-papers/igcse/<search-text>/ on the branch the
 # workflow was started on. To change what is downloaded, edit search-terms.txt and run this again.
 # Start it from Actions → "Save past papers to repo" → Run workflow.
 name: Save past papers to repo
