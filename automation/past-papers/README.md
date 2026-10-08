@@ -31,6 +31,10 @@ Every PDF is rebranded straight after it is downloaded (`rebrand-pdf.js`):
 - **PapaCambridge watermark removed**: the tiled background logo, the faint diagonal overlay, the
   "PapaCambridge · papacambridge.com" footer, its hidden "Licensed for hosting on papacambridge.com /
   Trace ID" text, and the PapaCambridge document properties and XMP metadata. The paper itself is untouched.
+- **"www.PapaCambridge.com" corner ribbon removed** (older papers): the ribbon image or stamp in the top
+  corner of the first pages, the ribbon's "www.PapaCambridge.com" text, and the link to papacambridge.com
+  over it. Only an image touching both the top and a side edge while covering a small part of the page
+  counts as a ribbon, so the paper's own logos, diagrams and full-page scans are kept.
 - **Philomathean watermark added** to every page: the logo from [`logo.png`](../../logo.png) at the
   repository root with "PHILOMATHEAN" beneath it, centred and faint, plus a small
   "Philomathean Career Institute" footer. The PDF's title and author are set to Philomathean.
