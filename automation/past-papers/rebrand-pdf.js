@@ -1,7 +1,8 @@
 // Rebrands a PDF downloaded from PapaCambridge: removes the PapaCambridge watermark (the tiled
 // background logo, the faint diagonal overlay, the footer and its hidden "Licensed for hosting on
 // papacambridge.com" trace text, the "www.PapaCambridge.com" corner ribbon on older papers and its
-// link, and the PapaCambridge document properties and XMP metadata), then
+// link, the large diagonal red "PapaCambridge" logo stamped across the page, and the PapaCambridge
+// document properties and XMP metadata), then
 // stamps every page with the Philomathean watermark: the logo (<repo>/logo.png) and the name
 // "PHILOMATHEAN", centred and faint, plus a small "Philomathean Career Institute" footer.
 //
@@ -15,7 +16,7 @@ import { existsSync } from 'node:fs'
 import { readdir, readFile, rename, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRawStream, StandardFonts, decodePDFRawStream, degrees, rgb } from 'pdf-lib'
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRawStream, PDFRef, StandardFonts, decodePDFRawStream, degrees, rgb } from 'pdf-lib'
 import { PNG } from 'pngjs'
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -248,23 +249,52 @@ export const isCornerRibbon = (bounds, [px0, py0, px1, py1], rotation = 0) => {
   return small && top >= height - tolerance && (right >= width - tolerance || left <= tolerance)
 }
 
-// Removes the "www.PapaCambridge.com" corner ribbon of older papers, however it was drawn:
-// - an image or form placed in a top corner, touching both edges;
+// True when a matrix turns what it draws by a slant (not upright or a quarter turn), the way
+// watermarks are laid diagonally across a page. Exam content is drawn upright.
+export const isSlanted = (matrix) => {
+  const angle = Math.abs((Math.atan2(matrix[1], matrix[0]) * 180) / Math.PI) % 90
+  return Math.min(angle, 90 - angle) > 10
+}
+
+// How far a colour is from grey: 0 for black, white and greys, up to 1 for pure red.
+const colourfulness = (rgbValues) => Math.max(...rgbValues) - Math.min(...rgbValues)
+const toRgb = (numbers) => {
+  if (numbers.length === 1) return [numbers[0], numbers[0], numbers[0]]
+  if (numbers.length === 3) return numbers
+  if (numbers.length === 4) return numbers.slice(0, 3).map((value) => (1 - value) * (1 - numbers[3]))
+  return [0, 0, 0]
+}
+
+// Removes PapaCambridge marks drawn in a content stream:
+// - the "www.PapaCambridge.com" corner ribbon of older papers: an image or form placed in a top
+//   corner, touching both edges;
+// - the large diagonal "PapaCambridge" logo stamped across the middle of a page: anything coloured
+//   and see-through (opacity below 95%) drawn at a slant — paths are left unpainted, text blanked,
+//   and slanted see-through images or forms removed. Exam content is drawn upright, opaque or in
+//   black and grey, so it is never matched;
 // - a form whose own text mentions PapaCambridge;
-// - text mentioning PapaCambridge: its q … Q block (with the ribbon shape behind it) is removed when
-//   that block draws no other text, otherwise only the PapaCambridge words are blanked.
-// `xObjects` maps resource names to { subtype, bbox, matrix, mentionsPapaCambridge }.
-export const stripRibbonFromContent = (content, { xObjects = {}, pageBox = [0, 0, 595.32, 841.92], rotation = 0 } = {}) => {
+// - text mentioning PapaCambridge: its q … Q block (with the ribbon or logo shape behind it) is removed
+//   when that block draws no other text, otherwise only the PapaCambridge words are blanked.
+// `xObjects` maps resource names to { subtype, bbox, matrix, transparent, mentionsPapaCambridge };
+// `extGStates` maps graphics-state names to { fillAlpha, strokeAlpha }. Pass `pageBox: null` for a
+// form's own content, where the corner check does not apply.
+export const stripRibbonFromContent = (content, {
+  xObjects = {}, extGStates = {}, pageBox = [0, 0, 595.32, 841.92], rotation = 0, matrix = [1, 0, 0, 1, 0, 0],
+} = {}) => {
   const edits = []
   const stack = []
-  let ctm = [1, 0, 0, 1, 0, 0]
+  let state = { ctm: matrix, fillAlpha: 1, strokeAlpha: 1, fill: [0, 0, 0], stroke: [0, 0, 0] }
+  let textMatrix = [1, 0, 0, 1, 0, 0]
   let operands = []
+  const box = pageBox ?? [0, 0, 595.32, 841.92]
+  const pageSize = Math.min(box[2] - box[0], box[3] - box[1])
+  const stamped = (ctm, alpha, colour) => isSlanted(ctm) && alpha < 0.95 && colourfulness(colour) > 0.15
   const textOperands = () => operands.filter((token) => token.type === 'string')
   const markText = (strings) => {
     if (!strings.length) return
     const text = strings.map((token) => token.value).join('')
     const block = stack.at(-1)
-    if (mentionsPapaCambridge(text)) {
+    if (mentionsPapaCambridge(text) || stamped(multiply(textMatrix, state.ctm), state.fillAlpha, state.fill)) {
       if (block) block.watermarkText = true
       const array = [operands.find((token) => token.type === 'arrayOpen'), operands.findLast((token) => token.type === 'arrayClose')]
       if (array[0] && array[1]) edits.push({ start: array[0].start, end: array[1].end, text: '[]' })
@@ -279,29 +309,68 @@ export const stripRibbonFromContent = (content, { xObjects = {}, pageBox = [0, 0
       continue
     }
     const numbers = operands.filter((item) => item.type === 'number').map((item) => item.value)
+    const lastName = operands.findLast((item) => item.type === 'name')?.value
     switch (token.value) {
       case 'q':
-        stack.push({ start: token.start, ctm, watermarkText: false, otherText: false })
+        stack.push({ start: token.start, state, watermarkText: false, otherText: false })
         break
       case 'Q': {
         const block = stack.pop()
         if (!block) break
-        ctm = block.ctm
+        state = block.state
         if (block.watermarkText && !block.otherText) edits.push({ start: block.start, end: token.end, text: '' })
         if (block.otherText && stack.length) stack.at(-1).otherText = true
         break
       }
       case 'cm':
-        if (numbers.length === 6) ctm = multiply(numbers, ctm)
+        if (numbers.length === 6) state = { ...state, ctm: multiply(numbers, state.ctm) }
         break
+      case 'gs': {
+        const gs = extGStates[lastName]
+        if (gs) state = { ...state, fillAlpha: gs.fillAlpha ?? state.fillAlpha, strokeAlpha: gs.strokeAlpha ?? state.strokeAlpha }
+        break
+      }
+      case 'g': case 'rg': case 'k': case 'sc': case 'scn':
+        state = { ...state, fill: toRgb(numbers) }
+        break
+      case 'G': case 'RG': case 'K': case 'SC': case 'SCN':
+        state = { ...state, stroke: toRgb(numbers) }
+        break
+      case 'cs':
+        state = { ...state, fill: [0, 0, 0] }
+        break
+      case 'CS':
+        state = { ...state, stroke: [0, 0, 0] }
+        break
+      case 'BT':
+        textMatrix = [1, 0, 0, 1, 0, 0]
+        break
+      case 'Tm':
+        if (numbers.length === 6) textMatrix = numbers
+        break
+      case 'f': case 'F': case 'f*': case 'B': case 'B*': case 'b': case 'b*': case 'S': case 's': {
+        const fills = token.value !== 'S' && token.value !== 's'
+        const strokes = /^[BbSs]/.test(token.value)
+        const stampFill = fills && stamped(state.ctm, state.fillAlpha, state.fill)
+        const stampStroke = strokes && stamped(state.ctm, state.strokeAlpha, state.stroke)
+        // The path is still ended ("n") so the operators around it stay valid.
+        if ((stampFill || !fills) && (stampStroke || !strokes)) edits.push({ start: token.start, end: token.end, text: 'n' })
+        break
+      }
       case 'Do': {
         const name = operands.at(-1)?.type === 'name' ? operands.at(-1).value : null
         const xObject = name && xObjects[name]
         if (!xObject) break
-        const bounds = xObject.subtype === 'Form'
-          ? boundsOf(multiply(xObject.matrix ?? [1, 0, 0, 1, 0, 0], ctm), xObject.bbox ?? [0, 0, 1, 1])
-          : boundsOf(ctm, [0, 0, 1, 1])
-        if (xObject.mentionsPapaCambridge || isCornerRibbon(bounds, pageBox, rotation)) edits.push({ start: operands.at(-1).start, end: token.end, text: '', xObject: name })
+        const placed = xObject.subtype === 'Form' ? multiply(xObject.matrix ?? [1, 0, 0, 1, 0, 0], state.ctm) : state.ctm
+        const bounds = boundsOf(placed, xObject.subtype === 'Form' ? xObject.bbox ?? [0, 0, 1, 1] : [0, 0, 1, 1])
+        const [width, height] = xObject.subtype === 'Form' && xObject.bbox
+          ? [Math.abs(xObject.bbox[2] - xObject.bbox[0]), Math.abs(xObject.bbox[3] - xObject.bbox[1])]
+          : [1, 1]
+        const longestSide = Math.max(Math.hypot(placed[0], placed[1]) * width, Math.hypot(placed[2], placed[3]) * height)
+        const diagonalStamp = isSlanted(placed) && longestSide >= pageSize * 0.2 && (state.fillAlpha < 0.95 || xObject.transparent)
+        if (xObject.mentionsPapaCambridge || diagonalStamp || (pageBox && isCornerRibbon(bounds, pageBox, rotation))) {
+          edits.push({ start: operands.at(-1).start, end: token.end, text: '', xObject: name })
+        }
         break
       }
       case 'Tj':
@@ -348,17 +417,24 @@ const dropUnusedWatermarkResources = (doc, page, content, removedXObjects = []) 
   }
 }
 
-// Describes the page's images and forms for stripRibbonFromContent.
-const pageXObjects = (doc, page) => {
-  const dict = page.node.Resources()?.lookupMaybe(PDFName.of('XObject'), PDFDict)
-  const result = {}
-  if (!dict) return result
-  for (const [key, ref] of dict.entries()) {
+// Describes the images, forms and graphics states of a resource dictionary for
+// stripRibbonFromContent.
+const describeResources = (doc, resources) => {
+  const xObjects = {}
+  const extGStates = {}
+  const xObjectDict = resources?.lookupMaybe(PDFName.of('XObject'), PDFDict)
+  for (const [key, ref] of xObjectDict?.entries() ?? []) {
     const stream = doc.context.lookup(ref)
     if (!(stream instanceof PDFRawStream)) continue
     const subtype = stream.dict.lookup(PDFName.of('Subtype'))?.decodeText?.()
     const numbers = (name) => stream.dict.lookupMaybe(PDFName.of(name), PDFArray)?.asArray().map((item) => doc.context.lookup(item)?.asNumber?.() ?? 0)
-    const entry = { subtype, bbox: numbers('BBox'), matrix: numbers('Matrix') }
+    const entry = {
+      subtype,
+      ref,
+      bbox: numbers('BBox'),
+      matrix: numbers('Matrix'),
+      transparent: stream.dict.has(PDFName.of(subtype === 'Form' ? 'Group' : 'SMask')),
+    }
     if (subtype === 'Form') {
       try {
         const formContent = decodeStream(stream).toString('latin1')
@@ -367,9 +443,45 @@ const pageXObjects = (doc, page) => {
         entry.mentionsPapaCambridge = false
       }
     }
-    result[key.decodeText()] = entry
+    xObjects[key.decodeText()] = entry
   }
-  return result
+  const gsDict = resources?.lookupMaybe(PDFName.of('ExtGState'), PDFDict)
+  for (const [key, ref] of gsDict?.entries() ?? []) {
+    const gs = doc.context.lookup(ref)
+    if (!(gs instanceof PDFDict)) continue
+    const alpha = (name) => doc.context.lookup(gs.get(PDFName.of(name)))?.asNumber?.()
+    extGStates[key.decodeText()] = { fillAlpha: alpha('ca'), strokeAlpha: alpha('CA') }
+  }
+  return { xObjects, extGStates }
+}
+
+// Runs the same clean-up inside the page's forms, where the diagonal logo may be drawn at a slant
+// within the form itself. Each form is cleaned once, even when several pages share it.
+const cleanForms = (doc, xObjects, pageResources, cleaned) => {
+  let removed = 0
+  for (const entry of Object.values(xObjects)) {
+    if (entry.subtype !== 'Form' || cleaned.has(entry.ref)) continue
+    cleaned.add(entry.ref)
+    const stream = doc.context.lookup(entry.ref)
+    let content
+    try {
+      content = decodeStream(stream).toString('latin1')
+    } catch {
+      continue
+    }
+    const formResources = stream.dict.lookupMaybe(PDFName.of('Resources'), PDFDict) ?? pageResources
+    const described = describeResources(doc, formResources)
+    removed += cleanForms(doc, described.xObjects, formResources, cleaned)
+    const result = stripRibbonFromContent(content, { ...described, pageBox: null, matrix: entry.matrix ?? [1, 0, 0, 1, 0, 0] })
+    if (!result.removed || !(entry.ref instanceof PDFRef)) continue
+    removed += result.removed
+    const replacement = doc.context.flateStream(Buffer.from(result.content, 'latin1'))
+    for (const [key, value] of stream.dict.entries()) {
+      if (!['Length', 'Filter', 'DecodeParms'].includes(key.decodeText())) replacement.dict.set(key, value)
+    }
+    doc.context.assign(entry.ref, replacement)
+  }
+  return removed
 }
 
 // Removes links to papacambridge.com (the ribbon is usually clickable) and stamp-style annotations
@@ -392,13 +504,16 @@ const removePapaCambridgeAnnotations = (doc, page) => {
 
 const removeWatermark = (doc) => {
   let removed = 0
+  const cleanedForms = new Set()
   for (const page of doc.getPages()) {
     removed += removePapaCambridgeAnnotations(doc, page)
     const original = pageContent(doc, page)
     const overlay = stripWatermarkFromContent(original)
     const { x, y, width, height } = page.getCropBox()
+    const resources = describeResources(doc, page.node.Resources())
+    removed += cleanForms(doc, resources.xObjects, page.node.Resources(), cleanedForms)
     const ribbon = stripRibbonFromContent(overlay.content, {
-      xObjects: pageXObjects(doc, page),
+      ...resources,
       pageBox: [x, y, x + width, y + height],
       rotation: page.getRotation().angle,
     })

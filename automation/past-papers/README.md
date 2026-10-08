@@ -35,6 +35,10 @@ Every PDF is rebranded straight after it is downloaded (`rebrand-pdf.js`):
   corner of the first pages, the ribbon's "www.PapaCambridge.com" text, and the link to papacambridge.com
   over it. Only an image touching both the top and a side edge while covering a small part of the page
   counts as a ribbon, so the paper's own logos, diagrams and full-page scans are kept.
+- **Diagonal red "PapaCambridge" logo removed**: the large logo stamped at a slant across the middle of
+  a page (often over graphs), whether drawn as shapes, as text, or as an image or form, also inside forms.
+  Only drawing that is coloured, see-through and slanted is removed; exam content is upright, opaque or
+  black and grey, so graphs, grids, highlights and diagrams are kept.
 - **Philomathean watermark added** to every page: the logo from [`logo.png`](../../logo.png) at the
   repository root with "PHILOMATHEAN" beneath it, centred and faint, plus a small
   "Philomathean Career Institute" footer. The PDF's title and author are set to Philomathean.
