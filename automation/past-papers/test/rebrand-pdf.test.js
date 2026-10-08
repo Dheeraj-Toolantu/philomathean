@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
 import { PDFArray, PDFDocument, PDFName, PDFRawStream, decodePDFRawStream } from 'pdf-lib'
-import { brandedFileName, graphicsStateBlocks, rebrandFolder, rebrandPdf, stripWatermarkFromContent, subjectLabel } from '../rebrand-pdf.js'
-import { watermarkedPdf } from './fixtures.js'
+import { brandedFileName, graphicsStateBlocks, isCornerRibbon, rebrandFolder, rebrandPdf, stripRibbonFromContent, stripWatermarkFromContent, subjectLabel } from '../rebrand-pdf.js'
+import { ribbonPdf, watermarkedPdf } from './fixtures.js'
 
 const pageText = (doc, page) => {
   const contents = page.node.Contents()
@@ -64,3 +64,54 @@ test('rebrands a folder downloaded earlier and records the new names in its mani
   assert.equal(manifest.files['0452_s23_qp_12.pdf'].savedAs, '2023 May-June - Accounting 0452 - Question Paper - Paper 12.pdf')
   assert.deepEqual(await rebrandFolder(folder, { subject: 'accounting 0452' }), [], 'a second run changes nothing')
 })
+
+test('finds corner ribbons only where they touch the top corner of the page as viewed', () => {
+  const page = [0, 0, 595, 842]
+  assert.ok(isCornerRibbon([445, 632, 605, 852], page), 'top right, running off the edges')
+  assert.ok(isCornerRibbon([-10, 640, 150, 842], page), 'top left')
+  assert.ok(!isCornerRibbon([380, 760, 530, 800], page), 'a logo inside the margins')
+  assert.ok(!isCornerRibbon([0, 0, 595, 842], page), 'a full-page scan')
+  assert.ok(!isCornerRibbon([445, 0, 595, 200], page), 'bottom right')
+  // On a page shown turned by 90°, the viewed top-right corner is the stored top-left one.
+  assert.ok(isCornerRibbon([-10, 632, 150, 842], page, 90))
+  assert.ok(!isCornerRibbon([445, 632, 605, 852], page, 90))
+})
+
+test('strips ribbon images, PapaCambridge forms and the ribbon text from a content stream', () => {
+  const xObjects = { Rib: { subtype: 'Image' }, Logo: { subtype: 'Image' }, Stamp: { subtype: 'Form', bbox: [0, 0, 10, 10], mentionsPapaCambridge: true } }
+  const content = [
+    'q 160 0 0 220 445 632 cm /Rib Do Q',
+    'q 150 0 0 40 380 760 cm /Logo Do Q',
+    'q 1 0 0 1 100 100 cm /Stamp Do Q',
+    'q 0.7 -0.7 0.7 0.7 425 822 cm 0.6 g 0 -8 230 30 re f BT /F1 14 Tf (www.PapaCambridge\\056com) Tj ET Q',
+    'BT /F1 12 Tf 10 10 Td (Paper 2) Tj 0 0 (papacambridge) " [(Pap) 5 (aCambridge)] TJ ET',
+  ].join('\n')
+  const result = stripRibbonFromContent(content, { xObjects, pageBox: [0, 0, 595, 842] })
+  assert.equal(result.content, [
+    'q 160 0 0 220 445 632 cm  Q',
+    'q 150 0 0 40 380 760 cm /Logo Do Q',
+    'q 1 0 0 1 100 100 cm  Q',
+    '',
+    'BT /F1 12 Tf 10 10 Td (Paper 2) Tj 0 0 () " [] TJ ET',
+  ].join('\n'))
+  assert.deepEqual(result.xObjects.sort(), ['Rib', 'Stamp'])
+})
+
+for (const rotate of [0, 90]) {
+  test(`removes the www.PapaCambridge.com corner ribbon and its link${rotate ? ' on a turned page' : ''}`, async () => {
+    const result = await rebrandPdf(await ribbonPdf({ rotate }), { fileName: '0607_s17_qp_21.pdf', subject: 'International Mathematics 0607' })
+    assert.equal(result.name, '2017 May-June - International Mathematics 0607 - Question Paper - Paper 21.pdf')
+    assert.equal(result.removed, 3, 'the ribbon image, the ribbon text and the link')
+    const doc = await PDFDocument.load(result.bytes)
+    const [page] = doc.getPages()
+    const text = pageText(doc, page)
+    assert.doesNotMatch(text, /papacambridge|\/Ribbon Do/i)
+    assert.match(text, /\/Logo Do/, "the paper's own logo is kept")
+    assert.match(text, /\/Scan Do/, 'the full-page image is kept')
+    assert.match(text, /\(CANDIDATE NUMBER\) Tj/)
+    assert.match(text, /\[\(Cambridge International \) -20 \(Examinations\)\] TJ/)
+    assert.ok(!page.node.Resources().lookup(PDFName.of('XObject')).has(PDFName.of('Ribbon')), 'the ribbon image is dropped from the file')
+    const uris = page.node.Annots().asArray().map((ref) => doc.context.lookup(ref).lookup(PDFName.of('A')).lookup(PDFName.of('URI')).decodeText())
+    assert.deepEqual(uris, ['https://www.cambridgeinternational.org'])
+  })
+}
