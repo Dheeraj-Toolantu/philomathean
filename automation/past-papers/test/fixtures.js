@@ -148,3 +148,52 @@ BT /F1 12 Tf 72 360 Td [(Cambridge International ) -20 (Examinations)] TJ ET
   page.node.set(PDFName.of('Annots'), context.obj([context.register(link), context.register(keepLink)]))
   return Buffer.from(await doc.save())
 }
+
+// A mark-scheme graph page with the large diagonal red "PapaCambridge" logo stamped across it,
+// drawn in one of the ways such stamps are made:
+//   'paths' — letter outlines and the logo mark as red and blue see-through paths at a slant;
+//   'text'  — slanted see-through red text in a font whose codes don't spell anything readable;
+//   'form'  — the logo as a see-through form drawn at a slant;
+//   'inner' — a form placed upright whose own content draws the slanted see-through logo.
+// The graph's own drawing must survive: the black grid and curve, a red upright highlight that is
+// see-through, a solid red line, a slanted solid black arrow and the axis labels.
+export const stampPdf = async (style = 'paths') => {
+  const doc = await PDFDocument.create()
+  const font = await doc.embedFont(StandardFonts.HelveticaBold)
+  const page = doc.addPage([595.32, 841.92])
+  const { context } = doc
+  const slant = '0.574 0.819 -0.819 0.574 200 250 cm'
+  const logo = `0.86 0.2 0.2 rg 0 0 m 40 0 l 40 60 l 0 60 l h f
+0.15 0.2 0.45 rg 50 0 m 300 0 l 300 50 l 50 50 l h f
+0.86 0.2 0.2 rg 310 0 m 480 0 l 480 50 l 310 50 l h f`
+  const graph = `q 0 G 0.3 w 72 300 m 520 300 l S 72 300 m 72 700 l S
+1 0 0 1 0 0 cm 0 0 0 RG 1 w 80 320 m 200 690 300 310 500 650 c S Q
+q /Half gs 1 0.85 0.85 rg 100 400 80 40 re f Q
+q 0.9 0.1 0.1 RG 2 w 100 330 m 300 330 l S Q
+q 0.707 0.707 -0.707 0.707 400 400 cm 0 g 0 0 m 60 0 l 50 5 l h f Q
+BT /F1 10 Tf 60 290 Td (0) Tj 100 0 Td (1) Tj ET
+`
+  let stamp
+  const xObjects = {}
+  if (style === 'paths') {
+    stamp = `q /Wm gs ${slant}\n${logo}\nQ`
+  } else if (style === 'text') {
+    stamp = `q /Wm gs 0.86 0.2 0.2 rg BT /F1 60 Tf 0.574 0.819 -0.819 0.574 200 250 Tm (\\001\\002\\001\\003\\004\\005) Tj ET Q`
+  } else {
+    const inner = style === 'inner' ? `q /Wm gs ${slant}\n${logo}\nQ` : logo
+    const form = context.register(context.flateStream(inner, {
+      Type: 'XObject', Subtype: 'Form', BBox: style === 'inner' ? [0, 0, 595.32, 841.92] : [0, 0, 480, 60],
+      Resources: { ExtGState: { Wm: { ca: 0.6 } } },
+      ...(style === 'form' ? { Group: { S: 'Transparency' } } : {}),
+    }))
+    xObjects.Stamp = form
+    stamp = style === 'inner' ? 'q /Stamp Do Q' : `q /Wm gs ${slant} /Stamp Do Q`
+  }
+  page.node.set(PDFName.of('Resources'), context.obj({
+    Font: { F1: font.ref },
+    ExtGState: { Wm: { ca: 0.6 }, Half: { ca: 0.5 } },
+    XObject: xObjects,
+  }))
+  page.node.set(PDFName.of('Contents'), context.register(context.flateStream(`${graph}${stamp}\n`)))
+  return Buffer.from(await doc.save())
+}

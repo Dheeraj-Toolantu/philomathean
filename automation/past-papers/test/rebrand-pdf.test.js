@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
 import { PDFArray, PDFDocument, PDFName, PDFRawStream, decodePDFRawStream } from 'pdf-lib'
-import { brandedFileName, graphicsStateBlocks, isCornerRibbon, rebrandFolder, rebrandPdf, stripRibbonFromContent, stripWatermarkFromContent, subjectLabel } from '../rebrand-pdf.js'
-import { ribbonPdf, watermarkedPdf } from './fixtures.js'
+import { brandedFileName, graphicsStateBlocks, isCornerRibbon, isSlanted, rebrandFolder, rebrandPdf, stripRibbonFromContent, stripWatermarkFromContent, subjectLabel } from '../rebrand-pdf.js'
+import { ribbonPdf, stampPdf, watermarkedPdf } from './fixtures.js'
 
 const pageText = (doc, page) => {
   const contents = page.node.Contents()
@@ -38,7 +38,7 @@ test('removes only the PapaCambridge overlay blocks from a content stream', () =
 test('swaps the PapaCambridge watermark and properties for Philomathean ones', async () => {
   const result = await rebrandPdf(await watermarkedPdf('0452/12'), { fileName: '0452_s23_qp_12.pdf', subject: 'Accounting 0452' })
   assert.equal(result.name, '2023 May-June - Accounting 0452 - Question Paper - Paper 12.pdf')
-  assert.equal(result.removed, 2)
+  assert.equal(result.removed, 3, 'the two overlay blocks and the words inside the tiled logo form')
   const doc = await PDFDocument.load(result.bytes)
   const [page] = doc.getPages()
   const text = pageText(doc, page)
@@ -113,5 +113,46 @@ for (const rotate of [0, 90]) {
     assert.ok(!page.node.Resources().lookup(PDFName.of('XObject')).has(PDFName.of('Ribbon')), 'the ribbon image is dropped from the file')
     const uris = page.node.Annots().asArray().map((ref) => doc.context.lookup(ref).lookup(PDFName.of('A')).lookup(PDFName.of('URI')).decodeText())
     assert.deepEqual(uris, ['https://www.cambridgeinternational.org'])
+  })
+}
+
+test('only see-through, coloured drawing at a slant counts as the diagonal logo', () => {
+  assert.ok(isSlanted([0.574, 0.819, -0.819, 0.574, 0, 0]), '55°')
+  assert.ok(!isSlanted([1, 0, 0, 1, 0, 0]))
+  assert.ok(!isSlanted([0, 1, -1, 0, 0, 0]), 'a quarter turn, as on landscape pages')
+  assert.ok(!isSlanted([0.996, 0.087, -0.087, 0.996, 0, 0]), 'a 5° tilt')
+  const extGStates = { Wm: { fillAlpha: 0.6, strokeAlpha: 0.6 } }
+  const slant = '0.574 0.819 -0.819 0.574 200 250 cm'
+  const content = [
+    `q /Wm gs ${slant} 0.86 0.2 0.2 rg 0 0 40 60 re f Q`,
+    `q /Wm gs 0.86 0.2 0.2 rg 0 0 40 60 re f Q`,
+    `q ${slant} 0.86 0.2 0.2 rg 0 0 40 60 re f Q`,
+    `q /Wm gs ${slant} 0.5 g 0 0 40 60 re f Q`,
+    `q /Wm gs ${slant} 0.86 0.2 0.2 RG 0 0 m 40 60 l S Q`,
+  ].join('\n')
+  const result = stripRibbonFromContent(content, { extGStates, pageBox: [0, 0, 595, 842] })
+  assert.deepEqual(result.content.split('\n').map((line) => line.trim().split(' ').at(-2)), ['n', 'f', 'f', 'f', 'n'])
+})
+
+for (const style of ['paths', 'text', 'form', 'inner']) {
+  test(`removes the diagonal red PapaCambridge logo drawn as ${style} and keeps the graph`, async () => {
+    const result = await rebrandPdf(await stampPdf(style), { fileName: '0444_s24_ms_41.pdf', subject: 'Mathematics 0444' })
+    assert.ok(result.removed >= 1)
+    const doc = await PDFDocument.load(result.bytes)
+    const [page] = doc.getPages()
+    const text = pageText(doc, page)
+    // The graph: grid, curve, see-through upright highlight, solid red line, slanted black arrow, labels.
+    for (const kept of ['72 300 m 520 300 l S', '500 650 c S', '100 400 80 40 re f', '100 330 m 300 330 l S', '50 5 l h f', '(0) Tj', '(1) Tj']) {
+      assert.ok(text.includes(kept), `kept: ${kept}`)
+    }
+    const forms = page.node.Resources().lookup(PDFName.of('XObject'))
+    const drawn = [text, ...forms.values()
+      .map((ref) => doc.context.lookup(ref))
+      .filter((object) => object instanceof PDFRawStream && object.dict.lookup(PDFName.of('Subtype'))?.decodeText?.() === 'Form')
+      .map((form) => Buffer.from(decodePDFRawStream(form).decode()).toString('latin1'))].join('\n')
+    assert.doesNotMatch(drawn, /0\.86 0\.2 0\.2 rg 0 0 m 40 0 l 40 60 l 0 60 l h f|\\001\\002/, 'nothing of the logo is painted')
+    // A slanted logo form is dropped from the page; an upright form is kept with its slanted logo unpainted.
+    if (style === 'form') assert.doesNotMatch(text, /\/Stamp Do/)
+    if (style === 'inner') assert.match(drawn, /0 60 l h n/)
   })
 }
