@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, limit, onSnapshot, orderBy, query, runTransaction, serverTimestamp, startAfter, where, writeBatch } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, getDocs, limit, onSnapshot, orderBy, query, runTransaction, serverTimestamp, startAfter, where, writeBatch } from 'firebase/firestore'
 import { db } from './config'
 
 const resultsCollection = collection(db, 'results')
@@ -43,7 +43,20 @@ const normalize = (snapshot, publicView = false) => snapshot.docs.map((item) => 
 })
 
 export const subscribeToPublishedResults = (onChange, onError) => onSnapshot(query(resultsCollection, where('published', '==', true), orderBy('sortOrder'), limit(100)), (snapshot) => onChange(normalize(snapshot)), onError)
-export const subscribeToPublishedPapers = (onChange, onError) => onSnapshot(query(publicPapersCollection, where('published', '==', true), limit(250)), (snapshot) => onChange(normalize(snapshot, true).filter((paper) => paper.status === 'published')), onError)
+// Loads every published paper in pages (no hard cap), reporting each page so the library can render while the rest arrive.
+const PUBLIC_PAGE_SIZE = 500
+export const loadPublishedPapers = async (onProgress) => {
+	const papers = []
+	let cursor
+	for (;;) {
+		const snapshot = await getDocs(query(publicPapersCollection, where('published', '==', true), orderBy(documentId()), ...(cursor ? [startAfter(cursor)] : []), limit(PUBLIC_PAGE_SIZE)))
+		papers.push(...normalize(snapshot, true).filter((paper) => paper.status === 'published'))
+		const done = snapshot.size < PUBLIC_PAGE_SIZE
+		onProgress?.(papers.slice(), done)
+		if (done) return papers
+		cursor = snapshot.docs.at(-1)
+	}
+}
 
 export const createResult = (values, uid) => addDoc(resultsCollection, { ...values, published: Boolean(values.published), sortOrder: Number(values.sortOrder) || 0, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
 export const updateResult = (id, values, uid, version) => runTransaction(db, async (transaction) => { const resultRef = doc(db, 'results', id); const snapshot = await transaction.get(resultRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(resultRef, { ...values, published: Boolean(values.published), sortOrder: Number(values.sortOrder) || 0, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }) })

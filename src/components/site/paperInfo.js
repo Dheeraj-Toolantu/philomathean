@@ -11,23 +11,54 @@ export const SESSION_LABELS = { 'Feb-March': 'February / March', 'May-June': 'Ma
 
 const titleCase = (text) => String(text || '').toLowerCase().replace(/\b[a-z]/g, (letter) => letter.toUpperCase())
 
-// "IGCSE-MATHS - 0607-21 - May-June 2017 - Mark Scheme" -> Paper 2 · Variant 1, mark scheme, code 0607/21
+// Cambridge syllabus codes are 0xxx (IGCSE / O Level) or 9xxx (AS & A Level); never a 19xx/20xx year.
+const syllabusCode = (text) => String(text || '').match(/\b([09]\d{3})\b/)?.[1] || ''
+
+// Understands both title styles admins use:
+//   "IGCSE-MATHS - 0607-21 - May-June 2017 - Mark Scheme"        -> Paper 2 · Variant 1, code 0607/21
+//   "IGCSE Physics 0625 – May-June 2026 – Question Paper 13"      -> Paper 1 · Variant 3, code 0625/13
 export const describePaper = (paper) => {
   const title = String(paper.title || '')
-  const code = title.match(/\b(\d{4})[-/](\d)(\d)\b/)
+  const subjectCode = String(paper.subjectCode || '') || syllabusCode(title)
+  const joined = title.match(/\b(\d{4})[-/](\d)(\d)\b/)
+  const labelled = title.match(/\b(?:question\s*paper|mark\s*scheme|qp|ms)[\s_-]*(\d)(\d)\b/i)
+  const code = joined ? { syllabus: joined[1], number: joined[2], variant: joined[3] }
+    : labelled ? { syllabus: subjectCode, number: labelled[1], variant: labelled[2] } : null
   const kind = /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme' : 'question-paper'
   const name = paper.paperType === 'topic-wise' ? (paper.topic || title)
-    : code ? `Paper ${code[2]} · Variant ${code[3]}` : title
+    : code ? `Paper ${code.number} · Variant ${code.variant}` : title
+  const subjectName = titleCase(paper.subjectName || paper.subject || 'General')
   return {
     ...paper,
     kind,
     name,
-    code: code ? `${code[1]}/${code[2]}${code[3]}` : paper.subjectCode || '',
-    paperNumber: code ? Number(code[2]) : 99,
-    variant: code ? Number(code[3]) : 99,
-    subjectLabel: titleCase(paper.subjectName || paper.subject || 'General'),
-    subjectKey: `${String(paper.subjectName || paper.subject || '').toUpperCase()}|${paper.subjectCode || ''}`,
+    code: code ? `${code.syllabus ? `${code.syllabus}/` : ''}${code.number}${code.variant}` : subjectCode,
+    paperNumber: code ? Number(code.number) : 99,
+    variant: code ? Number(code.variant) : 99,
+    subjectCode,
+    subjectLabel: subjectName,
+    subjectKey: `${subjectName.toUpperCase()}|${subjectCode}`,
   }
+}
+
+// One entry per exam paper: its question paper and mark scheme side by side, the way students revise.
+// Papers whose number can't be read (e.g. topic-wise packs) stay as their own entry.
+export const pairPapers = (papers) => {
+  const sets = new Map()
+  for (const paper of papers) {
+    const slot = paper.kind === 'mark-scheme' ? 'markScheme' : 'questionPaper'
+    let key = paper.paperType !== 'topic-wise' && paper.paperNumber !== 99
+      ? `${paper.subjectKey}|${paper.year}|${paper.session}|${paper.paperNumber}${paper.variant}` : `id|${paper.id}`
+    if (sets.get(key)?.[slot]) key = `${key}|${paper.id}`
+    if (!sets.has(key)) sets.set(key, { key, papers: [] })
+    const set = sets.get(key)
+    set[slot] = paper
+    set.papers.push(paper)
+  }
+  return [...sets.values()].map((set) => {
+    const lead = set.questionPaper || set.markScheme
+    return { ...lead, ...set, id: set.key, kind: lead.kind, title: lead.title }
+  })
 }
 
 const matches = (paper, query) => {
