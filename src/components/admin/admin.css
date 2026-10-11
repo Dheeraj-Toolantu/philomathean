@@ -337,3 +337,6 @@ body.adm-no-scroll { overflow: hidden; }
 .adm-pdf-fields { display: grid; align-content: start; gap: 10px; }
 .adm-pdf-footnote { display: inline-flex; align-items: center; gap: 6px; margin-right: auto; margin-left: 12px; color: var(--adm-muted); font-size: 13px; font-weight: 600; }
 @media (max-width: 820px) { .adm-pdf-body { grid-template-columns: 1fr; } .adm-pdf-mode { margin-left: 0; } .adm-pdf-target { margin-left: 0; } }
+.adm-rules-banner { display: grid; gap: 6px; margin: 0 0 14px; padding: 14px 16px; border: 1px solid #f5c26b; border-radius: 12px; color: #7a4a00; font-size: 13px; line-height: 1.55; background: #fff8eb; }
+.adm-rules-banner code { padding: 1px 5px; border-radius: 5px; background: #fdecc8; font-size: 12px; }
+.adm-rules-banner .adm-button { justify-self: start; margin-top: 4px; }
