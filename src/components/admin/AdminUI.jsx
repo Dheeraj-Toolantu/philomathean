@@ -15,14 +15,14 @@ const useEscape = (active, onEscape) => {
   }, [active, onEscape])
 }
 
-export function Drawer({ open, title, subtitle, locked, onClose, children }) {
+export function Drawer({ open, title, subtitle, locked, onClose, children, wide = false }) {
   const close = () => { if (!locked) onClose() }
   useEscape(open, close)
   const panel = useRef(null)
   useEffect(() => { if (open) panel.current?.querySelector('input, select, textarea')?.focus() }, [open])
   if (!open) return null
   return <Portal><div className="adm-overlay" onMouseDown={close}>
-    <aside className="adm-drawer" role="dialog" aria-modal="true" aria-labelledby="adm-drawer-title" ref={panel} onMouseDown={(event) => event.stopPropagation()}>
+    <aside className={wide ? 'adm-drawer adm-drawer-wide' : 'adm-drawer'} role="dialog" aria-modal="true" aria-labelledby="adm-drawer-title" ref={panel} onMouseDown={(event) => event.stopPropagation()}>
       <header className="adm-drawer-head">
         <div><h2 id="adm-drawer-title">{title}</h2>{subtitle && <p>{subtitle}</p>}</div>
         <button type="button" className="adm-icon-button" onClick={close} disabled={locked} aria-label="Close panel"><X size={18} /></button>

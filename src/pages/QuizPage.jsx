@@ -9,6 +9,7 @@ import { canOpenQuiz } from '../student/access'
 import { buildQuiz, courseUrl, getCourse, isExamKind } from '../student/catalog'
 import { AccountMenu } from '../student/AccountMenu'
 import { UpgradeDialog } from '../student/StudentDialogs'
+import { useQuestionBanks } from '../student/useQuestionBanks'
 import { loginUrl, useSession } from '../student/session'
 import '../student/student.css'
 
@@ -33,7 +34,8 @@ export default function QuizPage() {
   const { status, user, profile } = useSession()
   const [seed] = useState(() => Date.now())
   const [mode, setMode] = useState(params.get('mode') === 'exam' ? 'exam' : 'study')
-  const quiz = useMemo(() => course ? buildQuiz(course, quizId, seed) : null, [course, quizId, seed])
+  const { banks, loading: banksLoading } = useQuestionBanks()
+  const quiz = useMemo(() => course && !banksLoading ? buildQuiz(course, quizId, seed, banks) : null, [course, quizId, seed, banks, banksLoading])
   const [phase, setPhase] = useState('intro')
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState({})
@@ -86,6 +88,7 @@ export default function QuizPage() {
     return () => window.removeEventListener('beforeunload', warn)
   }, [phase])
 
+  if (course && banksLoading) return <main className="st-quiz-page"><QuizTop course={course} /><div className="st-dash-loading" aria-busy="true"><span className="st-spinner" /> Loading questions…</div></main>
   if (!course || !quiz) return <main className="st-quiz-page"><QuizTop /><section className="st-empty-page"><h1>Quiz not found</h1><p>The link may be out of date.</p><a className="st-primary" href="/courses">Browse courses</a></section></main>
 
   const locked = status !== 'loading' && !canOpenQuiz(course, quiz.id, profile)
@@ -110,7 +113,7 @@ export default function QuizPage() {
       <span className={`st-type-icon st-type-lg ${exam ? 'st-type-mint' : quiz.kind === 'ladder' ? 'st-type-plum' : 'st-type-rose'}`}>{exam ? <ClipboardList size={30} /> : <PencilLine size={30} />}</span>
       <h1>{quiz.title}</h1>
       <p className="st-quiz-intro-course">{course.fullTitle}</p>
-      <div className="st-quiz-meta st-quiz-meta-lg"><span><CircleHelp size={17} /> {quiz.questions.length} questions</span><span><Clock3 size={17} /> {quiz.minutes} mins</span>{exam && <span><ClipboardList size={17} /> Counts as an exam</span>}</div>
+      <div className="st-quiz-meta st-quiz-meta-lg"><span><CircleHelp size={17} /> {quiz.questions.length} question{quiz.questions.length === 1 ? '' : 's'}</span><span><Clock3 size={17} /> {quiz.minutes} mins</span>{exam && <span><ClipboardList size={17} /> Counts as an exam</span>}</div>
       <div className="st-mode-pick" role="radiogroup" aria-label="Mode">
         <button type="button" role="radio" aria-checked={mode === 'study'} className={mode === 'study' ? 'active' : ''} onClick={() => setMode('study')}><Lightbulb size={20} /><strong>Study mode</strong><small>See the answer and worked explanation after each question.</small></button>
         <button type="button" role="radio" aria-checked={mode === 'exam'} className={mode === 'exam' ? 'active' : ''} onClick={() => setMode('exam')}><Timer size={20} /><strong>Exam mode</strong><small>Timed, no hints. Review everything when you submit.</small></button>
@@ -149,6 +152,7 @@ export default function QuizPage() {
         return <li key={item.id} className={`st-review-item ${state}`}>
           <div className="st-review-head"><span>Question {i + 1}</span><span className={`st-review-badge ${state}`}>{state === 'correct' ? 'Correct' : state === 'wrong' ? 'Incorrect' : 'Skipped'}</span></div>
           <p className="st-review-q">{item.prompt}</p>
+          {item.imageUrl && <img className="st-question-image st-question-image-sm" src={item.imageUrl} alt="Diagram for this question" />}
           <p><strong>Answer:</strong> {item.options[item.answer]}{state === 'wrong' && <span className="st-review-yours"> · You chose: {item.options[given]}</span>}</p>
           <p className="st-explain"><Lightbulb size={15} /> {item.explain}</p>
         </li>
@@ -165,6 +169,7 @@ export default function QuizPage() {
           <div className="st-question-top"><span className={`st-diff st-diff-${question.difficulty}`}>{['Foundation', 'Exam standard', 'Challenge'][question.difficulty - 1]}</span>
             {mode === 'exam' && <button type="button" className={flags[index] ? 'st-flag active' : 'st-flag'} onClick={() => setFlags({ ...flags, [index]: !flags[index] })} aria-pressed={Boolean(flags[index])}><Flag size={15} /> {flags[index] ? 'Flagged' : 'Flag for review'}</button>}</div>
           <h2>{question.prompt}</h2>
+          {question.imageUrl && <img className="st-question-image" src={question.imageUrl} alt="Diagram for this question" />}
           <div className="st-options" role="radiogroup" aria-label="Answer options">{question.options.map((option, optionIndex) => {
             const chosen = answers[index] === optionIndex
             const cls = isRevealed ? (optionIndex === question.answer ? 'correct' : chosen ? 'wrong' : 'dim') : chosen ? 'chosen' : ''

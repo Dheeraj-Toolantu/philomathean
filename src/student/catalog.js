@@ -1,6 +1,7 @@
 // Course catalogue for the student portal: programme → subject family → course → topic → quiz.
-// Quizzes are assembled from question banks (questionBank.js); options are shuffled per attempt so the
-// correct answer never sits in a fixed position.
+// Every format (topic quiz, revision ladder, mock, prediction, custom) is assembled from question banks.
+// Functions take a `banks` map ({ bankId: [question] }): the admin-managed banks from Firestore merged over
+// the built-in ones (questionBank.js), see questions.js. Options are shuffled per attempt.
 import { BANKS } from './questionBank.js'
 
 export const PROGRAMMES = [
@@ -65,7 +66,7 @@ for (const course of COURSES) {
   course.programme = FAMILY_MAP[subject.family].programme
   course.topics = course.topics.map((item) => ({
     ...item,
-    quizzes: item.quizzes.map((quiz) => ({ ...quiz, id: `topic:${item.id}:${quiz.bank}`, kind: 'topic', count: BANKS[quiz.bank].length, minutes: BANKS[quiz.bank].length * 6 })),
+    quizzes: item.quizzes.map((quiz) => ({ ...quiz, id: `topic:${item.id}:${quiz.bank}`, kind: 'topic' })),
   }))
 }
 export const COURSE_MAP = byId(COURSES)
@@ -81,7 +82,14 @@ export const LADDER_LEVELS = [
   { difficulty: 3, title: 'Level 3 · Challenge', blurb: 'The hardest questions — for top grades.' },
 ]
 
-const courseQuestions = (course, topicIds) => {
+// Every bank a course uses, in order (a bank can appear in several courses).
+export const courseBankIds = (course) => [...new Set(course.topics.flatMap((item) => item.quizzes.map((quiz) => quiz.bank)))]
+export const coursesUsingBank = (bankId) => COURSES.filter((course) => courseBankIds(course).includes(bankId))
+const bankQuestions = (banks, bankId, topicId) => (banks[bankId] || []).map((question, index) => ({ ...question, id: question.id || `${bankId}-${index}`, topicId }))
+export const topicQuiz = (quiz, banks = BANKS) => { const count = (banks[quiz.bank] || []).length; return { ...quiz, count, minutes: count * 6 } }
+export const courseQuestionCount = (course, banks = BANKS) => courseBankIds(course).reduce((sum, bank) => sum + (banks[bank] || []).length, 0)
+
+const courseQuestions = (course, banks, topicIds) => {
   const seen = new Set()
   const list = []
   for (const item of course.topics) {
@@ -89,7 +97,7 @@ const courseQuestions = (course, topicIds) => {
     for (const quiz of item.quizzes) {
       if (seen.has(quiz.bank)) continue
       seen.add(quiz.bank)
-      BANKS[quiz.bank].forEach((question, index) => list.push({ ...question, id: `${quiz.bank}-${index}`, topicId: item.id }))
+      list.push(...bankQuestions(banks, quiz.bank, item.id))
     }
   }
   return list
@@ -101,46 +109,56 @@ export const hashSeed = (text) => [...String(text)].reduce((hash, char) => Math.
 export const shuffle = (list, seed) => { const next = random(seed); const copy = [...list]; for (let i = copy.length - 1; i > 0; i -= 1) { const j = Math.floor(next() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]] } return copy }
 
 // The non-topic practice formats offered on every course page.
-export const ladderQuizzes = (course) => LADDER_LEVELS.map((level) => {
-  const count = courseQuestions(course).filter((question) => question.difficulty === level.difficulty).length
+export const ladderQuizzes = (course, banks = BANKS) => LADDER_LEVELS.map((level) => {
+  const count = courseQuestions(course, banks).filter((question) => question.difficulty === level.difficulty).length
   return { id: `ladder:${level.difficulty}`, kind: 'ladder', title: level.title, blurb: level.blurb, count, minutes: count * 5 }
 })
-export const mockQuizzes = (course) => {
-  const total = courseQuestions(course).length
+export const mockQuizzes = (course, banks = BANKS) => {
+  const total = courseQuestions(course, banks).length
   const half = Math.ceil(total / 2)
   return [
     { id: 'mock:1', kind: 'mock', title: 'Mock Exam · Paper 1', blurb: 'Half the syllabus, timed like the real exam.', count: half, minutes: half * 4 },
     { id: 'mock:2', kind: 'mock', title: 'Mock Exam · Paper 2', blurb: 'The other half — sit it after Paper 1.', count: total - half, minutes: (total - half) * 4 },
   ]
 }
-export const predictionQuiz = (course) => {
-  const count = Math.min(20, courseQuestions(course).filter((question) => question.difficulty >= 2).length)
+// Teachers can hand-pick prediction questions in the admin panel; otherwise the exam draws up to 20
+// exam-standard and challenge questions from the whole course.
+const predictionPool = (course, banks) => {
+  const all = courseQuestions(course, banks)
+  const picked = all.filter((question) => question.prediction)
+  return picked.length ? shuffle(picked, hashSeed(`${course.id}-prediction`)).slice(0, 40)
+    : shuffle(all.filter((question) => question.difficulty >= 2), hashSeed(`${course.id}-prediction`)).slice(0, 20)
+}
+export const predictionQuiz = (course, banks = BANKS) => {
+  const count = predictionPool(course, banks).length
   return { id: 'prediction:1', kind: 'prediction', title: `${course.session} Prediction Exam`, blurb: 'Our teachers’ pick of likely exam-standard questions.', count, minutes: count * 5, gold: true }
 }
 export const isExamKind = (kind) => kind === 'mock' || kind === 'prediction' || kind === 'custom'
 
-export const findQuizMeta = (course, quizId) => course.topics.flatMap((item) => item.quizzes).find((quiz) => quiz.id === quizId)
-  || [...ladderQuizzes(course), ...mockQuizzes(course), predictionQuiz(course)].find((quiz) => quiz.id === quizId)
+export const findQuizMeta = (course, quizId, banks = BANKS) => {
+  const topic = course.topics.flatMap((item) => item.quizzes).find((quiz) => quiz.id === quizId)
+  return topic ? topicQuiz(topic, banks) : [...ladderQuizzes(course, banks), ...mockQuizzes(course, banks), predictionQuiz(course, banks)].find((quiz) => quiz.id === quizId)
+}
 
 // The quizzes a free student may open in a premium course: the first topic quiz, as a preview.
 export const previewQuizId = (course) => course.topics[0].quizzes[0].id
 
 // Builds the questions for a quiz id. Custom papers ("Build my Exam") encode their choices in the id:
 // custom:<topicIds joined by '+'>:<question count>:<seed>.
-export const buildQuiz = (course, quizId, attemptSeed = Date.now()) => {
+export const buildQuiz = (course, quizId, attemptSeed = Date.now(), banks = BANKS) => {
   const [kind, a, b, c] = quizId.split(':')
-  let meta = findQuizMeta(course, quizId)
+  let meta = findQuizMeta(course, quizId, banks)
   let questions = []
-  if (kind === 'topic') questions = (BANKS[b] || []).map((question, index) => ({ ...question, id: `${b}-${index}`, topicId: a }))
-  else if (kind === 'ladder') questions = courseQuestions(course).filter((question) => question.difficulty === Number(a))
+  if (kind === 'topic') questions = bankQuestions(banks, b, a)
+  else if (kind === 'ladder') questions = courseQuestions(course, banks).filter((question) => question.difficulty === Number(a))
   else if (kind === 'mock') {
-    const all = shuffle(courseQuestions(course), hashSeed(`${course.id}-mock`))
+    const all = shuffle(courseQuestions(course, banks), hashSeed(`${course.id}-mock`))
     const half = Math.ceil(all.length / 2)
     questions = a === '1' ? all.slice(0, half) : all.slice(half)
-  } else if (kind === 'prediction') questions = shuffle(courseQuestions(course).filter((question) => question.difficulty >= 2), hashSeed(`${course.id}-prediction`)).slice(0, 20)
+  } else if (kind === 'prediction') questions = predictionPool(course, banks)
   else if (kind === 'custom') {
     const topicIds = String(a || '').split('+')
-    questions = shuffle(courseQuestions(course, topicIds), Number(c) || 1).slice(0, Number(b) || 10)
+    questions = shuffle(courseQuestions(course, banks, topicIds), Number(c) || 1).slice(0, Number(b) || 10)
     meta = { id: quizId, kind: 'custom', title: 'Custom exam', count: questions.length, minutes: questions.length * 4 }
   }
   if (!meta || !questions.length) return null

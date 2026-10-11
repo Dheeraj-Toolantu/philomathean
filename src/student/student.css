@@ -664,3 +664,7 @@
   .st-modal { padding: 26px 20px; }
 }
 @media (prefers-reduced-motion: reduce) { .st-page *, .st-quiz-page *, .st-modal-backdrop { animation: none !important; transition: none !important; } }
+.st-quiz-empty { opacity: .65; }
+.st-quiz-empty .st-outline-pill, .st-quiz-empty .st-round-icon { pointer-events: none; border-color: #c9d5e6; color: var(--st-muted); }
+.st-question-image { display: block; max-width: 100%; max-height: 360px; margin: -10px 0 22px; border: 1px solid var(--st-line); border-radius: 12px; background: #fff; }
+.st-question-image-sm { max-height: 200px; margin: 8px 0; }

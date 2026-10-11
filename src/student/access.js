@@ -1,6 +1,7 @@
 // Who may open what. Free courses are open to everyone signed in; premium courses offer one preview quiz
 // and need Gold for the rest; prediction exams are Gold-only everywhere.
-// Note: questions ship in the web bundle, so this is a product gate, not a security boundary.
+// Note: questions are publicly readable (built-in bundle and the questionBanks collection), so this is a
+// product gate, not a security boundary.
 import { previewQuizId } from './catalog.js'
 
 export const hasGold = (profile) => profile?.plan === 'gold' && (!profile.planExpiresAt || new Date(profile.planExpiresAt) > new Date())
