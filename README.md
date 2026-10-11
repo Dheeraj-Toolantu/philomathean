@@ -42,3 +42,14 @@ node scripts/provision-admin.cjs
 The script creates or updates the administrator custom claim and seeds the existing student results only when the `results` collection is empty. It does not create placeholder past-paper documents; upload PDFs from the dashboard after signing in. Do not commit the password or service-account credentials.
 
 See [specs/001-admin-content-management/quickstart.md](specs/001-admin-content-management/quickstart.md) for end-to-end validation scenarios.
+
+## Student portal
+
+Students sign up at `/login` (email & password or Google) and land on `/dashboard`, which has six sections: Overview, My courses, Progress, Exams & attempts, Profile (details and a photo, cropped to a square in the browser) and Subscription.
+
+- **Practice**: `/courses` lists every course. `/courses/<id>` is a course's practice page with Topic Quizzes, a Revision Ladder (by difficulty), Mock Exam Papers, a Prediction Exam and “Build my Exam”. `/quiz` runs a quiz in Study mode (instant feedback) or Exam mode (timed). Courses and questions live in `src/student/catalog.js` and `src/student/questionBank.js`.
+- **Progress**: every finished quiz is saved to `students/{uid}/attempts`. The dashboard works out questions attempted, accuracy, exams taken, study streak, topic mastery and achievements from these attempts (`src/student/progress.js`).
+- **Sharing**: “Share my progress” publishes a read-only card at `/progress/<id>`. It shows no email or phone number, and the student can stop sharing at any time.
+- **Plans**: every account starts on Free. Gold unlocks the premium courses, prediction exams and custom papers on premium courses. Students can only *request* Gold. An administrator activates it from the **Students** tab at `/admin`; nobody pays online.
+- **Firebase setup**: turn on the **Email/Password** and **Google** sign-in providers in Firebase Authentication. Add your hosting domain under Authorized domains. Then run `firebase deploy --only firestore:rules,storage` to deploy the updated rules.
+- **Note**: practice questions are bundled with the website, so Gold controls access in the app but does not hide question content. To protect paid questions, store them in Firestore behind rules.

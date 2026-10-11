@@ -16,6 +16,13 @@ const adminFallback = <main className="admin-loading"><p>Loading…</p></main>
 const PremiumSourcesPage = lazy(() => import('./components/site/PremiumSourcesPage'))
 const PastPapersLibrary = lazy(() => import('./components/site/PastPapersLibrary'))
 const pageFallback = <main className="lib-page-loading" aria-busy="true" />
+// Student portal: login, dashboard, courses, quizzes and shared progress cards.
+const StudentLogin = lazy(() => import('./pages/StudentLogin'))
+const StudentDashboard = lazy(() => import('./pages/StudentDashboard'))
+const CoursesPage = lazy(() => import('./pages/CoursesPage'))
+const CoursePage = lazy(() => import('./pages/CoursePage'))
+const QuizPage = lazy(() => import('./pages/QuizPage'))
+const SharedProgress = lazy(() => import('./pages/SharedProgress'))
 
 const programs = [
   [Layers, 'IB MYP', 'International Baccalaureate Middle Years Programme', 'orange'],
@@ -213,6 +220,15 @@ function App() {
   if (window.location.pathname === '/past-papers') return <Suspense fallback={pageFallback}><PastPapersLibrary /></Suspense>
   if (window.location.pathname === '/premium-sources') return <Suspense fallback={pageFallback}><PremiumSourcesPage /></Suspense>
   if (window.location.pathname === '/teachers') return <TeachersPage />
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  if (path === '/login') return <Suspense fallback={pageFallback}><StudentLogin /></Suspense>
+  if (path === '/dashboard') return <Suspense fallback={pageFallback}><StudentDashboard /></Suspense>
+  if (path === '/courses') return <Suspense fallback={pageFallback}><CoursesPage /></Suspense>
+  if (path === '/quiz') return <Suspense fallback={pageFallback}><QuizPage /></Suspense>
+  const courseId = path.match(/^\/courses\/([a-z0-9-]+)$/)?.[1]
+  if (courseId) return <Suspense fallback={pageFallback}><CoursePage courseId={courseId} /></Suspense>
+  const shareId = path.match(/^\/progress\/([a-z0-9]+)$/)?.[1]
+  if (shareId) return <Suspense fallback={pageFallback}><SharedProgress shareId={shareId} /></Suspense>
   const displayedResults = publicResults.length ? publicResults.map((item) => [item.score, item.studentName, item.subjects, item.school]) : results
   return <main>
     <FloatingSymbols />
