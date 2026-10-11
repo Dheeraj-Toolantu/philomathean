@@ -3,5 +3,9 @@
 # "Mathematics - 0444" but not "Mathematics - 0580". Lines starting with # are ignored.
 # Each subject's PDFs are saved to past-papers/igcse/<search-text>/ (e.g. mathematics-0444).
 
-Mathematics 0444
-Accounting 0452
+Mathematics - 0580
+Mathematics - 0581
+Mathematics - 0606
+Mathematics - 0607
+Mathematics - 0626
+Mathematics - 0980

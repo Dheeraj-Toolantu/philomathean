@@ -57,6 +57,11 @@ const AUTH_ERRORS = {
   'auth/unauthorized-domain': 'Sign-in isn’t enabled for this web address yet. Please contact the institute.',
   'auth/network-request-failed': 'Network error — check your connection and try again.',
   'auth/operation-not-allowed': 'This sign-in method is not enabled yet. Please contact the institute.',
+  'auth/admin-restricted-operation': 'This sign-in method is not enabled yet. Please contact the institute.',
+  'auth/invalid-api-key': 'Student sign-in is temporarily unavailable because the Firebase app configuration is invalid.',
+  'permission-denied': 'Firebase rejected access to the student profile. Please contact the institute to check the deployed Firestore rules.',
+  unavailable: 'Firebase is temporarily unreachable. Check your connection and try again.',
+  'deadline-exceeded': 'Firebase took too long to respond. Check your connection and try again.',
 }
 export const authErrorMessage = (error) => {
   if (error?.code === 'auth/account-exists-with-different-credential') {
