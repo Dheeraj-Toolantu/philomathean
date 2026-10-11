@@ -45,11 +45,13 @@ See [specs/001-admin-content-management/quickstart.md](specs/001-admin-content-m
 
 ## Student portal
 
-Students sign up at `/login` (email & password or Google) and land on `/dashboard`, which has six sections: Overview, My courses, Progress, Exams & attempts, Profile (details and a photo, cropped to a square in the browser) and Subscription.
+Students sign up at `/login` with email and password, Google or Facebook and land on `/dashboard`, which has six sections: Overview, My courses, Progress, Exams & attempts, Profile (details and a photo, cropped to a square in the browser) and Subscription.
 
 - **Practice**: `/courses` lists every course. `/courses/<id>` is a course's practice page with Topic Quizzes, a Revision Ladder (by difficulty), Mock Exam Papers, a Prediction Exam and “Build my Exam”. `/quiz` runs a quiz in Study mode (instant feedback) or Exam mode (timed). Courses and questions live in `src/student/catalog.js` and `src/student/questionBank.js`.
 - **Progress**: every finished quiz is saved to `students/{uid}/attempts`. The dashboard works out questions attempted, accuracy, exams taken, study streak, topic mastery and achievements from these attempts (`src/student/progress.js`).
 - **Sharing**: “Share my progress” publishes a read-only card at `/progress/<id>`. It shows no email or phone number, and the student can stop sharing at any time.
 - **Plans**: every account starts on Free. Gold unlocks the premium courses, prediction exams and custom papers on premium courses. Students can only *request* Gold. An administrator activates it from the **Students** tab at `/admin`; nobody pays online.
-- **Firebase setup**: turn on the **Email/Password** and **Google** sign-in providers in Firebase Authentication. Add your hosting domain under Authorized domains. Then run `firebase deploy --only firestore:rules,storage` to deploy the updated rules.
+- **Firebase setup**: in Firebase Authentication → Sign-in method, turn on **Email/Password**, **Google** and **Facebook**. Add your website's domain under Authorized domains.
+- **Facebook setup**: create an app at [developers.facebook.com](https://developers.facebook.com) and add the **Facebook Login** product. Paste its App ID and App secret into Firebase's Facebook provider. Copy the OAuth redirect URI that Firebase shows (`https://philomathean-a2c93.firebaseapp.com/__/auth/handler`) into Facebook Login → Settings → Valid OAuth Redirect URIs. Switch the app to **Live** mode so students other than the app's admins can sign in.
+- **One account per email**: if a student signs in with Facebook using an email that already has an account (password or Google), the login page asks them to log in the original way once. Facebook is then linked to that account, so either method signs them in from then on. Then run `firebase deploy --only firestore:rules,storage` to deploy the updated rules.
 - **Note**: practice questions are bundled with the website, so Gold controls access in the app but does not hide question content. To protect paid questions, store them in Firestore behind rules.

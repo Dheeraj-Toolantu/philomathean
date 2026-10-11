@@ -226,8 +226,13 @@
 .st-auth-tabs button.active { color: var(--st-ink); background: #fff; box-shadow: 0 2px 8px rgba(11, 33, 73, .1); }
 .st-auth-card h2 { margin: 0 0 6px; color: var(--st-ink); font: 800 26px var(--display); }
 .st-auth-sub { margin: 0 0 22px; color: var(--st-muted); }
-.st-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; height: 46px; border: 1px solid #cfd9e6; border-radius: 999px; color: var(--st-ink); background: #fff; font: 700 14px var(--sans); cursor: pointer; }
-.st-google:hover { background: #f7f9fc; }
+.st-social { display: grid; gap: 10px; }
+.st-social-button { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 12px; border: 1px solid #cfd9e6; border-radius: 999px; color: var(--st-ink); background: #fff; font: 700 14px var(--sans); white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.st-social-button svg { flex: 0 0 auto; }
+.st-social-button:hover:not(:disabled) { border-color: #9fb3cc; background: #f7f9fc; }
+.st-social-button:disabled { opacity: .5; cursor: not-allowed; }
+.st-auth-card .st-alert-info { margin-bottom: 14px; }
+.st-social-terms { margin: 10px 0 0; color: var(--st-muted); font-size: 12px; line-height: 1.5; text-align: center; }
 .st-or { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #8b97ab; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .st-or::before, .st-or::after { content: ''; flex: 1; height: 1px; background: var(--st-line); }
 .st-form { display: grid; gap: 16px; }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, BarChart3, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Mail, Share2, Trophy, UserRound } from 'lucide-react'
-import { authErrorMessage, resetStudentPassword, signInStudent, signInStudentWithGoogle, signOutStudent, signUpStudent } from '../firebase/student'
+import { ArrowLeft, BarChart3, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Link2, Mail, Share2, Trophy, UserRound } from 'lucide-react'
+import {
+  authErrorMessage, completeRedirectSignIn, getPendingLink, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent,
+} from '../firebase/student'
 import { BrandLockup } from '../components/site/SiteChrome'
 import { safeNext, useSession } from '../student/session'
 import '../student/student.css'
@@ -15,6 +17,7 @@ const perks = [
   [Share2, 'Share a progress card with parents and teachers'],
 ]
 
+const FacebookMark = () => <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.41 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.5c-1.5 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.5h-2.8V24C19.62 23.1 24 18.1 24 12.07" /><path fill="#fff" d="m16.67 15.56.53-3.5h-3.32V9.81c0-.96.46-1.89 1.96-1.89h1.5V4.95s-1.37-.24-2.68-.24c-2.73 0-4.54 1.68-4.54 4.7v2.66H7.08v3.49h3.04V24a12.3 12.3 0 0 0 3.76 0v-8.44z" /></svg>
 const GoogleMark = () => <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" /><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" /><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" /><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" /></svg>
 
 export default function StudentLogin() {
@@ -26,7 +29,18 @@ export default function StudentLogin() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [attempted, setAttempted] = useState(false)
+  const [linking, setLinking] = useState(null)
   const next = safeNext(params.get('next'))
+
+  // Finishes a Google/Facebook sign-in that fell back to a full-page redirect (popup blocked).
+  useEffect(() => {
+    let active = true
+    completeRedirectSignIn().then((signedIn) => { if (signedIn) window.location.replace(next) }).catch((redirectError) => {
+      if (!active) return
+      setAttempted(true); setError(authErrorMessage(redirectError)); signOutStudent().catch(() => {})
+    })
+    return () => { active = false }
+  }, [next])
 
   // Already signed in when the page opened: continue to where the student was going.
   useEffect(() => { if (status !== 'loading' && user && !attempted) window.location.replace(next) }, [status, user, attempted, next])
@@ -38,6 +52,9 @@ export default function StudentLogin() {
     try { await action(); window.location.replace(next) } catch (authError) {
       // If sign-in worked but the profile could not be created, sign out so the student can simply retry.
       await signOutStudent().catch(() => {})
+      const pending = getPendingLink()
+      setLinking(pending)
+      if (pending) { setMode('login'); if (pending.email) setForm((current) => ({ ...current, email: pending.email })) }
       setError(authErrorMessage(authError)); setBusy(false)
     }
   }
@@ -79,7 +96,12 @@ export default function StudentLogin() {
         <p className="st-auth-sub">{titles[mode][1]}</p>
 
         {mode !== 'reset' && <>
-          <button type="button" className="st-google" onClick={() => run(signInStudentWithGoogle)} disabled={busy}><GoogleMark /> Continue with Google</button>
+          {linking && <p className="st-alert st-alert-info" role="status"><Link2 size={16} /> <span>Connecting {linking.label}{linking.email ? ` to ${linking.email}` : ''}. Log in below with the method you used before and {linking.label} will work for this account from now on.</span></p>}
+          <div className="st-social">
+            <button type="button" className="st-social-button" onClick={() => run(() => signInStudentWithProvider('google.com'))} disabled={busy || linking?.provider === 'google.com'}><GoogleMark /> {mode === 'signup' ? 'Sign up' : 'Log in'} with Google</button>
+            <button type="button" className="st-social-button" onClick={() => run(() => signInStudentWithProvider('facebook.com'))} disabled={busy || linking?.provider === 'facebook.com'}><FacebookMark /> {mode === 'signup' ? 'Sign up' : 'Log in'} with Facebook</button>
+          </div>
+          {mode === 'signup' && <p className="st-social-terms">By continuing with Google or Facebook you agree to the terms of use and to Philomathean contacting you about your studies.</p>}
           <div className="st-or"><span>or use email</span></div>
         </>}
 
