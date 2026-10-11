@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Atom, BookOpen, ChartLine, ChevronDown, ChevronRight, ChevronUp, Crown, FlaskConical, Sigma, TrendingUp, Users } from 'lucide-react'
 import { hasGold } from './access'
-import { useOutsideClose } from './AccountMenu'
+import { AccountMenu, useOutsideClose } from './AccountMenu'
+import { BrandLockup, SiteHeader } from '../components/site/SiteChrome'
 import { coursesForSubject, courseUrl, FAMILIES, getSubject, PROGRAMMES } from './catalog'
 import { dashboardUrl } from './links'
 import { useSession } from './session'
@@ -50,15 +51,26 @@ export function SubjectExplorer({ programme, onNavigate }) {
 }
 
 // Secondary bar under the site header on student pages: programme switcher, Subjects mega menu, quick links.
-export function CourseBar({ programme: initialProgramme = 'ib', active }) {
+// Student pages: signed-in students get one compact portal header (logo, course navigation, account);
+// visitors keep the full marketing header with the course bar beneath it.
+export function StudentHeader({ programme, active }) {
+  const { status, user } = useSession()
+  if (user) return <CourseBar programme={programme} active={active} standalone />
+  // Avoid flashing the marketing header while Firebase restores a signed-in session.
+  if (status === 'loading') return <div className="st-coursebar st-coursebar-standalone" aria-hidden="true"><div className="st-coursebar-inner"><BrandLockup /></div></div>
+  return <><SiteHeader active={active === 'courses' ? 'courses' : undefined} /><CourseBar programme={programme} active={active} /></>
+}
+
+export function CourseBar({ programme: initialProgramme = 'ib', active, standalone = false }) {
   const { user, profile } = useSession()
   const [programme, setProgramme] = useState(initialProgramme)
   const [menu, setMenu] = useState(null)
   const ref = useOutsideClose(Boolean(menu), () => setMenu(null))
   const toggle = (name) => setMenu(menu === name ? null : name)
   const current = PROGRAMMES.find((item) => item.id === programme)
-  return <div className="st-coursebar" ref={ref}>
+  return <header className={standalone ? 'st-coursebar st-coursebar-standalone' : 'st-coursebar'} ref={ref}>
     <div className="st-coursebar-inner">
+      {standalone && <BrandLockup />}
       <div className="st-coursebar-group">
         <button type="button" className={menu === 'programme' ? 'st-bar-button open' : 'st-bar-button'} aria-expanded={menu === 'programme'} onClick={() => toggle('programme')}>{current.label} {menu === 'programme' ? <ChevronUp size={15} /> : <ChevronDown size={15} />}</button>
         {menu === 'programme' && <div className="st-programme-menu" role="menu">{PROGRAMMES.map((item) => <button type="button" role="menuitemradio" aria-checked={item.id === programme} key={item.id} className={item.id === programme ? 'active' : ''} onClick={() => { setProgramme(item.id); setMenu('subjects') }}><strong>{item.label}</strong><small>{item.title}</small></button>)}</div>}
@@ -68,8 +80,11 @@ export function CourseBar({ programme: initialProgramme = 'ib', active }) {
         {user && <a className={active === 'dashboard' ? 'st-bar-link active' : 'st-bar-link'} href="/dashboard">My dashboard</a>}
         {user && <a className="st-bar-link st-hide-sm" href={dashboardUrl('progress')}>Progress</a>}
       </div>
-      {!hasGold(profile) && <a className="st-gold-button" href={user ? dashboardUrl('subscription') : '/login?mode=signup&next=%2Fdashboard%3Ftab%3Dsubscription'}><Crown size={15} /> Upgrade to Gold</a>}
+      <div className="st-coursebar-actions">
+        {!hasGold(profile) && <a className="st-gold-button" href={user ? dashboardUrl('subscription') : '/login?mode=signup&next=%2Fdashboard%3Ftab%3Dsubscription'}><Crown size={15} /> <span>Upgrade to Gold</span></a>}
+        {standalone && <AccountMenu />}
+      </div>
     </div>
     {menu === 'subjects' && <div className="st-mega"><SubjectExplorer key={programme} programme={programme} onNavigate={() => setMenu(null)} /></div>}
-  </div>
+  </header>
 }

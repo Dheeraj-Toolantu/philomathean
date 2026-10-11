@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown, ChevronUp, Crown, LogOut, Sigma, UserRound } from 'lucide-react'
+import { ChevronDown, ChevronUp, Crown, FileText, Home, LogOut, Sigma, UserRound } from 'lucide-react'
 import { signOutStudent } from '../firebase/student'
 import { hasGold } from './access'
 import { DASHBOARD_TABS, dashboardUrl } from './links'
@@ -52,6 +52,8 @@ export function AccountMenu() {
       <div className="st-account-head"><Avatar name={name} src={photo} size={44} /><span><strong>{name}</strong><small>{user.email}</small><PlanBadge profile={profile} /></span></div>
       {DASHBOARD_TABS.map(([id, label, Icon]) => <a key={id} role="menuitem" href={dashboardUrl(id)}><Icon size={16} /> {label}</a>)}
       <a role="menuitem" href="/courses"><Sigma size={16} /> Browse courses</a>
+      <a role="menuitem" href="/premium-sources"><FileText size={16} /> Past papers</a>
+      <a role="menuitem" href="/"><Home size={16} /> Philomathean website</a>
       {!hasGold(profile) && <a role="menuitem" className="st-account-upgrade" href={dashboardUrl('subscription')}><Crown size={16} /> Upgrade to Gold</a>}
       <button type="button" role="menuitem" onClick={logout}><LogOut size={16} /> Sign out</button>
     </div>}

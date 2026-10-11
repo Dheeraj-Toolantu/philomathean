@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { ArrowRight, CheckCircle2, CircleHelp, Crown, Layers } from 'lucide-react'
-import { SiteFooter, SiteHeader } from '../components/site/SiteChrome'
+import { SiteFooter } from '../components/site/SiteChrome'
 import { BANKS } from '../student/questionBank'
 import { COURSES, courseUrl, FAMILIES, getSubject, PROGRAMMES } from '../student/catalog'
 import { courseProgress } from '../student/progress'
-import { CatalogIcon, CourseBar, SubjectExplorer } from '../student/StudentChrome'
+import { CatalogIcon, StudentHeader, SubjectExplorer } from '../student/StudentChrome'
 import { useSession } from '../student/session'
 import { useStudentData } from '../student/useStudent'
 import '../student/student.css'
@@ -21,8 +21,7 @@ export default function CoursesPage() {
   const totalQuestions = Object.values(BANKS).reduce((sum, bank) => sum + bank.length, 0)
 
   return <main className="st-page">
-    <SiteHeader active="courses" />
-    <CourseBar programme={programme} active="courses" />
+    <StudentHeader programme={programme} active="courses" />
     <section className="st-course-hero st-hub-hero">
       <div className="st-wrap">
         <span className="st-eyebrow">Practice & revision</span>
