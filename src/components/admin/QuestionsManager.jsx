@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { ArrowDown, ArrowUp, CircleHelp, Download, Eye, EyeOff, FileUp, Image, Pencil, Plus, RotateCcw, Sparkles, Trash2 } from 'lucide-react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { ArrowDown, ArrowUp, CircleHelp, Download, Eye, EyeOff, FileScan, FileUp, Image, Pencil, Plus, RotateCcw, Sparkles, Trash2 } from 'lucide-react'
 import { loadManagedBanks, removeQuestionImage, resetBank, saveBank } from '../../firebase/questionBanks'
 import { COURSES, coursesUsingBank } from '../../student/catalog'
 import { blankQuestion, builtInQuestions, CSV_TEMPLATE, LETTERS, questionsFromCsv } from '../../student/questionTools'
 import { ConfirmDialog, Drawer, EmptyState, SkeletonRows } from './AdminUI'
 import QuestionForm from './QuestionForm'
+
+// PDF.js is large: only loaded when an administrator opens the PDF importer.
+const PdfImport = lazy(() => import('./pdfImport/PdfImport'))
 
 const DIFFICULTY = { 1: 'Foundation', 2: 'Exam standard', 3: 'Challenge' }
 const download = (name, text) => { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const link = Object.assign(document.createElement('a'), { href: url, download: name }); link.click(); URL.revokeObjectURL(url) }
@@ -30,6 +33,8 @@ export default function QuestionsManager({ user, notify }) {
   const [confirm, setConfirm] = useState(null)
   const [busy, setBusy] = useState(false)
   const [importer, setImporter] = useState(null)
+  const [pdfOpen, setPdfOpen] = useState(false)
+  const [pdfBusy, setPdfBusy] = useState(false)
 
   const fetchBanks = useCallback(() => loadManagedBanks().then(setManaged).catch(() => setLoadError(true)), [])
   useEffect(() => { fetchBanks() }, [fetchBanks])
@@ -106,6 +111,7 @@ export default function QuestionsManager({ user, notify }) {
             </div>
             <div className="adm-qb-actions">
               <button type="button" className="adm-button adm-button-primary" disabled={busy} onClick={() => setDrawer({ question: blankQuestion() })}><Plus size={16} /> Add question</button>
+              <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={() => setPdfOpen(true)}><FileScan size={16} /> Import from PDF</button>
               <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={() => setImporter({ text: '', mode: 'append' })}><FileUp size={16} /> Import CSV</button>
               <button type="button" className="adm-button adm-button-ghost" onClick={() => download(`${bank.bank}.csv`, toCsv(questions))}><Download size={16} /> Export</button>
               {!isManaged && <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={startManaging}><Sparkles size={16} /> Copy built-in to edit</button>}
@@ -143,6 +149,12 @@ export default function QuestionsManager({ user, notify }) {
     </Drawer>
     <Drawer open={Boolean(importer)} title="Import questions from CSV" subtitle={`${bank.title} · ${course.title}`} locked={busy} onClose={() => setImporter(null)}>
       {importer && <CsvImport importer={importer} setImporter={setImporter} busy={busy} existing={questions.length} onImport={(imported) => run(async () => { await commit(importer.mode === 'replace' ? imported : [...questions, ...imported], `${imported.length} question${imported.length === 1 ? '' : 's'} imported.`); setImporter(null) })} />}
+    </Drawer>
+    <Drawer wide open={pdfOpen} title="Import questions from a PDF" subtitle={`Question paper + mark scheme → ${bank.title} · ${course.title}`} locked={pdfBusy} onClose={() => setPdfOpen(false)}>
+      {pdfOpen && <Suspense fallback={<div className="adm-form-body"><SkeletonRows count={3} /></div>}>
+        <PdfImport bankId={bank.bank} bankTitle={`${bank.title} (${course.title})`} onBusyChange={setPdfBusy} onClose={() => setPdfOpen(false)}
+          onImport={async (imported) => { await commit([...questions, ...imported], `${imported.length} question${imported.length === 1 ? '' : 's'} imported from PDF.`); setPdfOpen(false) }} />
+      </Suspense>}
     </Drawer>
     <ConfirmDialog open={Boolean(confirm)} busy={busy} onCancel={() => setConfirm(null)} onConfirm={remove}
       title={confirm?.kind === 'reset' ? 'Reset this bank to the built-in questions?' : 'Delete this question?'}
