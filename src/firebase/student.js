@@ -62,6 +62,15 @@ export const authErrorMessage = (error) => {
   if (error?.code === 'auth/account-exists-with-different-credential') {
     return `This email is already registered with another sign-in method. Log in the way you did before — we’ll connect ${PROVIDER_LABELS[pendingLink?.provider] || 'this account'} to it automatically.`
   }
+  // Firestore refused the student profile: sign-in itself worked, but the database rules aren't deployed or
+  // the connection failed. Log the detail for whoever maintains the site; tell the student plainly.
+  if (error?.code === 'permission-denied' || error?.code === 'unavailable') {
+    console.error('Student profile could not be loaded or created:', error)
+    return error.code === 'unavailable'
+      ? 'We couldn’t reach the server to open your student profile. Check your connection and try again.'
+      : 'Your sign-in worked, but we couldn’t open your student profile. Student accounts are still being set up — please try again later or contact the institute.'
+  }
+  if (error?.code) console.error('Sign-in failed:', error.code, error.message)
   return AUTH_ERRORS[error?.code] || 'Something went wrong. Please try again.'
 }
 

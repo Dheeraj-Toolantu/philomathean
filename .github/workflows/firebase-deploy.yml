@@ -1,6 +1,7 @@
-# Builds and tests every pull request; deploys the website and Firestore indexes to Firebase
-# whenever main changes. Requires the FIREBASE_SERVICE_ACCOUNT repository secret (a service-account
-# JSON key with the Firebase Hosting Admin, Cloud Datastore Index Admin and Service Usage Consumer roles).
+# Builds and tests every pull request; deploys the website, Firestore indexes and the Firestore/Storage
+# security rules to Firebase whenever main changes. Requires the FIREBASE_SERVICE_ACCOUNT repository secret
+# (a service-account JSON key with the Firebase Hosting Admin, Cloud Datastore Index Admin, Service Usage
+# Consumer and Firebase Rules Admin roles).
 name: Build and deploy
 
 on:
@@ -51,3 +52,11 @@ jobs:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       - name: Deploy hosting and Firestore indexes
         run: npx --yes firebase-tools@14 deploy --only hosting,firestore:indexes --project philomathean-a2c93 --non-interactive
+      # The student portal (sign-up, login, dashboard) only works once these rules are live.
+      # Kept as its own step so a missing permission never blocks the website deploy above.
+      - name: Deploy Firestore and Storage security rules
+        run: |
+          if ! npx --yes firebase-tools@14 deploy --only firestore:rules,storage --project philomathean-a2c93 --non-interactive; then
+            echo "::error title=Security rules were not deployed::Give the FIREBASE_SERVICE_ACCOUNT service account the 'Firebase Rules Admin' role in Google Cloud IAM (or 'Firebase Admin'), then re-run this workflow. Until the rules are deployed, student sign-up and login fail."
+            exit 1
+          fi
