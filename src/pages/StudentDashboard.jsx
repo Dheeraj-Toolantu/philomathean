@@ -3,7 +3,7 @@ import {
   ArrowRight, Camera, Check, CheckCircle2, CircleHelp, ClipboardList, Clock3, Copy, Crown, Flame, Link2, LogOut, Mail, MessageCircle,
   Share2, Target, Trash2, Upload,
 } from 'lucide-react'
-import { SiteFooter, SiteHeader } from '../components/site/SiteChrome'
+import { SiteFooter } from '../components/site/SiteChrome'
 import {
   cancelPlanRequest, ensureStudentProfile, leaveCourse, PROVIDER_LABELS, publishProgressShare, removeStudentPhoto, resetStudentPassword,
   signOutStudent, stopProgressShare, updateStudentProfile, uploadStudentPhoto,
@@ -11,7 +11,7 @@ import {
 import { COURSES, courseUrl, getCourse, isExamKind } from '../student/catalog'
 import { shareSnapshot } from '../student/progress'
 import { Avatar, PlanBadge } from '../student/AccountMenu'
-import { CourseBar } from '../student/StudentChrome'
+import { StudentHeader } from '../student/StudentChrome'
 import { DASHBOARD_TABS, dashboardUrl } from '../student/links'
 import { Modal, UpgradeDialog } from '../student/StudentDialogs'
 import {
@@ -50,15 +50,14 @@ export default function StudentDashboard() {
   }, [])
 
   const select = (next) => { setTab(next); window.history.pushState(null, '', dashboardUrl(next)); window.scrollTo({ top: 0, behavior: 'smooth' }) }
-  if (profileError && !profile) return <main className="st-page"><SiteHeader /><section className="st-empty-page"><h1>We couldn’t load your profile</h1><p>Check your connection and try again. If this keeps happening, contact the institute.</p><button type="button" className="st-primary" onClick={() => window.location.reload()}>Try again</button></section></main>
-  if (!user || !profile || !data.ready) return <main className="st-page"><SiteHeader /><div className="st-dash-loading" aria-busy="true"><span className="st-spinner" /> Loading your dashboard…</div></main>
+  if (profileError && !profile) return <main className="st-page"><StudentHeader active="dashboard" /><section className="st-empty-page"><h1>We couldn’t load your profile</h1><p>Check your connection and try again. If this keeps happening, contact the institute.</p><button type="button" className="st-primary" onClick={() => window.location.reload()}>Try again</button></section></main>
+  if (!user || !profile || !data.ready) return <main className="st-page"><StudentHeader active="dashboard" /><div className="st-dash-loading" aria-busy="true"><span className="st-spinner" /> Loading your dashboard…</div></main>
 
   const { summary, attempts, enrollments } = data
   const name = profile.displayName || user.displayName || 'Student'
   const panelProps = { user, profile, summary, attempts, enrollments, select, openShare: () => setShare(true), openUpgrade: () => setUpgrade(true) }
   return <main className="st-page st-dash-page">
-    <SiteHeader />
-    <CourseBar programme={CURRICULUM_PROGRAMME[profile.curriculum] || 'ib'} active="dashboard" />
+    <StudentHeader programme={CURRICULUM_PROGRAMME[profile.curriculum] || 'ib'} active="dashboard" />
     <div className="st-dash">
       <aside className="st-dash-side">
         <div className="st-side-profile">

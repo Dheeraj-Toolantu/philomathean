@@ -3,14 +3,14 @@ import {
   ArrowDown, ArrowUp, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Clock3, Crown, FileText, Home, Lock, Orbit,
   PencilLine, Plus, TrendingUp, Wrench,
 } from 'lucide-react'
-import { SiteFooter, SiteHeader } from '../components/site/SiteChrome'
+import { SiteFooter } from '../components/site/SiteChrome'
 import { enrollInCourse } from '../firebase/student'
 import { canEnroll, canOpenQuiz, quizUrl } from '../student/access'
 import {
   COURSES, coursesForSubject, courseUrl, getCourse, getFamily, getSubject, ladderQuizzes, mockQuizzes, predictionQuiz, PROGRAMMES,
 } from '../student/catalog'
 import { courseProgress } from '../student/progress'
-import { CatalogIcon, CourseBar } from '../student/StudentChrome'
+import { CatalogIcon, StudentHeader } from '../student/StudentChrome'
 import { Modal, UpgradeDialog } from '../student/StudentDialogs'
 import { loginUrl, useSession } from '../student/session'
 import { useStudentData } from '../student/useStudent'
@@ -92,7 +92,7 @@ export default function CoursePage({ courseId }) {
   }, [])
   useEffect(() => { if (course) document.title = `${course.fullTitle} Practice Exams | Philomathean` }, [course])
 
-  if (!course) return <main className="st-page"><SiteHeader active="courses" /><CourseBar active="courses" /><section className="st-empty-page"><h1>Course not found</h1><p>That course may have moved.</p><a className="st-primary" href="/courses">Browse all courses</a></section><SiteFooter /></main>
+  if (!course) return <main className="st-page"><StudentHeader active="courses" /><section className="st-empty-page"><h1>Course not found</h1><p>That course may have moved.</p><a className="st-primary" href="/courses">Browse all courses</a></section><SiteFooter /></main>
 
   const subject = getSubject(course.subject)
   const family = getFamily(course.family)
@@ -120,8 +120,7 @@ export default function CoursePage({ courseId }) {
   const description = `The ${course.fullTitle} practice exams are the perfect resource to customise your revision plan. Hone your skills on important concepts with ${course.title} Topic Quizzes, climb the Revision Ladder to reach the hardest questions, then sit full-length Mock Exam Papers to simulate the real exam from start to finish.`
 
   return <main className="st-page">
-    <SiteHeader active="courses" />
-    <CourseBar programme={course.programme} active="courses" />
+    <StudentHeader programme={course.programme} active="courses" />
 
     <section className="st-course-hero">
       <div className="st-wrap">
