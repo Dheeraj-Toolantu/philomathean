@@ -7,13 +7,14 @@ import { SiteFooter } from '../components/site/SiteChrome'
 import { enrollInCourse } from '../firebase/student'
 import { canEnroll, canOpenQuiz, quizUrl } from '../student/access'
 import {
-  COURSES, coursesForSubject, courseUrl, getCourse, getFamily, getSubject, ladderQuizzes, mockQuizzes, predictionQuiz, PROGRAMMES,
+  COURSES, coursesForSubject, courseUrl, getCourse, getFamily, getSubject, ladderQuizzes, mockQuizzes, predictionQuiz, PROGRAMMES, topicQuiz,
 } from '../student/catalog'
 import { courseProgress } from '../student/progress'
 import { CatalogIcon, StudentHeader } from '../student/StudentChrome'
 import { Modal, UpgradeDialog } from '../student/StudentDialogs'
 import { loginUrl, useSession } from '../student/session'
 import { useStudentData } from '../student/useStudent'
+import { useQuestionBanks } from '../student/useQuestionBanks'
 import '../student/student.css'
 
 const REVISION_TYPES = [
@@ -39,19 +40,20 @@ function Crumb({ label, items, current }) {
   </div>
 }
 
-function QuizCard({ course, quiz, best, profile, onLocked }) {
+function QuizCard({ course, quiz, best, profile, onLocked, loading }) {
   const open = canOpenQuiz(course, quiz.id, profile)
   const attempted = best != null
-  const go = (event) => { if (!open) { event.preventDefault(); onLocked(quiz) } }
-  return <article className={open ? 'st-quiz-card' : 'st-quiz-card st-quiz-locked'}>
+  const empty = !loading && !quiz.count
+  const go = (event) => { if (empty) event.preventDefault(); else if (!open) { event.preventDefault(); onLocked(quiz) } }
+  return <article className={empty ? 'st-quiz-card st-quiz-empty' : open ? 'st-quiz-card' : 'st-quiz-card st-quiz-locked'}>
     <div className="st-quiz-body">
       <h4>{quiz.title}{!open && <Lock size={14} aria-label="Gold only" />}</h4>
       {quiz.blurb && <p>{quiz.blurb}</p>}
-      <div className="st-quiz-meta"><span><CircleHelp size={15} /> {quiz.count} questions</span><span><Clock3 size={15} /> {quiz.minutes} mins</span></div>
+      <div className="st-quiz-meta">{loading ? <span><CircleHelp size={15} /> Loading…</span> : empty ? <span><CircleHelp size={15} /> No questions yet</span> : <><span><CircleHelp size={15} /> {quiz.count} question{quiz.count === 1 ? '' : 's'}</span><span><Clock3 size={15} /> {quiz.minutes} mins</span></>}</div>
       {attempted && <span className={best >= 80 ? 'st-score st-score-good' : best >= 50 ? 'st-score st-score-mid' : 'st-score st-score-low'}>Best: {best}%</span>}
     </div>
     <div className="st-quiz-actions">
-      <a className="st-outline-pill" href={quizUrl(course, quiz.id, 'study')} onClick={go}>{open ? 'Open Study' : <><Crown size={14} /> Unlock with Gold</>}</a>
+      <a className="st-outline-pill" href={quizUrl(course, quiz.id, 'study')} onClick={go} aria-disabled={empty || undefined}>{empty ? 'Coming soon' : open ? 'Open Study' : <><Crown size={14} /> Unlock with Gold</>}</a>
       <a className="st-round-icon" href={quizUrl(course, quiz.id, 'exam')} onClick={go} title="Exam mode (timed)" aria-label={`Start ${quiz.title} in timed exam mode`}><ClipboardList size={16} /></a>
     </div>
   </article>
@@ -80,6 +82,7 @@ export default function CoursePage({ courseId }) {
   const course = getCourse(courseId)
   const { user, profile } = useSession()
   const { attempts, enrollments } = useStudentData(user?.uid)
+  const { banks, loading: banksLoading } = useQuestionBanks()
   const [upgrade, setUpgrade] = useState(null)
   const [builder, setBuilder] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -99,9 +102,10 @@ export default function CoursePage({ courseId }) {
   const programme = PROGRAMMES.find((item) => item.id === course.programme)
   const progress = courseProgress(course, attempts)
   const enrolled = enrollments.some((item) => item.id === course.id)
-  const ladder = ladderQuizzes(course)
-  const mocks = mockQuizzes(course)
-  const prediction = predictionQuiz(course)
+  const ladder = ladderQuizzes(course, banks)
+  const mocks = mockQuizzes(course, banks)
+  const prediction = predictionQuiz(course, banks)
+  const card = (quiz) => <QuizCard key={quiz.id} course={course} quiz={quiz} best={progress.best[quiz.id]} profile={profile} onLocked={onLocked} loading={banksLoading} />
   const isFreeCourse = course.tier === 'free'
 
   const lockReason = (quiz) => quiz.kind === 'prediction' ? 'Prediction exams are part of Gold.' : `${course.title} is a Gold course. You can try its first topic quiz for free.`
@@ -178,26 +182,26 @@ export default function CoursePage({ courseId }) {
         {course.topics.map((item) => <div className="st-topic" key={item.id}>
           <p className="st-topic-num">Topic {item.number}</p>
           <h3>{item.title}</h3>
-          <div className="st-quiz-grid">{item.quizzes.map((quiz) => <QuizCard key={quiz.id} course={course} quiz={quiz} best={progress.best[quiz.id]} profile={profile} onLocked={onLocked} />)}</div>
+          <div className="st-quiz-grid">{item.quizzes.map((quiz) => card(topicQuiz(quiz, banks)))}</div>
         </div>)}
 
         <div className="st-section-card" id="revision-ladder">
           <span className="st-type-icon st-type-plum st-type-lg"><TrendingUp size={30} /></span>
           <div><h2>Revision Ladder</h2><p>Questions grouped by difficulty across the whole syllabus — climb one rung at a time.</p></div>
         </div>
-        <div className="st-quiz-grid st-quiz-grid-3">{ladder.map((quiz) => <QuizCard key={quiz.id} course={course} quiz={quiz} best={progress.best[quiz.id]} profile={profile} onLocked={onLocked} />)}</div>
+        <div className="st-quiz-grid st-quiz-grid-3">{ladder.map(card)}</div>
 
         <div className="st-section-card" id="mock-exams">
           <span className="st-type-icon st-type-mint st-type-lg"><ClipboardList size={30} /></span>
           <div><h2>Mock Exam Papers</h2><p>Full-length, timed papers. Every mock you finish is recorded under “Exams” on your dashboard.</p></div>
         </div>
-        <div className="st-quiz-grid st-quiz-grid-3">{mocks.map((quiz) => <QuizCard key={quiz.id} course={course} quiz={quiz} best={progress.best[quiz.id]} profile={profile} onLocked={onLocked} />)}</div>
+        <div className="st-quiz-grid st-quiz-grid-3">{mocks.map(card)}</div>
 
         <div className="st-section-card" id="prediction-exam">
           <span className="st-type-icon st-type-slate st-type-lg"><Orbit size={30} /></span>
           <div><h2>Prediction Exam <span className="st-tier st-tier-gold"><Crown size={12} /> Gold</span></h2><p>Our faculty’s selection of exam-standard questions for the {course.session} session.</p></div>
         </div>
-        <div className="st-quiz-grid st-quiz-grid-3"><QuizCard course={course} quiz={prediction} best={progress.best[prediction.id]} profile={profile} onLocked={onLocked} /></div>
+        <div className="st-quiz-grid st-quiz-grid-3">{card(prediction)}</div>
 
         <div className="st-past-papers"><div><h3>Want the real thing?</h3><p>Practise with official {programme.title} past papers and mark schemes.</p></div><a className="st-secondary" href={`/past-papers?subject=${encodeURIComponent(programme.pastPapers)}`}>Browse past papers</a></div>
       </div>
