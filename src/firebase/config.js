@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { connectAuthEmulator, getAuth } from 'firebase/auth'
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
+import { connectFirestoreEmulator, initializeFirestore } from 'firebase/firestore'
 import { connectStorageEmulator, getStorage } from 'firebase/storage'
 
 // Your web app's Firebase configuration
@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig)
 
 export const firebaseApp = app
 export const auth = getAuth(app)
-export const db = getFirestore(app)
+export const db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true })
 export const storage = getStorage(app)
 
 // Local development against `firebase emulators:start` (ports from firebase.json): set VITE_USE_FIREBASE_EMULATORS=true.
