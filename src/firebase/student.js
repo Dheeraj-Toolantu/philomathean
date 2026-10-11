@@ -6,8 +6,8 @@
 //   progressShares/{shareId}             public, read-only snapshot the student chooses to share
 //   student-photos/{uid}/avatar.jpg      profile photo
 import {
-  createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail,
-  signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile,
+  createUserWithEmailAndPassword, FacebookAuthProvider, getRedirectResult, GoogleAuthProvider, linkWithCredential, onAuthStateChanged,
+  sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut, updateProfile,
 } from 'firebase/auth'
 import {
   addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc,
@@ -52,11 +52,18 @@ const AUTH_ERRORS = {
   'auth/weak-password': 'Use a password of at least 8 characters.',
   'auth/invalid-email': 'Enter a valid email address.',
   'auth/too-many-requests': 'Too many attempts. Wait a minute and try again.',
-  'auth/popup-closed-by-user': 'The Google sign-in window was closed before finishing.',
+  'auth/popup-closed-by-user': 'The sign-in window was closed before finishing.',
+  'auth/cancelled-popup-request': 'The sign-in window was closed before finishing.',
+  'auth/unauthorized-domain': 'Sign-in isn’t enabled for this web address yet. Please contact the institute.',
   'auth/network-request-failed': 'Network error — check your connection and try again.',
   'auth/operation-not-allowed': 'This sign-in method is not enabled yet. Please contact the institute.',
 }
-export const authErrorMessage = (error) => AUTH_ERRORS[error?.code] || 'Something went wrong. Please try again.'
+export const authErrorMessage = (error) => {
+  if (error?.code === 'auth/account-exists-with-different-credential') {
+    return `This email is already registered with another sign-in method. Log in the way you did before — we’ll connect ${PROVIDER_LABELS[pendingLink?.provider] || 'this account'} to it automatically.`
+  }
+  return AUTH_ERRORS[error?.code] || 'Something went wrong. Please try again.'
+}
 
 // Creates the profile document the first time a student signs in. Plan always starts as free.
 export const ensureStudentProfile = async (user, extra = {}) => {
@@ -83,15 +90,56 @@ export const signUpStudent = async ({ name, email, password, curriculum, grade }
   await ensureStudentProfile(user, { displayName: name.trim(), curriculum, grade })
   return user
 }
-export const signInStudent = async (email, password) => {
-  const { user } = await signInWithEmailAndPassword(auth, email.trim(), password)
+// ---------- Social sign-in (Google, Facebook) ----------
+export const PROVIDER_LABELS = { 'google.com': 'Google', 'facebook.com': 'Facebook', password: 'Email & password' }
+const PROVIDERS = {
+  'google.com': () => { const provider = new GoogleAuthProvider(); provider.setCustomParameters({ prompt: 'select_account' }); return provider },
+  'facebook.com': () => { const provider = new FacebookAuthProvider(); provider.addScope('email'); return provider },
+}
+const credentialFromError = { 'google.com': GoogleAuthProvider.credentialFromError, 'facebook.com': FacebookAuthProvider.credentialFromError }
+
+// When a social account's email already belongs to another sign-in method, Firebase refuses the sign-in.
+// We keep that credential and attach it after the student logs in the original way, so both work afterwards.
+let pendingLink = null
+export const getPendingLink = () => pendingLink && { provider: pendingLink.provider, label: PROVIDER_LABELS[pendingLink.provider], email: pendingLink.email }
+
+const finishSignIn = async (user) => {
+  if (pendingLink) {
+    const { credential } = pendingLink
+    pendingLink = null
+    // Already linked or used elsewhere: the student is signed in either way, so don't block them.
+    await linkWithCredential(user, credential).catch((error) => { if (!['auth/provider-already-linked', 'auth/credential-already-in-use'].includes(error.code)) throw error })
+  }
   await ensureStudentProfile(user)
   return user
 }
-export const signInStudentWithGoogle = async () => {
-  const { user } = await signInWithPopup(auth, new GoogleAuthProvider())
-  await ensureStudentProfile(user)
-  return user
+
+export const signInStudent = async (email, password) => {
+  const { user } = await signInWithEmailAndPassword(auth, email.trim(), password)
+  return finishSignIn(user)
+}
+
+// Popup first; browsers that block popups (common on phones and in in-app browsers) fall back to a redirect,
+// which completeRedirectSignIn() finishes when the login page loads again.
+export const signInStudentWithProvider = async (providerId) => {
+  try {
+    const { user } = await signInWithPopup(auth, PROVIDERS[providerId]())
+    return await finishSignIn(user)
+  } catch (error) {
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/operation-not-supported-in-environment') {
+      await signInWithRedirect(auth, PROVIDERS[providerId]())
+      return new Promise(() => {}) // the browser is navigating away
+    }
+    if (error.code === 'auth/account-exists-with-different-credential') {
+      const credential = credentialFromError[providerId]?.(error)
+      if (credential) pendingLink = { provider: providerId, credential, email: error.customData?.email || '' }
+    }
+    throw error
+  }
+}
+export const completeRedirectSignIn = async () => {
+  const result = await getRedirectResult(auth)
+  return result ? finishSignIn(result.user) : null
 }
 export const resetStudentPassword = (email) => sendPasswordResetEmail(auth, email.trim())
 export const signOutStudent = () => signOut(auth)

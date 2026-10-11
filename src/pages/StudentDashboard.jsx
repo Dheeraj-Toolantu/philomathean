@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { SiteFooter, SiteHeader } from '../components/site/SiteChrome'
 import {
-  cancelPlanRequest, ensureStudentProfile, leaveCourse, publishProgressShare, removeStudentPhoto, resetStudentPassword,
+  cancelPlanRequest, ensureStudentProfile, leaveCourse, PROVIDER_LABELS, publishProgressShare, removeStudentPhoto, resetStudentPassword,
   signOutStudent, stopProgressShare, updateStudentProfile, uploadStudentPhoto,
 } from '../firebase/student'
 import { COURSES, courseUrl, getCourse, isExamKind } from '../student/catalog'
@@ -234,7 +234,8 @@ function ProfilePanel({ user, profile }) {
   const removePhoto = async () => { setPhotoBusy(true); try { await removeStudentPhoto(user.uid, profile.photoPath) } finally { setPhotoBusy(false) } }
   const reset = async () => { await resetStudentPassword(user.email); setMessage(['success', `Password reset link sent to ${user.email}.`]) }
   const created = profile.createdAt?.toDate?.()
-  const google = user.providerData.some((item) => item.providerId === 'google.com')
+  const methods = user.providerData.map((item) => PROVIDER_LABELS[item.providerId]).filter(Boolean)
+  const hasPassword = user.providerData.some((item) => item.providerId === 'password')
   return <>
     <PanelHead title="Profile" text="Your details help teachers personalise feedback." />
     <div className="st-card st-photo-card">
@@ -270,8 +271,8 @@ function ProfilePanel({ user, profile }) {
     </form>
     <div className="st-card">
       <div className="st-card-head"><h2>Account</h2></div>
-      <dl className="st-dl"><div><dt>Email</dt><dd>{user.email}</dd></div><div><dt>Sign-in method</dt><dd>{google ? 'Google' : 'Email & password'}</dd></div><div><dt>Member since</dt><dd>{formatDate(created)}</dd></div><div><dt>Plan</dt><dd><PlanBadge profile={profile} /></dd></div></dl>
-      <div className="st-row">{!google && <button type="button" className="st-secondary" onClick={reset}><Mail size={16} /> Send password reset email</button>}<button type="button" className="st-secondary" onClick={async () => { await signOutStudent(); window.location.href = '/' }}><LogOut size={16} /> Sign out</button></div>
+      <dl className="st-dl"><div><dt>Email</dt><dd>{user.email || '—'}</dd></div><div><dt>Sign-in method</dt><dd>{methods.join(', ') || '—'}</dd></div><div><dt>Member since</dt><dd>{formatDate(created)}</dd></div><div><dt>Plan</dt><dd><PlanBadge profile={profile} /></dd></div></dl>
+      <div className="st-row">{hasPassword && <button type="button" className="st-secondary" onClick={reset}><Mail size={16} /> Send password reset email</button>}<button type="button" className="st-secondary" onClick={async () => { await signOutStudent(); window.location.href = '/' }}><LogOut size={16} /> Sign out</button></div>
     </div>
   </>
 }
