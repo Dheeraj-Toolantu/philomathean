@@ -15,5 +15,66 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     match /auditLogs/{logId} { allow read: if isAdmin(); allow write: if false; }
+
+    // ---------- Student portal ----------
+    function isOwner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function student(uid) { return get(/databases/$(database)/documents/students/$(uid)).data; }
+    function isGold(uid) {
+      let profile = student(uid);
+      return profile.plan == 'gold' && (!('planExpiresAt' in profile) || profile.planExpiresAt == null || request.time < timestamp.value(profile.planExpiresAt));
+    }
+    function shortString(value, max) { return value is string && value.size() <= max; }
+    function validProfileFields(data) {
+      return shortString(data.get('displayName', ''), 80) && shortString(data.get('phone', ''), 20) && shortString(data.get('grade', ''), 40)
+        && shortString(data.get('school', ''), 120) && shortString(data.get('curriculum', ''), 40) && shortString(data.get('targetSession', ''), 40)
+        && shortString(data.get('bio', ''), 500) && shortString(data.get('parentEmail', ''), 120) && shortString(data.get('photoURL', ''), 1000)
+        && shortString(data.get('shareId', ''), 32)
+        && (data.get('planRequest', null) == null || (data.planRequest.plan == 'gold' && shortString(data.planRequest.note, 500)));
+    }
+
+    match /students/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      // New profiles always start on the free plan with the signed-in email.
+      allow create: if isOwner(uid) && request.resource.data.uid == uid && request.resource.data.plan == 'free'
+        && request.resource.data.email == request.auth.token.get('email', '') && !('planExpiresAt' in request.resource.data)
+        && validProfileFields(request.resource.data);
+      // Students edit their own details; plan, email and identity fields belong to administrators.
+      allow update: if isAdmin() || (isOwner(uid)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'email', 'plan', 'planExpiresAt', 'createdAt'])
+        && validProfileFields(request.resource.data));
+      allow delete: if isAdmin();
+
+      match /enrollments/{courseId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && request.resource.data.courseId == courseId && request.resource.data.keys().hasOnly(['courseId', 'tier', 'enrolledAt'])
+          && (request.resource.data.tier == 'free' || (request.resource.data.tier == 'premium' && isGold(uid)));
+        allow update: if false;
+        allow delete: if isOwner(uid) || isAdmin();
+      }
+
+      // Attempts are append-only so scores cannot be edited after the fact.
+      match /attempts/{attemptId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && request.resource.data.keys().hasOnly(['courseId', 'quizId', 'kind', 'title', 'mode', 'topicId', 'total', 'answered', 'correct', 'scorePct', 'durationSec', 'createdAt'])
+          && request.resource.data.kind in ['topic', 'ladder', 'mock', 'prediction', 'custom'] && request.resource.data.mode in ['study', 'exam']
+          && shortString(request.resource.data.courseId, 60) && shortString(request.resource.data.quizId, 300) && shortString(request.resource.data.title, 120)
+          && request.resource.data.total is int && request.resource.data.total > 0 && request.resource.data.total <= 100
+          && request.resource.data.answered is int && request.resource.data.answered >= 0 && request.resource.data.answered <= request.resource.data.total
+          && request.resource.data.correct is int && request.resource.data.correct >= 0 && request.resource.data.correct <= request.resource.data.answered
+          && request.resource.data.scorePct is int && request.resource.data.scorePct >= 0 && request.resource.data.scorePct <= 100
+          && request.resource.data.durationSec is int && request.resource.data.durationSec >= 0
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+
+    // Public, read-only progress cards. Only the owner can publish, refresh or remove theirs.
+    match /progressShares/{shareId} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if request.auth != null && resource.data.ownerUid == request.auth.uid && request.resource.data.ownerUid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
   }
 }

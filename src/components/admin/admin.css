@@ -246,3 +246,12 @@ body.adm-no-scroll { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .adm-shell *, .adm-portal *, .adm-drawer, .adm-dialog, .adm-toast { animation: none !important; transition: none !important; }
 }
+
+/* Students */
+.adm-student-grid { display: grid; grid-template-columns: minmax(0, 2.4fr) minmax(110px, .8fr) minmax(130px, .9fr) auto; align-items: center; gap: 16px; }
+.adm-student-search { display: inline-flex; flex: 1 1 260px; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid var(--adm-border); border-radius: 9px; color: var(--adm-subtle); background: #fff; }
+.adm-student-search input { flex: 1; min-width: 0; border: 0; outline: 0; color: var(--adm-text); font: 500 13px var(--sans); background: transparent; }
+.adm-avatar-photo { object-fit: cover; }
+.adm-request { display: block; margin-top: 2px; color: #a16207 !important; font-weight: 700; }
+.adm-student-meta { color: var(--adm-muted); font-size: 13px; }
+@media (max-width: 720px) { .adm-student-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; } .adm-student-grid .adm-list-head { display: none; } }

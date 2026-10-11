@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ExternalLink, FileText, Lock, LogOut, Trophy, Unlock } from 'lucide-react'
+import { ExternalLink, FileText, GraduationCap, Lock, LogOut, Trophy, Unlock } from 'lucide-react'
 import { signOutAdmin } from '../firebase/auth'
 import { countAdminPapers, countAdminResults } from '../firebase/content'
 import ResultsManager from '../components/admin/ResultsManager'
 import PastPapersManager from '../components/admin/PastPapersManager'
+import StudentsManager from '../components/admin/StudentsManager'
 import { ToastStack } from '../components/admin/AdminUI'
 import { useToasts } from '../components/admin/hooks'
 import '../components/admin/admin.css'
 
-const readTab = () => new URLSearchParams(window.location.search).get('tab') === 'results' ? 'results' : 'papers'
+const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return ['results', 'students'].includes(tab) ? tab : 'papers' }
 const greeting = () => { const hour = new Date().getHours(); return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening' }
 
 // Counts come from server-side aggregation queries: one cheap request each, no documents downloaded.
@@ -63,10 +64,10 @@ export default function AdminDashboard({ user }) {
       </section>
 
       <nav className="adm-tabs" role="tablist" aria-label="Content type">
-        {[['papers', 'Past papers', FileText, stats?.papers], ['results', 'Student results', Trophy, stats?.results]].map(([id, label, Icon, count]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} onClick={() => selectTab(id)}><Icon size={16} /> {label}{typeof count === 'number' && <span className="adm-tab-count">{count}</span>}</button>)}
+        {[['papers', 'Past papers', FileText, stats?.papers], ['results', 'Student results', Trophy, stats?.results], ['students', 'Students', GraduationCap, null]].map(([id, label, Icon, count]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} onClick={() => selectTab(id)}><Icon size={16} /> {label}{typeof count === 'number' && <span className="adm-tab-count">{count}</span>}</button>)}
       </nav>
 
-      {tab === 'papers' ? <PastPapersManager user={user} notify={notify} onChanged={refreshStats} /> : <ResultsManager user={user} notify={notify} onChanged={refreshStats} />}
+      {tab === 'papers' ? <PastPapersManager user={user} notify={notify} onChanged={refreshStats} /> : tab === 'students' ? <StudentsManager notify={notify} /> : <ResultsManager user={user} notify={notify} onChanged={refreshStats} />}
     </main>
     <ToastStack toasts={toasts} onDismiss={dismiss} />
   </div>
