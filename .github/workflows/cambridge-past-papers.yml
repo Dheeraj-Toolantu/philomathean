@@ -1,0 +1,62 @@
+# Downloads past papers from Cambridge International's public subject pages with
+# automation/past-papers/cambridge-past-papers.js, adds the Philomathean watermark and attaches the
+# PDFs to the run as an artifact. Nothing is committed: the papers are © Cambridge University Press &
+# Assessment, so confirm permission before hosting them publicly.
+# Start it from Actions → "Cambridge past papers" → Run workflow. It also runs a small check against
+# the live site when the script changes in a pull request.
+name: Cambridge past papers
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject:
+        description: Subject and syllabus code, or a Cambridge page URL (leave empty to use cambridge-subjects.txt)
+        default: ''
+        required: false
+      file_filter:
+        description: Leave empty for every PDF, "solved" for mark schemes only, or a regex (e.g. 2026)
+        default: ''
+        required: false
+      max_files:
+        description: Stop after this many PDFs per subject (0 = no limit)
+        default: '0'
+        required: true
+  pull_request:
+    paths:
+      - automation/past-papers/cambridge-past-papers.js
+      - automation/past-papers/rebrand-pdf.js
+      - .github/workflows/cambridge-past-papers.yml
+
+permissions:
+  contents: read
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: automation/past-papers
+    env:
+      SUBJECT: ${{ github.event_name == 'pull_request' && 'Mathematics 0580' || inputs.subject }}
+      FILE_FILTER: ${{ github.event_name == 'pull_request' && '2026|[msw]26_' || inputs.file_filter }}
+      MAX_FILES: ${{ github.event_name == 'pull_request' && '4' || inputs.max_files }}
+      OUT_DIR: past-papers/cambridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: automation/past-papers/package-lock.json
+      - run: npm ci
+      - name: List the papers (dry run)
+        run: DRY_RUN=true npm run cambridge
+      - name: Download and watermark
+        run: npm run cambridge
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cambridge-past-papers
+          path: past-papers/cambridge
+          if-no-files-found: warn
