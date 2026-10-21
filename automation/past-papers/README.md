@@ -69,6 +69,50 @@ Advertisements: requests to the common ad networks are blocked, and any ad that 
 Google's full-screen vignette (`#google_vignette`), is closed with its own close/dismiss button before
 the script clicks or types, after every page load (`ads.js`). Set `BLOCK_ADS=false` to let ads load and only close them.
 
+## Cambridge International's own site: `cambridge-past-papers.js`
+
+A separate script for the past papers and specimen papers that Cambridge International publishes on its
+public subject pages at [cambridgeinternational.org](https://www.cambridgeinternational.org). It needs no
+browser.
+
+> **Copyright.** These papers are © Cambridge University Press & Assessment (UCLES). The script keeps
+> Cambridge's copyright notices, logos and document properties exactly as published; it only adds the
+> Philomathean watermark on top. Downloading them for study is fine, but **confirm you have Cambridge's
+> permission before hosting them publicly** (on the website or elsewhere). Each paper's `manifest.json`
+> entry records its source URL and this copyright note.
+
+Put one subject per line in [`cambridge-subjects.txt`](cambridge-subjects.txt), name and syllabus code
+(`Mathematics 0580`), or paste a full `https://www.cambridgeinternational.org/...` page URL. For a
+subject name the script finds the subject on Cambridge's IGCSE, O Level and AS & A Level subject lists,
+then reads the subject page (specimen papers) and its `past-papers/` page and downloads every PDF linked
+from them into `past-papers/cambridge/<subject>/`.
+
+- **Polite crawling**: `robots.txt` is read first and obeyed (Disallow/Allow rules and `Crawl-delay`);
+  requests go one at a time with `DELAY_MS` (default 3000 ms, or the Crawl-delay if longer) between them;
+  every request carries a `PhilomatheanPastPapers/1.0` user agent; an HTTP 429/503 waits for
+  `Retry-After` before one retry. Only links on cambridgeinternational.org are followed.
+- **Watermark**: the same Philomathean logo, "PHILOMATHEAN" and footer as above (`watermarkPdf` in
+  `rebrand-pdf.js`), drawn on top of the page. Nothing is removed, and the title and author stay Cambridge's.
+- **Names**: read from the link text or file name, e.g. "June 2023 Question Paper 12" →
+  `2023 May-June - Mathematics 0580 - Question Paper - Paper 12.pdf`, "2025 Specimen Paper 1" →
+  `2025 Specimen - Mathematics 0580 - Specimen Paper - Paper 1.pdf`. Links it can't read keep their own file name.
+- Cambridge only publishes a few recent series publicly; older papers sit behind the School Support Hub
+  login, which this script does not use.
+
+```bash
+cd automation/past-papers
+npm ci
+DRY_RUN=true npm run cambridge                         # list what would be downloaded
+npm run cambridge                                      # every line of cambridge-subjects.txt
+SUBJECT="Physics 0625" FILE_FILTER=solved npm run cambridge   # one subject, mark schemes only
+```
+
+Other settings: `SUBJECTS_FILE`, `LISTING_URLS` (comma-separated subject list pages), `OUT_DIR`
+(default `past-papers/cambridge`), `MAX_FILES` (per line), `WATERMARK=false` to keep files as published,
+`WATERMARK_LOGO`, `USER_AGENT`. The tests run it against an offline imitation of the site, so the
+listing-page addresses and link wording it expects were not checked against the live site; if a subject
+is reported as not found, paste its page URL into the file instead.
+
 ## Save to the repository from GitHub
 
 Edit and commit `search-terms.txt`, then Actions → **Save past papers to repo** → **Run workflow**
@@ -104,4 +148,4 @@ SEARCH_TERM="Mathematics 0444" MAX_FILES=10 npm run download   # one subject onl
 Other settings: `START_URL`, `OUT_DIR` (with several terms, each gets a subfolder of it), `MAX_FILES` (per term), `MAX_DEPTH` (default 0 = keep opening subfolders until none are left), `MAX_PAGES` (safety cap, default 5000), `DELAY_MS` (default 1500),
 `FILE_FILTER` (`solved` or a regex on file name and link text), `BLOCK_ADS`, `REBRAND`, `WATERMARK_LOGO`, `HEADLESS=false` to watch the browser, `CHROMIUM_PATH`.
 
-`npm test` runs the downloader against a local mock of the site and checks the rebranding on PDFs stamped the way PapaCambridge stamps them.
+`npm test` runs both downloaders against local mocks of their sites and checks the rebranding on PDFs stamped the way PapaCambridge stamps them.

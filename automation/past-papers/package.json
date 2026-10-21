@@ -6,6 +6,7 @@
   "description": "Browser automation that searches PapaCambridge for a subject, downloads its past-paper PDFs one by one and rebrands them with the Philomathean watermark.",
   "scripts": {
     "download": "node download-past-papers.js",
+    "cambridge": "node cambridge-past-papers.js",
     "rebrand": "node rebrand-pdf.js",
     "test": "node --test test/*.test.js"
   },
