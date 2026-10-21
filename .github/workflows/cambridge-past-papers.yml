@@ -14,7 +14,7 @@ on:
         default: ''
         required: false
       file_filter:
-        description: Leave empty for every PDF, "solved" for mark schemes only, or a regex (e.g. 2026)
+        description: Leave empty for every PDF, "solved" for mark schemes only, or a regex (e.g. 2024)
         default: ''
         required: false
       max_files:
@@ -39,8 +39,8 @@ jobs:
         working-directory: automation/past-papers
     env:
       SUBJECT: ${{ github.event_name == 'pull_request' && 'Mathematics 0580' || inputs.subject }}
-      FILE_FILTER: ${{ github.event_name == 'pull_request' && '2026|[msw]26_' || inputs.file_filter }}
-      MAX_FILES: ${{ github.event_name == 'pull_request' && '4' || inputs.max_files }}
+      FILE_FILTER: ${{ github.event_name == 'pull_request' && 'specimen' || inputs.file_filter }}
+      MAX_FILES: ${{ github.event_name == 'pull_request' && '2' || inputs.max_files }}
       OUT_DIR: past-papers/cambridge
     steps:
       - uses: actions/checkout@v4
