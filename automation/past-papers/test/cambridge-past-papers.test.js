@@ -86,6 +86,8 @@ test('reads robots.txt rules for our user agent', () => {
 test('reads links, syllabus codes and paper names from Cambridge pages', () => {
   const links = extractLinks('<a class="x" href="/Images/1-june-2023-question-paper-12.pdf"><span>June 2023</span> Question Paper 12 &amp; more</a><a href="mailto:a@b">mail</a>', `${SITE}/a/`)
   assert.deepEqual(links, [{ href: `${SITE}/Images/1-june-2023-question-paper-12.pdf`, text: 'June 2023 Question Paper 12 & more' }])
+  // A commented-out icon inside the link must not leave "-->" in the text.
+  assert.deepEqual(extractLinks('<a href="/a.pdf"><!--<i class="icon"></i>-->June 2024 Mark Scheme Paper 11</a>', SITE).map(({ text }) => text), ['June 2024 Mark Scheme Paper 11'])
   assert.equal(isCambridgeUrl(`${SITE}/x.pdf`), true)
   assert.equal(isCambridgeUrl('https://cambridgeinternational.org.evil.com/x.pdf'), false)
   assert.equal(syllabusCode('Cambridge IGCSE Mathematics (0580)'), '0580')
@@ -97,6 +99,7 @@ test('reads links, syllabus codes and paper names from Cambridge pages', () => {
   assert.equal(name('June 2023 Principal Examiner Report'), '0580_s23_er.pdf')
   assert.equal(name('2025 Specimen Paper Mark Scheme 2'), '0580_y25_sm_2.pdf')
   assert.equal(name('2025 Specimen Paper 1'), '0580_y25_sp_1.pdf')
+  assert.equal(name('-->2025 Specimen Paper 1 Mark Scheme (PDF, 1MB)'), '0580_y25_sm_1.pdf')
   assert.equal(name('Download', `${SITE}/Images/649425-june-2023-question-paper-12.pdf`), '0580_s23_qp_12.pdf')
   assert.equal(name('Syllabus overview'), null)
 })
