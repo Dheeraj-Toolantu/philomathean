@@ -651,6 +651,15 @@ export const rebrandPdf = async (bytes, { fileName = '', subject = '', logoPath 
   return { bytes: Buffer.from(await doc.save()), name, removed }
 }
 
+// Adds the Philomathean watermark to `bytes` without removing or changing anything already on the
+// page, and leaves the document properties alone. Used for papers from Cambridge International,
+// whose copyright notices, logos and metadata must stay intact (cambridge-past-papers.js).
+export const watermarkPdf = async (bytes, { logoPath = DEFAULT_LOGO } = {}) => {
+  const doc = await PDFDocument.load(bytes, { updateMetadata: false })
+  await addWatermark(doc, await loadWatermarkLogo(logoPath))
+  return Buffer.from(await doc.save())
+}
+
 // ---------------------------------------------------------------------------------------------
 // Command line: rebrand a folder that was downloaded before rebranding existed.
 

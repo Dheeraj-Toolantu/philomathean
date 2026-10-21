@@ -1,0 +1,3 @@
+# One Cambridge International subject per line (name and syllabus code), or a full
+# https://www.cambridgeinternational.org/... page URL. Lines starting with # are ignored.
+Mathematics 0580
