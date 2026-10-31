@@ -1,10 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { ArrowRight, Atom, Award, BookOpen, Brain, ClipboardCheck, Dna, FlaskConical, GraduationCap, Layers, Lightbulb, LineChart, Phone, Play, Quote, Sigma, Target, Users } from 'lucide-react'
 import './App.css'
 import './directorVision'
 import { subscribeToPublishedResults } from './firebase/content'
 import { SiteFooter, SiteHeader } from './components/site/SiteChrome'
+import { Testimonials } from './components/site/Testimonials'
 import './components/site/site.css'
 import { ENTRANCE_EXAMS as entranceExams, FOUNDATION_SCHEME as foundationScheme } from './components/site/programmes'
 import { directorFaculty, educatorFaculty, everyTeacher, faculty, isLeadershipName, teacherSlug, teacherSubjects, teachesSubject } from './components/site/faculty'
@@ -28,40 +28,19 @@ const SharedProgress = lazy(() => import('./pages/SharedProgress'))
 // Teacher portal: test marks, student-wise performance, test schedule, teaching material and ratings.
 const TeacherPortal = lazy(() => import('./pages/TeacherPortal'))
 
-// Programmes in priority order. Each lists the courses we teach and the grades they cover.
 const programs = [
-  [BookOpen, 'IGCSE Mathematics', 'Cambridge IGCSE', 'Grades 9–10', 'blue', [['0607', 'International Mathematics · Core & Extended'], ['0606', 'Additional Mathematics'], ['0580', 'Mathematics · Extended']]],
-  [GraduationCap, 'IBDP Mathematics', 'International Baccalaureate Diploma Programme', 'Grades 11–12', 'purple', [['AI SL', 'Applications & Interpretation · Standard Level'], ['AA SL', 'Analysis & Approaches · Standard Level'], ['AI HL', 'Applications & Interpretation · Higher Level'], ['AA HL', 'Analysis & Approaches · Higher Level']]],
-  [Award, 'AS & A Level', 'Cambridge International AS & A Level', 'Grades 11–12', 'green', [['AS Level', 'First year of the A Level course'], ['A Level', 'Full Advanced Level qualification']]],
-  [Layers, 'IB MYP', 'International Baccalaureate Middle Years Programme', 'Grades 8–10', 'orange', [['MYP 3', 'Grade 8'], ['MYP 4', 'Grade 9'], ['MYP 5', 'Grade 10']]],
+  [Layers, 'IB MYP', 'International Baccalaureate Middle Years Programme', 'orange'],
+  [BookOpen, 'IGCSE', 'International General Certificate of Secondary Education', 'blue'],
+  [GraduationCap, 'IBDP', 'International Baccalaureate Diploma Programme', 'purple'],
+  [Award, 'A Levels', 'Advanced Level', 'green'],
 ]
 const results = [
-  ['45/45', 'Aditya Sriram', 'CHEM(7), BIO(7), PSYCH(7)', 'Oberoi International'],
-  ['45/45', 'Sanjana Nevatia', 'CHEM HL (7)', 'Cathedral & John Connon School'],
-  ['45/45', 'Rhea Shah', 'CHEM(7), BIO(7), PSYCH(7)', 'Hill Spring International'],
-  ['44/45', 'Aradhitta Goenka', 'PHY(7), CHEM(7), MATH AAHL(7)', 'Bombay International'],
-  ['44/45', 'Raya Isphani', 'ECO HL(7), PHY HL(7), CHEM SL(7)', 'Bombay International'],
-  ['44/45', 'Ansh Kapoor', 'CHEM HL(7), PHY HL(7)', 'Bombay International'],
-]
-const testimonials = [
-  ['Review 1', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_1.mp4'],
-  ['Review 2', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_2.mp4'],
-  ['Review 3', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_3.mp4'],
-  ['Review 4', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_4.mp4'],
-  ['Review 5', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_5.mp4'],
-  ['Review 6', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_6.mp4'],
-  ['Review 7', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_7.mp4'],
-  ['Review 8', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_8.mp4'],
-  ['Review 9', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_9.mp4'],
-  ['Review 10', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_10.mp4'],
-  ['Review 11', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_11.mp4'],
-  ['Review 12', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_12.mp4'],
-  ['Review 13', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_13.mp4'],
-  ['Review 14', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_14.mp4'],
-  ['Review 15', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_15.mp4'],
-  ['Review 16', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_16.mp4'],
-  ['Review 17', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_17.mp4'],
-  ['Review 18', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_18.mp4']
+  ['45/45', 'Aarav Malhotra', 'CHEM(7), BIO(7), PSYCH(7)', 'Oberoi International'],
+  ['45/45', 'Ishita Desai', 'CHEM HL (7)', 'Cathedral & John Connon School'],
+  ['45/45', 'Kavya Iyer', 'CHEM(7), BIO(7), PSYCH(7)', 'Hill Spring International'],
+  ['44/45', 'Vihaan Mehta', 'PHY(7), CHEM(7), MATH AAHL(7)', 'Bombay International'],
+  ['44/45', 'Ananya Kulkarni', 'ECO HL(7), PHY HL(7), CHEM SL(7)', 'Bombay International'],
+  ['44/45', 'Arjun Bhatia', 'CHEM HL(7), PHY HL(7)', 'Bombay International'],
 ]
 
 const benefits = [
@@ -74,13 +53,6 @@ const benefits = [
 ]
 
 
-function Testimonials({ activeStory, setActiveStory }) {
-  const [mountNode, setMountNode] = useState(null)
-  const active = testimonials[activeStory]
-  const next = testimonials[(activeStory + 1) % testimonials.length]
-  useEffect(() => { const cta = document.querySelector('.cta'); if (!cta) return undefined; const node = document.createElement('div'); cta.parentNode.insertBefore(node, cta); const frame = window.requestAnimationFrame(() => setMountNode(node)); return () => { window.cancelAnimationFrame(frame); node.remove() } }, [])
-  return mountNode ? createPortal(<section className="testimonials" id="testimonials"><div className="testimonial-intro section-intro centered"><div className="pill testimonial-pill">Testimonials</div><h2><span className="testimonial-word-what">What</span> <span className="testimonial-word-students">Students</span> <span className="testimonial-word-say">Say</span></h2><p>Hear directly from the students and families who have experienced the Philomathean difference.</p></div><div className="story-stage"><div className="story-heading">WATCH THEIR STORIES</div><div className="story-carousel"><button className="story-arrow" type="button" onClick={() => setActiveStory((activeStory - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial">‹</button><article className="story-card active-story"><video src={active[3]} controls muted playsInline preload="metadata" aria-label={`${active[0]} testimonial`} /><div className="story-overlay"><span>Student Story</span><h3>{active[0]}</h3><p>{active[1]}</p><blockquote>“{active[2]}”</blockquote></div></article><article className="story-card next-story"><video src={next[3]} muted playsInline preload="metadata" aria-label={`${next[0]} testimonial`} /><div className="story-overlay"><span>Student Story</span><h3>{next[0]}</h3><p>{next[1]}</p></div></article><button className="story-arrow" type="button" onClick={() => setActiveStory((activeStory + 1) % testimonials.length)} aria-label="Next testimonial">›</button></div><div className="story-dots"><span className="current-dot" />{testimonials.slice(1).map((_, index) => <button type="button" key={index} onClick={() => setActiveStory(index + 1)} aria-label={`Show testimonial ${index + 2}`} />)}</div></div></section>, mountNode) : null
-}
 
 function FacultyCard({ member }) {
   const [name, role, subject, image, description, experience] = member
@@ -159,7 +131,6 @@ function App() {
   const [formSent, setFormSent] = useState(false)
   const [formError, setFormError] = useState(false)
   const [formSubmitting, setFormSubmitting] = useState(false)
-  const [activeStory, setActiveStory] = useState(0)
   const [publicResults, setPublicResults] = useState([])
   useEffect(() => subscribeToPublishedResults(setPublicResults, () => setPublicResults([])), [])
   const submitEnquiry = async (event) => {
@@ -206,7 +177,7 @@ function App() {
   const displayedResults = publicResults.length ? publicResults.map((item) => [item.score, item.studentName, item.subjects, item.school]) : results
   return <main>
     <FloatingSymbols />
-    <Testimonials activeStory={activeStory} setActiveStory={setActiveStory} />
+    <Testimonials />
     <a className="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader home />
 
@@ -214,7 +185,7 @@ function App() {
 
     <section className="founder section" id="about"><div className="section-intro centered"><div className="pill blue-pill"><Award size={14} /> &nbsp; Meet Our Founder</div><h2>Led by <span>Satish Vishwakarma</span></h2><p>Founder &amp; Director of Philomathean Career Institute &mdash; a visionary educator shaping the<br className="desktop" /> next generation of global achievers.</p></div><div className="founder-grid"><div className="founder-photo"><img src="/media/faculty-01.jpeg" alt="Satish Vishwakarma" /><div><b><Award size={11} /> &nbsp; FOUNDER &amp; DIRECTOR</b><h3>Satish Vishwakarma</h3><p>Mathematics · IGCSE, IBDP &amp; A Levels</p></div><span className="experience"><strong>12+</strong><small>Years Experience</small></span></div><div className="founder-content"><blockquote><Quote size={38} /></blockquote><p>Renowned for a personalised and result-oriented teaching methodology, Satish Sir has consistently guided students to exceptional outcomes in Cambridge and IB examinations. Under his leadership, Philomathean delivers world-class academic support that empowers students to achieve excellence through innovation, discipline, and individualised learning.</p><div className="founder-points"><article><b><GraduationCap /></b><strong>12+ Years of Teaching</strong><small>Mentoring Grades 8-12 across IGCSE, IBDP and A Levels.</small></article><article><b><Award /></b><strong>Cambridge &amp; IB Expert</strong><small>Consistently guiding students to top grades in international examinations.</small></article><article><b><Target /></b><strong>Result-Oriented Mentoring</strong><small>Personalised strategies for subject selection and university preparation.</small></article><article><b><Users /></b><strong>Institute Leadership</strong><small>Built Philomathean into a trusted name in international education.</small></article></div><div className="philosophy"><h3><Lightbulb size={18} /> &nbsp; Teaching Philosophy</h3><p>• &nbsp; Conceptual clarity before formulae &mdash; students learn the ‘why’, not just the ‘how’.</p><p>• &nbsp; Individualised learning paths tailored to each student's pace and goals.</p><p>• &nbsp; Discipline, innovation and constant feedback to unlock every learner's potential.</p><a className="orange-button" href="#contact">Enquire About Admissions &nbsp; <ArrowRight size={16} /></a> <a className="ghost-button" href="#faculty">Meet the Faculty</a></div></div></div></section>
 
-    <section className="programs section" id="programs"><div className="section-intro centered"><div className="pill orange-soft">Our Services</div><h2>Everything Your Child Needs &mdash;<br /><span>Under One Roof</span></h2><p>From foundational tutoring to competitive exam mastery, we offer a comprehensive suite<br className="desktop" /> of programs tailored to every learner.</p></div><div className="program-grid">{programs.map(([Icon, title, description, grades, color, courses], index) => <article className={`program-card ${color}`} key={title}><div className="program-title"><b><Icon aria-hidden="true" /></b><div><h3><span className="program-rank">{index + 1}</span>{title}</h3><span>{grades}</span></div></div><p>{description}</p><ul className="program-courses">{courses.map(([code, name]) => <li key={code}><strong>{code}</strong>{name}</li>)}</ul><a href="#enquiry">Enquire about {title} ↗</a></article>)}</div><div className="program-extras"><article className="program-extra"><h3>Grades 6–8 Foundation</h3><p>A step-by-step scheme that builds the base for IGCSE and MYP.</p><ol className="scheme-steps">{foundationScheme.map(([grade, items]) => <li key={grade}><strong>{grade}</strong><span>{items.map((item) => <em key={item}>{item}</em>)}</span></li>)}</ol></article><article className="program-extra" id="entrance-exams"><h3>Entrance-Level Exams</h3><p>Focused preparation for competitions and admission tests.</p><ol className="exam-list">{entranceExams.map(([exam, detail]) => <li key={exam}><strong>{exam}</strong><span>{detail}</span></li>)}</ol></article></div><div className="subject-band"><strong>SUBJECTS WE COVER</strong><div><span>⚛ Physics</span><span>⚗ Chemistry</span><span>▦ Mathematics</span><span>♧ Biology</span><span>⌁ Economics</span><span>♧ Psychology</span><span>▣ Business</span><span>▤ English</span><span>&lt;/&gt; Computer Sci.</span></div><small>and 14+ more subjects</small></div><a className="blue-button" href="#contact">Explore All Programs &nbsp; →</a></section>
+    <section className="programs section" id="programs"><div className="section-intro centered"><div className="pill orange-soft">Our Services</div><h2>Everything Your Child Needs &mdash;<br /><span>Under One Roof</span></h2><p>From foundational tutoring to competitive exam mastery, we offer a comprehensive suite<br className="desktop" /> of programs tailored to every learner.</p></div><div className="program-grid">{programs.map(([Icon, title, description, color]) => <article className={`program-card ${color}`} key={title}><div className="program-title"><b><Icon aria-hidden="true" /></b><div><h3>{title}</h3><span>Grades 11-12 · Ages 11-16</span></div></div><p>{description}</p><a href="#contact">View programme ↗</a></article>)}</div><div className="program-extras"><article className="program-extra"><h3>Grades 6–8 Foundation</h3><p>A step-by-step scheme that builds the base for IGCSE and MYP.</p><ol className="scheme-steps">{foundationScheme.map(([grade, items]) => <li key={grade}><strong>{grade}</strong><span>{items.map((item) => <em key={item}>{item}</em>)}</span></li>)}</ol></article><article className="program-extra" id="entrance-exams"><h3>Entrance-Level Exams</h3><p>Focused preparation for competitions and admission tests.</p><ol className="exam-list">{entranceExams.map(([exam, detail]) => <li key={exam}><strong>{exam}</strong><span>{detail}</span></li>)}</ol></article></div><div className="subject-band"><strong>SUBJECTS WE COVER</strong><div><span>⚛ Physics</span><span>⚗ Chemistry</span><span>▦ Mathematics</span><span>♧ Biology</span><span>⌁ Economics</span><span>♧ Psychology</span><span>▣ Business</span><span>▤ English</span><span>&lt;/&gt; Computer Sci.</span></div><small>and 14+ more subjects</small></div><a className="blue-button" href="#contact">Explore All Programs &nbsp; →</a></section>
 
     <section className="why section" id="exam-prep"><div className="section-intro centered"><div className="pill blue-pill">Why Choose Us</div><h2>Points That Set Us <span>Apart</span></h2><p>We combine pedagogical excellence, modern infrastructure, and personalised attention to<br className="desktop" /> deliver transformative academic outcomes.</p></div><div className="why-grid">{benefits.map(([Icon, title, text]) => <article key={title}><b><Icon aria-hidden="true" /></b><h3>{title}</h3><p>{text}</p></article>)}</div></section>
 

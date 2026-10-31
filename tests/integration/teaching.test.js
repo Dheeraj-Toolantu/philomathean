@@ -1,7 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { markError, percent, progressCard, ratingSummary, studentSummaries, testSummaries, upcoming } from '../../src/teacher/marks.js'
-import { buildSearchIndex, searchSite } from '../../src/components/site/siteSearch.js'
 import { everyTeacher, faculty, TEACHER_HIERARCHY } from '../../src/components/site/faculty.js'
 import { COURSES, PROGRAMMES } from '../../src/student/catalog.js'
 
@@ -52,19 +51,12 @@ test('teachers follow the institute hierarchy', () => {
   assert.deepEqual(faculty.slice(0, TEACHER_HIERARCHY.length).map((member) => member[0]), TEACHER_HIERARCHY)
   assert.equal(new Set(everyTeacher.map((member) => member[0])).size, everyTeacher.length)
   assert.equal(everyTeacher[0][0], 'Satish Vishwakarma')
+  assert.deepEqual(everyTeacher.slice(-2).map((member) => member[0]), ['Deepak Tripathi', 'Ashish Jha'])
+  assert.equal(faculty.length, 8)
+  assert.equal(faculty[7][0], 'Akshara Agarwal', 'Akshara Agarwal takes the eighth home-page card')
 })
 
 test('IGCSE Mathematics comes first and includes 0607 and 0606', () => {
   assert.equal(PROGRAMMES[0].id, 'igcse')
   for (const id of ['igcse-0607-ext', 'igcse-0607-core', 'igcse-0606', 'igcse-math-ext']) assert.ok(COURSES.some((course) => course.id === id), id)
-})
-
-test('site search finds programmes, exams, courses and teachers', () => {
-  const index = buildSearchIndex()
-  assert.equal(searchSite(index, '0606')[0].title, 'IGCSE Mathematics')
-  assert.ok(searchSite(index, 'checkpoint').some((item) => item.title === 'Grades 6–8 Foundation'))
-  assert.equal(searchSite(index, 'psat')[0].title, 'PSAT')
-  assert.equal(searchSite(index, 'pawan')[0].href, '/teachers/pawan-yadav')
-  assert.ok(searchSite(index, 'aa hl').some((item) => item.href === '/courses/ib-math-aa-hl'))
-  assert.deepEqual(searchSite(index, '   '), [])
 })

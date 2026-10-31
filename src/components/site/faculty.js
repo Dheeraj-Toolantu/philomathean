@@ -29,10 +29,13 @@ const rank = (member) => { const index = TEACHER_HIERARCHY.indexOf(member[0]); r
 const byHierarchy = (list) => list.map((member, index) => [member, index]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([member]) => member)
 
 const allFaculty = byHierarchy([...unorderedFaculty, rinky])
-// Home page: the first eight in hierarchy order.
-export const faculty = allFaculty.slice(0, 8)
+// Home page: the teaching hierarchy, then Akshara Agarwal.
+export const faculty = [...allFaculty.slice(0, TEACHER_HIERARCHY.length), ...allFaculty.filter((member) => member[0] === 'Akshara Agarwal')]
 export const directorFaculty = [unorderedFaculty[0], rinky]
-export const educatorFaculty = allFaculty.filter((member) => !directorFaculty.includes(member))
+// On /teachers, Deepak Tripathi and Ashish Jha are listed last.
+const LISTED_LAST = ['Deepak Tripathi', 'Ashish Jha']
+const educators = allFaculty.filter((member) => !directorFaculty.includes(member))
+export const educatorFaculty = [...educators.filter((member) => !LISTED_LAST.includes(member[0])), ...LISTED_LAST.map((name) => educators.find((member) => member[0] === name)).filter(Boolean)]
 export const everyTeacher = [...directorFaculty, ...educatorFaculty]
 
 export const teacherSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
