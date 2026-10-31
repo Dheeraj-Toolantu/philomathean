@@ -9,14 +9,14 @@ import { useStudentData } from '../student/useStudent'
 import { useQuestionBanks } from '../student/useQuestionBanks'
 import '../student/student.css'
 
-const startProgramme = () => { const value = new URLSearchParams(window.location.search).get('programme'); return PROGRAMMES.some((item) => item.id === value) ? value : 'ib' }
+const startProgramme = () => { const value = new URLSearchParams(window.location.search).get('programme'); return PROGRAMMES.some((item) => item.id === value) ? value : 'igcse' }
 
 export default function CoursesPage() {
   const { user } = useSession()
   const { attempts, enrollments } = useStudentData(user?.uid)
   const { banks, loading: banksLoading } = useQuestionBanks()
   const [programme, setProgramme] = useState(startProgramme)
-  const pick = (id) => { setProgramme(id); window.history.replaceState(null, '', id === 'ib' ? '/courses' : `/courses?programme=${id}`) }
+  const pick = (id) => { setProgramme(id); window.history.replaceState(null, '', id === 'igcse' ? '/courses' : `/courses?programme=${id}`) }
   const families = FAMILIES.filter((family) => family.programme === programme)
   const totalQuestions = [...new Set(COURSES.flatMap(courseBankIds))].reduce((sum, bank) => sum + (banks[bank] || []).length, 0)
 

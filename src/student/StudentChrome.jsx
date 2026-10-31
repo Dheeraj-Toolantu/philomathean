@@ -61,7 +61,7 @@ export function StudentHeader({ programme, active }) {
   return <><SiteHeader active={active === 'courses' ? 'courses' : undefined} /><CourseBar programme={programme} active={active} /></>
 }
 
-export function CourseBar({ programme: initialProgramme = 'ib', active, standalone = false }) {
+export function CourseBar({ programme: initialProgramme = 'igcse', active, standalone = false }) {
   const { user, profile } = useSession()
   const [programme, setProgramme] = useState(initialProgramme)
   const [menu, setMenu] = useState(null)

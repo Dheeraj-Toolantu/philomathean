@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, Mail, MapPin, Menu, Phone, X } from 'lucide-react'
 import { AccountMenu } from '../../student/AccountMenu'
+import { ENTRANCE_EXAMS, OTHER_EXAMS } from './programmes'
+import { FloatingActions } from './FloatingActions'
 
 const PHONE = '+91 93241 64073'
-const examPrepOptions = [['SAT', 'US college admissions'], ['ACT', 'US college admissions'], ['UCAT', 'Medical school entrance'], ['TOEFL', 'English proficiency'], ['BMAT', 'Biomedical admissions'], ['Olympiads', 'Competitive science & maths']]
+const examPrepOptions = [...ENTRANCE_EXAMS, ...OTHER_EXAMS]
 
 export function BrandLockup() {
   return <a className="logo-lockup" href="/#home" aria-label="Philomathean home"><img src="/media/logo.png" alt="" /><span><strong>PHILOMATHEAN</strong><small>CAREER INSTITUTE PVT. LTD.</small></span></a>
@@ -14,7 +16,7 @@ function ExamPrepDropdown({ base, closeMenu }) {
   const closeDropdown = () => { setOpen(false); closeMenu() }
   return <div className={open ? 'nav-dropdown-wrap dropdown-open' : 'nav-dropdown-wrap'} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
     <button className="nav-dropdown-trigger" type="button" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen(!open)}>Exam Prep {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</button>
-    {open && <div className="nav-dropdown" role="menu">{examPrepOptions.map(([title, description]) => <a href={`${base}#exam-prep`} role="menuitem" key={title} onClick={closeDropdown}><strong>{title}</strong><small>{description}</small></a>)}</div>}
+    {open && <div className="nav-dropdown" role="menu">{examPrepOptions.map(([title, description]) => <a href={`${base}#entrance-exams`} role="menuitem" key={title} onClick={closeDropdown}><strong>{title}</strong><small>{description}</small></a>)}</div>}
   </div>
 }
 
@@ -49,9 +51,10 @@ export function SiteHeader({ active, home = false }) {
 export function SiteFooter() {
   return <footer className="site-footer">
     <div className="footer-brand"><img src="/media/logo.png" alt="Philomathean" /><p>India's premier tutoring institute for MYP, IBDP,<br /> IGCSE, AS &amp; A-Level, and competitive exams.<br /> Your partner for academic success.</p><p className="footer-contact"><a href="tel:+919324164073"><Phone size={14} /> {PHONE}</a><a href="mailto:philomathean22@gmail.com"><Mail size={14} /> philomathean22@gmail.com</a><span><MapPin size={14} /> Shop no 35, Aardhya Highpark, Mumbai</span></p></div>
-    <div><h3>Programs</h3><p><a href="/#programs">IB MYP</a><br /><a href="/#programs">IGCSE</a><br /><a href="/#programs">IBDP</a><br /><a href="/#programs">A Levels</a><br /><a href="/#programs">All Programs</a></p></div>
-    <div><h3>Study Resources</h3><p><a href="/past-papers?subject=IGCSE">IGCSE Past Papers</a><br /><a href="/past-papers?subject=AS%20%26%20A%20Level">A Level Past Papers</a><br /><a href="/past-papers?subject=IBDP">IBDP Past Papers</a><br /><a href="/premium-sources">All Resources</a><br /><a href="/#exam-prep">Exam Prep</a><br /><a href="/courses">Practice Exams</a><br /><a href="/login">Student Login</a></p></div>
+    <div><h3>Programs</h3><p><a href="/#programs">IGCSE Mathematics</a><br /><a href="/#programs">IBDP Mathematics</a><br /><a href="/#programs">AS &amp; A Level</a><br /><a href="/#programs">IB MYP</a><br /><a href="/#programs">Grades 6–8 Foundation</a><br /><a href="/#programs">All Programs</a></p></div>
+    <div><h3>Study Resources</h3><p><a href="/past-papers?subject=IGCSE">IGCSE Past Papers</a><br /><a href="/past-papers?subject=AS%20%26%20A%20Level">A Level Past Papers</a><br /><a href="/past-papers?subject=IBDP">IBDP Past Papers</a><br /><a href="/premium-sources">All Resources</a><br /><a href="/#exam-prep">Exam Prep</a><br /><a href="/courses">Practice Exams</a><br /><a href="/login">Student Login</a><br /><a href="/teacher">Teacher Login</a></p></div>
     <div><h3>Quick Links</h3><p><a href="/#about">Founder</a><br /><a href="/teachers">Our Teachers</a><br /><a href="/#results">Results</a><br /><a href="/#testimonials">Testimonials</a><br /><a href="/#contact">Contact</a></p></div>
     <small className="copyright">© {new Date().getFullYear()} Philomathean Career Institute Pvt. Ltd. All rights reserved.</small>
+    <FloatingActions />
   </footer>
 }
