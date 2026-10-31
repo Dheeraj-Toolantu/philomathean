@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore'
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { auth, db, storage } from './config'
+import { loginIdToEmail } from './loginId'
 
 export const MAX_PHOTO_BYTES = 5 * 1024 * 1024
 export const PROFILE_FIELDS = ['displayName', 'phone', 'grade', 'school', 'curriculum', 'targetSession', 'bio', 'parentEmail']
@@ -45,12 +46,12 @@ export const getSession = () => state
 
 // ---------- Authentication ----------
 const AUTH_ERRORS = {
-  'auth/invalid-credential': 'That email and password don’t match an account.',
-  'auth/wrong-password': 'That email and password don’t match an account.',
-  'auth/user-not-found': 'That email and password don’t match an account.',
+  'auth/invalid-credential': 'That login ID or email and password don’t match an account.',
+  'auth/wrong-password': 'That login ID or email and password don’t match an account.',
+  'auth/user-not-found': 'That login ID or email and password don’t match an account.',
   'auth/email-already-in-use': 'An account with this email already exists — log in instead.',
   'auth/weak-password': 'Use a password of at least 8 characters.',
-  'auth/invalid-email': 'Enter a valid email address.',
+  'auth/invalid-email': 'Enter a valid email address or login ID.',
   'auth/too-many-requests': 'Too many attempts. Wait a minute and try again.',
   'auth/popup-closed-by-user': 'The sign-in window was closed before finishing.',
   'auth/cancelled-popup-request': 'The sign-in window was closed before finishing.',
@@ -124,12 +125,18 @@ const finishSignIn = async (user) => {
     // Already linked or used elsewhere: the student is signed in either way, so don't block them.
     await linkWithCredential(user, credential).catch((error) => { if (!['auth/provider-already-linked', 'auth/credential-already-in-use'].includes(error.code)) throw error })
   }
+  // Teachers sign in on the same page; they don't need a student profile.
+  if (await isTeacherAccount(user.uid)) return user
   await ensureStudentProfile(user)
   return user
 }
 
-export const signInStudent = async (email, password) => {
-  const { user } = await signInWithEmailAndPassword(auth, email.trim(), password)
+// True when an administrator has added this account to /teachers.
+export const isTeacherAccount = async (uid) => (await getDoc(doc(db, 'teachers', uid)).catch(() => null))?.exists() === true
+
+// Accepts an email address or a login ID an administrator created (see loginId.js).
+export const signInStudent = async (loginIdOrEmail, password) => {
+  const { user } = await signInWithEmailAndPassword(auth, loginIdToEmail(loginIdOrEmail), password)
   return finishSignIn(user)
 }
 
