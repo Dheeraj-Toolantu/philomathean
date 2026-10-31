@@ -51,6 +51,7 @@ test('teachers follow the institute hierarchy', () => {
   assert.deepEqual(faculty.slice(0, TEACHER_HIERARCHY.length).map((member) => member[0]), TEACHER_HIERARCHY)
   assert.equal(new Set(everyTeacher.map((member) => member[0])).size, everyTeacher.length)
   assert.equal(everyTeacher[0][0], 'Satish Vishwakarma')
+  assert.deepEqual(everyTeacher.slice(-2).map((member) => member[0]), ['Deepak Tripathi', 'Ashish Jha'])
   assert.equal(faculty.length, 8)
   assert.equal(faculty[7][0], 'Akshara Agarwal', 'Akshara Agarwal takes the eighth home-page card')
 })
