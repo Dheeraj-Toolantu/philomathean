@@ -21,6 +21,7 @@ import { formatDate, formatMinutes, kindLabel } from '../student/format'
 import { GOLD_FEATURES, hasGold } from '../student/access'
 import { loginUrl, useSession } from '../student/session'
 import { useStudentData } from '../student/useStudent'
+import { ReportPanel } from '../student/ReportPanel'
 import '../student/student.css'
 
 const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return DASHBOARD_TABS.some(([id]) => id === tab) ? tab : 'overview' }
@@ -74,6 +75,7 @@ export default function StudentDashboard() {
         {tab === 'overview' && <Overview {...panelProps} name={name} />}
         {tab === 'courses' && <CoursesPanel {...panelProps} />}
         {tab === 'progress' && <ProgressPanel {...panelProps} />}
+        {tab === 'report' && <ReportPanel user={user} />}
         {tab === 'exams' && <ExamsPanel {...panelProps} />}
         {tab === 'profile' && <ProfilePanel {...panelProps} />}
         {tab === 'subscription' && <SubscriptionPanel {...panelProps} />}

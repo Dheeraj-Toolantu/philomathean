@@ -48,7 +48,7 @@ function SearchDialog({ onClose }) {
     <div className="float-dialog" role="dialog" aria-modal="true" aria-label="Search the website" onMouseDown={(event) => event.stopPropagation()}>
       <div className="float-search-bar">
         <Search size={19} aria-hidden="true" />
-        <input ref={input} type="search" value={query} onChange={(event) => { setQuery(event.target.value); setActive(0) }} onKeyDown={onKeyDown} placeholder="Search programmes, courses, past papers, teachers…" aria-label="Search" aria-controls="float-results" />
+        <input ref={input} type="text" value={query} onChange={(event) => { setQuery(event.target.value); setActive(0) }} onKeyDown={onKeyDown} placeholder="Search programmes, courses, past papers, teachers…" aria-label="Search" aria-controls="float-results" />
         <button type="button" onClick={onClose} aria-label="Close search"><X size={18} /></button>
       </div>
       <ul className="float-results" id="float-results" role="listbox">

@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
-import { CircleHelp, ExternalLink, FileText, GraduationCap, Lock, LogOut, Trophy, Unlock } from 'lucide-react'
+import { CircleHelp, ExternalLink, FileText, GraduationCap, Lock, LogOut, School, Trophy, Unlock } from 'lucide-react'
 import { signOutAdmin } from '../firebase/auth'
 import { countAdminPapers, countAdminResults } from '../firebase/content'
 import ResultsManager from '../components/admin/ResultsManager'
 import PastPapersManager from '../components/admin/PastPapersManager'
 import StudentsManager from '../components/admin/StudentsManager'
 import QuestionsManager from '../components/admin/QuestionsManager'
+import TeachersManager from '../components/admin/TeachersManager'
 import { ToastStack } from '../components/admin/AdminUI'
 import { useToasts } from '../components/admin/hooks'
 import '../components/admin/admin.css'
 
-const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return ['results', 'students', 'questions'].includes(tab) ? tab : 'papers' }
+const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return ['results', 'students', 'questions', 'teachers'].includes(tab) ? tab : 'papers' }
 const greeting = () => { const hour = new Date().getHours(); return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening' }
 
 // Counts come from server-side aggregation queries: one cheap request each, no documents downloaded.
@@ -45,6 +46,7 @@ export default function AdminDashboard({ user }) {
     <header className="adm-topbar">
       <a className="adm-brand" href="/admin"><img src="/media/logo.png" alt="" /><span><strong>Philomathean</strong><small>Admin</small></span></a>
       <div className="adm-topbar-actions">
+        <a className="adm-button adm-button-ghost adm-hide-mobile" href="/teacher">Teacher portal</a>
         <a className="adm-button adm-button-ghost adm-hide-mobile" href="/" target="_blank" rel="noreferrer"><ExternalLink size={15} /> View website</a>
         <span className="adm-user" title={user.email}><span className="adm-user-avatar">{(user.email || '?')[0].toUpperCase()}</span><span className="adm-hide-mobile">{user.email}</span></span>
         <button type="button" className="adm-icon-button" onClick={logout} aria-label="Sign out" title="Sign out"><LogOut size={17} /></button>
@@ -53,7 +55,7 @@ export default function AdminDashboard({ user }) {
 
     <main className="adm-main">
       <section className="adm-hero">
-        <div><p className="adm-eyebrow">{greeting()}</p><h1>Content control centre</h1><p>Keep past papers and student achievements on your website up to date.</p></div>
+        <div><p className="adm-eyebrow">{greeting()}</p><h1>Content control centre</h1><p>Keep past papers and student achievements up to date, and manage teachers. Test marks, the test schedule and teaching material live in the <a href="/teacher">teacher portal</a>.</p></div>
       </section>
 
       <section className="adm-stats" aria-label="Summary">
@@ -65,10 +67,10 @@ export default function AdminDashboard({ user }) {
       </section>
 
       <nav className="adm-tabs" role="tablist" aria-label="Content type">
-        {[['papers', 'Past papers', FileText, stats?.papers], ['results', 'Student results', Trophy, stats?.results], ['questions', 'Questions', CircleHelp, null], ['students', 'Students', GraduationCap, null]].map(([id, label, Icon, count]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} onClick={() => selectTab(id)}><Icon size={16} /> {label}{typeof count === 'number' && <span className="adm-tab-count">{count}</span>}</button>)}
+        {[['papers', 'Past papers', FileText, stats?.papers], ['results', 'Student results', Trophy, stats?.results], ['questions', 'Questions', CircleHelp, null], ['students', 'Students', GraduationCap, null], ['teachers', 'Teachers', School, null]].map(([id, label, Icon, count]) => <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'active' : ''} onClick={() => selectTab(id)}><Icon size={16} /> {label}{typeof count === 'number' && <span className="adm-tab-count">{count}</span>}</button>)}
       </nav>
 
-      {tab === 'papers' ? <PastPapersManager user={user} notify={notify} onChanged={refreshStats} /> : tab === 'students' ? <StudentsManager notify={notify} /> : tab === 'questions' ? <QuestionsManager user={user} notify={notify} /> : <ResultsManager user={user} notify={notify} onChanged={refreshStats} />}
+      {tab === 'papers' ? <PastPapersManager user={user} notify={notify} onChanged={refreshStats} /> : tab === 'students' ? <StudentsManager notify={notify} /> : tab === 'questions' ? <QuestionsManager user={user} notify={notify} /> : tab === 'teachers' ? <TeachersManager notify={notify} /> : <ResultsManager user={user} notify={notify} onChanged={refreshStats} />}
     </main>
     <ToastStack toasts={toasts} onDismiss={dismiss} />
   </div>

@@ -25,6 +25,8 @@ const CoursesPage = lazy(() => import('./pages/CoursesPage'))
 const CoursePage = lazy(() => import('./pages/CoursePage'))
 const QuizPage = lazy(() => import('./pages/QuizPage'))
 const SharedProgress = lazy(() => import('./pages/SharedProgress'))
+// Teacher portal: test marks, student-wise performance, test schedule, teaching material and ratings.
+const TeacherPortal = lazy(() => import('./pages/TeacherPortal'))
 
 // Programmes in priority order. Each lists the courses we teach and the grades they cover.
 const programs = [
@@ -193,6 +195,7 @@ function App() {
   if (window.location.pathname === '/teachers') return <TeachersPage />
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
   if (path === '/login') return <Suspense fallback={pageFallback}><StudentLogin /></Suspense>
+  if (path === '/teacher') return <Suspense fallback={adminFallback}><TeacherPortal /></Suspense>
   if (path === '/dashboard') return <Suspense fallback={pageFallback}><StudentDashboard /></Suspense>
   if (path === '/courses') return <Suspense fallback={pageFallback}><CoursesPage /></Suspense>
   if (path === '/quiz') return <Suspense fallback={pageFallback}><QuizPage /></Suspense>
