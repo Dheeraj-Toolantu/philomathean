@@ -335,23 +335,6 @@
 .float-button { display: grid; place-items: center; width: 52px; height: 52px; border: 0; border-radius: 50%; color: #fff; box-shadow: 0 8px 20px rgba(16,24,46,.22); cursor: pointer; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
 .float-button:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(16,24,46,.28); }
 .float-button:focus-visible { outline: 3px solid #8bb2ff; outline-offset: 3px; }
-.float-search { background: #193e8d; }
-.float-call { background: var(--orange); }
 .float-whatsapp { background: #25d366; }
-body.float-no-scroll { overflow: hidden; }
-.float-overlay { position: fixed; inset: 0; z-index: 200; display: flex; justify-content: center; align-items: flex-start; padding: 12vh 16px 16px; background: rgba(16,24,46,.45); }
-.float-dialog { width: min(640px, 100%); max-height: 76vh; display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: #fff; box-shadow: 0 24px 60px rgba(16,24,46,.3); }
-.float-search-bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #e2e8f1; color: #61718b; }
-.float-search-bar input { flex: 1; min-width: 0; border: 0; outline: 0; color: var(--navy); font-size: 16px; }
-.float-search-bar button { display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px; color: #61718b; background: #f3f6fb; cursor: pointer; }
-.float-results { margin: 0; padding: 8px; overflow-y: auto; list-style: none; }
-.float-results a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; color: var(--navy); text-decoration: none; }
-.float-results a.active { background: #f0f5ff; }
-.float-results a > span { flex: 1; min-width: 0; }
-.float-results strong { display: block; font-size: 14px; }
-.float-results small { display: block; overflow: hidden; color: #61718b; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.float-results em { flex: 0 0 auto; padding: 2px 8px; border-radius: 7px; color: #e96417; background: #fff1e4; font-size: 11px; font-style: normal; }
-.float-hint { padding: 18px 12px; color: #61718b; font-size: 14px; }
-.float-hint a { color: var(--orange); }
-@media (max-width: 620px) { .float-actions { right: 12px; bottom: 12px; gap: 8px; } .float-button { width: 46px; height: 46px; } .float-overlay { padding-top: 8vh; } }
+@media (max-width: 620px) { .float-actions { right: 12px; bottom: 12px; gap: 8px; } .float-button { width: 46px; height: 46px; } }
 @media print { .float-actions { display: none; } }
