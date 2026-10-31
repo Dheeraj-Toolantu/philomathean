@@ -35,12 +35,12 @@ const programs = [
   [Award, 'A Levels', 'Advanced Level', 'green'],
 ]
 const results = [
-  ['45/45', 'Aditya Sriram', 'CHEM(7), BIO(7), PSYCH(7)', 'Oberoi International'],
-  ['45/45', 'Sanjana Nevatia', 'CHEM HL (7)', 'Cathedral & John Connon School'],
-  ['45/45', 'Rhea Shah', 'CHEM(7), BIO(7), PSYCH(7)', 'Hill Spring International'],
-  ['44/45', 'Aradhitta Goenka', 'PHY(7), CHEM(7), MATH AAHL(7)', 'Bombay International'],
-  ['44/45', 'Raya Isphani', 'ECO HL(7), PHY HL(7), CHEM SL(7)', 'Bombay International'],
-  ['44/45', 'Ansh Kapoor', 'CHEM HL(7), PHY HL(7)', 'Bombay International'],
+  ['45/45', 'Aarav Malhotra', 'CHEM(7), BIO(7), PSYCH(7)', 'Oberoi International'],
+  ['45/45', 'Ishita Desai', 'CHEM HL (7)', 'Cathedral & John Connon School'],
+  ['45/45', 'Kavya Iyer', 'CHEM(7), BIO(7), PSYCH(7)', 'Hill Spring International'],
+  ['44/45', 'Vihaan Mehta', 'PHY(7), CHEM(7), MATH AAHL(7)', 'Bombay International'],
+  ['44/45', 'Ananya Kulkarni', 'ECO HL(7), PHY HL(7), CHEM SL(7)', 'Bombay International'],
+  ['44/45', 'Arjun Bhatia', 'CHEM HL(7), PHY HL(7)', 'Bombay International'],
 ]
 
 const benefits = [
