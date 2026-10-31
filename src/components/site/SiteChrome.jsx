@@ -16,7 +16,7 @@ function ExamPrepDropdown({ base, closeMenu }) {
   const closeDropdown = () => { setOpen(false); closeMenu() }
   return <div className={open ? 'nav-dropdown-wrap dropdown-open' : 'nav-dropdown-wrap'} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
     <button className="nav-dropdown-trigger" type="button" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen(!open)}>Exam Prep {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}</button>
-    {open && <div className="nav-dropdown" role="menu">{examPrepOptions.map(([title, description]) => <a href={`${base}#entrance-exams`} role="menuitem" key={title} onClick={closeDropdown}><strong>{title}</strong><small>{description}</small></a>)}</div>}
+    {open && <div className="nav-dropdown" role="menu">{examPrepOptions.map(([title, description]) => <a href={`${base}#exam-prep`} role="menuitem" key={title} onClick={closeDropdown}><strong>{title}</strong><small>{description}</small></a>)}</div>}
   </div>
 }
 
