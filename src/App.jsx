@@ -1,10 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
 import { ArrowRight, Atom, Award, BookOpen, Brain, ClipboardCheck, Dna, FlaskConical, GraduationCap, Layers, Lightbulb, LineChart, Phone, Play, Quote, Sigma, Target, Users } from 'lucide-react'
 import './App.css'
 import './directorVision'
 import { subscribeToPublishedResults } from './firebase/content'
 import { SiteFooter, SiteHeader } from './components/site/SiteChrome'
+import { Testimonials } from './components/site/Testimonials'
 import './components/site/site.css'
 import { ENTRANCE_EXAMS as entranceExams, FOUNDATION_SCHEME as foundationScheme } from './components/site/programmes'
 import { directorFaculty, educatorFaculty, everyTeacher, faculty, isLeadershipName, teacherSlug, teacherSubjects, teachesSubject } from './components/site/faculty'
@@ -42,26 +42,6 @@ const results = [
   ['44/45', 'Raya Isphani', 'ECO HL(7), PHY HL(7), CHEM SL(7)', 'Bombay International'],
   ['44/45', 'Ansh Kapoor', 'CHEM HL(7), PHY HL(7)', 'Bombay International'],
 ]
-const testimonials = [
-  ['Review 1', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_1.mp4'],
-  ['Review 2', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_2.mp4'],
-  ['Review 3', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_3.mp4'],
-  ['Review 4', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_4.mp4'],
-  ['Review 5', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_5.mp4'],
-  ['Review 6', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_6.mp4'],
-  ['Review 7', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_7.mp4'],
-  ['Review 8', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_8.mp4'],
-  ['Review 9', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_9.mp4'],
-  ['Review 10', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_10.mp4'],
-  ['Review 11', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_11.mp4'],
-  ['Review 12', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_12.mp4'],
-  ['Review 13', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_13.mp4'],
-  ['Review 14', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_14.mp4'],
-  ['Review 15', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_15.mp4'],
-  ['Review 16', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_16.mp4'],
-  ['Review 17', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_17.mp4'],
-  ['Review 18', 'Student Story', 'Hear how Philomathean helped this student grow in confidence and achieve their academic goals.', '/media/review_18.mp4']
-]
 
 const benefits = [
   [Target, 'Tailored Tutoring', 'One-on-one or small group sessions designed around your child’s unique learning pace and style.'],
@@ -73,13 +53,6 @@ const benefits = [
 ]
 
 
-function Testimonials({ activeStory, setActiveStory }) {
-  const [mountNode, setMountNode] = useState(null)
-  const active = testimonials[activeStory]
-  const next = testimonials[(activeStory + 1) % testimonials.length]
-  useEffect(() => { const cta = document.querySelector('.cta'); if (!cta) return undefined; const node = document.createElement('div'); cta.parentNode.insertBefore(node, cta); const frame = window.requestAnimationFrame(() => setMountNode(node)); return () => { window.cancelAnimationFrame(frame); node.remove() } }, [])
-  return mountNode ? createPortal(<section className="testimonials" id="testimonials"><div className="testimonial-intro section-intro centered"><div className="pill testimonial-pill">Testimonials</div><h2><span className="testimonial-word-what">What</span> <span className="testimonial-word-students">Students</span> <span className="testimonial-word-say">Say</span></h2><p>Hear directly from the students and families who have experienced the Philomathean difference.</p></div><div className="story-stage"><div className="story-heading">WATCH THEIR STORIES</div><div className="story-carousel"><button className="story-arrow" type="button" onClick={() => setActiveStory((activeStory - 1 + testimonials.length) % testimonials.length)} aria-label="Previous testimonial">‹</button><article className="story-card active-story"><video src={active[3]} controls muted playsInline preload="metadata" aria-label={`${active[0]} testimonial`} /><div className="story-overlay"><span>Student Story</span><h3>{active[0]}</h3><p>{active[1]}</p><blockquote>“{active[2]}”</blockquote></div></article><article className="story-card next-story"><video src={next[3]} muted playsInline preload="metadata" aria-label={`${next[0]} testimonial`} /><div className="story-overlay"><span>Student Story</span><h3>{next[0]}</h3><p>{next[1]}</p></div></article><button className="story-arrow" type="button" onClick={() => setActiveStory((activeStory + 1) % testimonials.length)} aria-label="Next testimonial">›</button></div><div className="story-dots"><span className="current-dot" />{testimonials.slice(1).map((_, index) => <button type="button" key={index} onClick={() => setActiveStory(index + 1)} aria-label={`Show testimonial ${index + 2}`} />)}</div></div></section>, mountNode) : null
-}
 
 function FacultyCard({ member }) {
   const [name, role, subject, image, description, experience] = member
@@ -158,7 +131,6 @@ function App() {
   const [formSent, setFormSent] = useState(false)
   const [formError, setFormError] = useState(false)
   const [formSubmitting, setFormSubmitting] = useState(false)
-  const [activeStory, setActiveStory] = useState(0)
   const [publicResults, setPublicResults] = useState([])
   useEffect(() => subscribeToPublishedResults(setPublicResults, () => setPublicResults([])), [])
   const submitEnquiry = async (event) => {
@@ -205,7 +177,7 @@ function App() {
   const displayedResults = publicResults.length ? publicResults.map((item) => [item.score, item.studentName, item.subjects, item.school]) : results
   return <main>
     <FloatingSymbols />
-    <Testimonials activeStory={activeStory} setActiveStory={setActiveStory} />
+    <Testimonials />
     <a className="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader home />
 

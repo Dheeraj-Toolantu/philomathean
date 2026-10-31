@@ -1,0 +1,29 @@
+/* "What Students Say": auto-scrolling video cards with thumbnails */
+.ts-stage { position: relative; margin-top: 0; padding: 34px 0 40px; background: linear-gradient(135deg, #140b36 0%, #1d1460 55%, #23177a 100%); overflow: hidden; }
+.ts-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1180px; margin: 0 auto 22px; padding: 0 5vw; }
+.ts-heading > span { color: #ffb020; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.ts-controls { display: flex; gap: 8px; }
+.ts-controls button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; color: #fff; background: rgba(255,255,255,.08); cursor: pointer; transition: background .15s; }
+.ts-controls button:hover { background: rgba(255,255,255,.18); }
+.ts-track { display: flex; gap: 20px; padding: 6px 5vw 10px; overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.ts-track::-webkit-scrollbar { display: none; }
+.ts-card { flex: 0 0 300px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; color: #fff; background: rgba(255,255,255,.06); text-align: left; cursor: pointer; font: inherit; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+.ts-card:hover, .ts-card:focus-visible { transform: translateY(-4px); border-color: rgba(255,176,32,.7); background: rgba(255,255,255,.1); outline: none; }
+.ts-thumb { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: #0e0828; }
+.ts-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.ts-card:hover .ts-thumb img { transform: scale(1.05); }
+.ts-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(10,6,30,.55)); }
+.ts-play { position: absolute; top: 50%; left: 50%; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; padding-left: 3px; border-radius: 50%; color: #f45b0a; background: rgba(255,255,255,.95); box-shadow: 0 8px 24px rgba(0,0,0,.35); transform: translate(-50%, -50%); transition: transform .2s ease; }
+.ts-card:hover .ts-play { transform: translate(-50%, -50%) scale(1.08); }
+.ts-duration { position: absolute; left: 12px; bottom: 10px; z-index: 1; padding: 3px 9px; border-radius: 8px; color: #fff; background: rgba(0,0,0,.45); font-size: 11px; font-weight: 700; }
+.ts-body { display: grid; gap: 3px; padding: 14px 16px 16px; }
+.ts-body svg { color: #ffb020; }
+.ts-body strong { font-size: 16px; }
+.ts-body small { color: #c6c0ee; font-size: 12.5px; }
+.ts-overlay { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 16px; background: rgba(8,5,24,.82); }
+.ts-dialog { position: relative; width: min(920px, 100%); overflow: hidden; border-radius: 18px; background: #0e0828; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.ts-dialog video { display: block; width: 100%; max-height: 75vh; background: #000; }
+.ts-dialog-caption { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 14px 18px; color: #fff; }
+.ts-dialog-caption span { color: #c6c0ee; font-size: 13px; }
+.ts-close { position: absolute; top: 10px; right: 10px; z-index: 2; display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: rgba(0,0,0,.55); cursor: pointer; }
+@media (max-width: 620px) { .ts-card { flex-basis: 240px; } .ts-heading { margin-bottom: 16px; } .ts-controls button { width: 36px; height: 36px; } }
