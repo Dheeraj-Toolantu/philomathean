@@ -8,7 +8,7 @@ import { safeNext, useSession } from '../student/session'
 import '../student/student.css'
 
 const params = new URLSearchParams(window.location.search)
-const CURRICULA = ['IBDP', 'IB MYP', 'IGCSE', 'AS & A Level', 'SAT / ACT', 'Other']
+const CURRICULA = ['IGCSE', 'IBDP', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'SAT / ACT', 'AMC / Olympiad / PSAT', 'Other']
 const GRADES = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Gap year / Other']
 const perks = [
   [GraduationCap, 'Topic quizzes, revision ladders and timed mock exams'],

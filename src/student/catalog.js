@@ -4,18 +4,19 @@
 // the built-in ones (questionBank.js), see questions.js. Options are shuffled per attempt.
 import { BANKS } from './questionBank.js'
 
+// In the institute's priority order: IGCSE Mathematics first, then IBDP, then AS & A Level.
 export const PROGRAMMES = [
-  { id: 'ib', label: 'IB', title: 'International Baccalaureate', pastPapers: 'IBDP' },
   { id: 'igcse', label: 'IGCSE', title: 'Cambridge IGCSE', pastPapers: 'IGCSE' },
+  { id: 'ib', label: 'IB', title: 'International Baccalaureate', pastPapers: 'IBDP' },
   { id: 'alevel', label: 'A Level', title: 'Cambridge AS & A Level', pastPapers: 'AS & A Level' },
 ]
 
 // `icon` names a lucide-react icon resolved in the UI; `tone` picks the badge colour.
 export const FAMILIES = [
-  { id: 'ib-math', programme: 'ib', title: 'IB Mathematics', icon: 'Sigma', tone: 'blue', subjects: ['ib-math-aa', 'ib-math-ai'] },
+  { id: 'igcse-math', programme: 'igcse', title: 'IGCSE Mathematics', icon: 'Sigma', tone: 'blue', subjects: ['igcse-math-0607', 'igcse-add-math', 'igcse-math'] },
+  { id: 'ib-math', programme: 'ib', title: 'IB Mathematics', icon: 'Sigma', tone: 'blue', subjects: ['ib-math-ai', 'ib-math-aa'] },
   { id: 'ib-sciences', programme: 'ib', title: 'IB Sciences', icon: 'FlaskConical', tone: 'navy', subjects: ['ib-physics', 'ib-chemistry'] },
   { id: 'ib-societies', programme: 'ib', title: 'IB Individuals & Societies', icon: 'Users', tone: 'red', subjects: ['ib-economics'] },
-  { id: 'igcse-math', programme: 'igcse', title: 'IGCSE Mathematics', icon: 'Sigma', tone: 'blue', subjects: ['igcse-math'] },
   { id: 'igcse-sciences', programme: 'igcse', title: 'IGCSE Sciences', icon: 'FlaskConical', tone: 'navy', subjects: ['igcse-physics', 'igcse-chemistry'], badge: 'New' },
   { id: 'alevel-math', programme: 'alevel', title: 'A Level Mathematics', icon: 'Sigma', tone: 'blue', subjects: ['alevel-math'], badge: 'Beta' },
 ]
@@ -32,6 +33,8 @@ export const SUBJECTS = [
   { id: 'ib-physics', family: 'ib-sciences', title: 'IB Physics', longTitle: 'IB Physics', icon: 'Atom' },
   { id: 'ib-chemistry', family: 'ib-sciences', title: 'IB Chemistry', longTitle: 'IB Chemistry', icon: 'FlaskConical' },
   { id: 'ib-economics', family: 'ib-societies', title: 'IB Economics', longTitle: 'IB Economics', icon: 'TrendingUp' },
+  { id: 'igcse-math-0607', family: 'igcse-math', title: 'IGCSE International Maths', longTitle: 'Cambridge IGCSE International Mathematics (0607)', icon: 'Sigma' },
+  { id: 'igcse-add-math', family: 'igcse-math', title: 'IGCSE Additional Maths', longTitle: 'Cambridge IGCSE Additional Mathematics (0606)', icon: 'Sigma' },
   { id: 'igcse-math', family: 'igcse-math', title: 'IGCSE Mathematics', longTitle: 'Cambridge IGCSE Mathematics (0580)', icon: 'Sigma' },
   { id: 'igcse-physics', family: 'igcse-sciences', title: 'IGCSE Physics', longTitle: 'Cambridge IGCSE Physics (0625)', icon: 'Atom' },
   { id: 'igcse-chemistry', family: 'igcse-sciences', title: 'IGCSE Chemistry', longTitle: 'Cambridge IGCSE Chemistry (0620)', icon: 'FlaskConical' },
@@ -40,13 +43,16 @@ export const SUBJECTS = [
 
 // `tier: 'premium'` courses need the Gold plan beyond the free preview quiz.
 export const COURSES = [
-  { id: 'ib-math-aa-sl', subject: 'ib-math-aa', level: 'SL', tier: 'free', session: 'November 2026', topics: [NUMBER_ALGEBRA, FUNCTIONS, CALCULUS] },
-  { id: 'ib-math-aa-hl', subject: 'ib-math-aa', level: 'HL', tier: 'premium', session: 'November 2026', topics: [{ ...NUMBER_ALGEBRA, quizzes: [...NUMBER_ALGEBRA.quizzes, { bank: 'complex', title: 'Complex Numbers' }, { bank: 'induction', title: 'Proof by Induction' }] }, FUNCTIONS, CALCULUS] },
   { id: 'ib-math-ai-sl', subject: 'ib-math-ai', level: 'SL', tier: 'free', session: 'November 2026', topics: [topic('number-algebra', 1, 'Number & Algebra', [['financial', 'Financial & Growth Models']]), STATS] },
+  { id: 'ib-math-aa-sl', subject: 'ib-math-aa', level: 'SL', tier: 'free', session: 'November 2026', topics: [NUMBER_ALGEBRA, FUNCTIONS, CALCULUS] },
   { id: 'ib-math-ai-hl', subject: 'ib-math-ai', level: 'HL', tier: 'premium', session: 'November 2026', topics: [topic('number-algebra', 1, 'Number & Algebra', [['financial', 'Financial & Growth Models'], ['complex', 'Complex Numbers']]), STATS, CALCULUS] },
+  { id: 'ib-math-aa-hl', subject: 'ib-math-aa', level: 'HL', tier: 'premium', session: 'November 2026', topics: [{ ...NUMBER_ALGEBRA, quizzes: [...NUMBER_ALGEBRA.quizzes, { bank: 'complex', title: 'Complex Numbers' }, { bank: 'induction', title: 'Proof by Induction' }] }, FUNCTIONS, CALCULUS] },
   { id: 'ib-physics-sl', subject: 'ib-physics', level: 'SL', tier: 'premium', session: 'November 2026', topics: [topic('mechanics', 1, 'Space, Time & Motion', [['kinematics', 'Kinematics'], ['forces', 'Forces & Momentum']]), topic('waves', 3, 'Wave Behaviour', [['waves', 'Waves & Optics']])] },
   { id: 'ib-chemistry-sl', subject: 'ib-chemistry', level: 'SL', tier: 'premium', session: 'November 2026', topics: [topic('structure', 1, 'Models of the Particulate Nature of Matter', [['atomic', 'Atomic Structure']]), topic('stoichiometry', 2, 'Reactivity & Quantities', [['stoichiometry', 'The Mole & Stoichiometry']])] },
   { id: 'ib-economics-sl', subject: 'ib-economics', level: 'SL', tier: 'premium', session: 'November 2026', topics: [topic('micro', 2, 'Microeconomics', [['demand-supply', 'Demand & Supply'], ['elasticity', 'Elasticities']])] },
+  { id: 'igcse-0607-ext', subject: 'igcse-math-0607', level: 'Extended', tier: 'free', session: 'Oct/Nov 2026', topics: [topic('number', 1, 'Number', [['percentages', 'Percentages']]), topic('algebra', 2, 'Algebra', [['linear-equations', 'Linear Equations & Graphs'], ['quadratics', 'Quadratics']]), topic('functions', 3, 'Functions', [['transformations', 'Transformations'], ['exp-log-functions', 'Exponential & Logarithmic Functions']]), topic('geometry', 5, 'Geometry', [['angles', 'Angles & Circle Theorems']]), topic('probability', 8, 'Probability & Statistics', [['probability', 'Probability'], ['statistics', 'Statistics']])] },
+  { id: 'igcse-0607-core', subject: 'igcse-math-0607', level: 'Core', tier: 'free', session: 'Oct/Nov 2026', topics: [topic('number', 1, 'Number', [['percentages', 'Percentages']]), topic('algebra', 2, 'Algebra', [['linear-equations', 'Linear Equations & Graphs']]), topic('geometry', 5, 'Geometry', [['angles', 'Angles & Circle Theorems']]), topic('probability', 8, 'Probability & Statistics', [['probability', 'Probability'], ['statistics', 'Statistics']])] },
+  { id: 'igcse-0606', subject: 'igcse-add-math', level: 'Paper 1 & 2', tier: 'premium', session: 'Oct/Nov 2026', topics: [topic('functions', 1, 'Functions & Quadratics', [['quadratics', 'Quadratic Functions'], ['transformations', 'Functions & Transformations']]), topic('logs', 2, 'Logarithmic & Exponential Functions', [['exponents-logs', 'Indices & Logarithms'], ['exp-log-functions', 'Exponential & Logarithmic Functions']]), topic('series', 3, 'Series', [['binomial', 'The Binomial Theorem'], ['sequences', 'Arithmetic & Geometric Progressions']]), topic('calculus', 4, 'Calculus', [['differentiation', 'Differentiation'], ['integration', 'Integration']])] },
   { id: 'igcse-math-ext', subject: 'igcse-math', level: 'Extended', tier: 'free', session: 'Oct/Nov 2026', topics: [topic('number', 1, 'Number', [['percentages', 'Percentages']]), topic('algebra', 2, 'Algebra & Graphs', [['linear-equations', 'Linear Equations & Graphs'], ['quadratics', 'Quadratics']]), topic('geometry', 4, 'Geometry', [['angles', 'Angles & Circle Theorems']]), topic('probability', 8, 'Probability', [['probability', 'Probability']])] },
   { id: 'igcse-physics-ext', subject: 'igcse-physics', level: 'Extended', tier: 'premium', session: 'Oct/Nov 2026', topics: [topic('motion', 1, 'Motion, Forces & Energy', [['kinematics', 'Motion'], ['forces', 'Forces']]), topic('electricity', 4, 'Electricity & Magnetism', [['electricity', 'Electrical Quantities & Circuits']]), topic('waves', 3, 'Waves', [['waves', 'Properties of Waves']])] },
   { id: 'igcse-chemistry-ext', subject: 'igcse-chemistry', level: 'Extended', tier: 'premium', session: 'Oct/Nov 2026', topics: [topic('atoms', 2, 'Atoms, Elements & Compounds', [['atomic', 'Atomic Structure']]), topic('stoichiometry', 3, 'Stoichiometry', [['stoichiometry', 'The Mole Concept']])] },

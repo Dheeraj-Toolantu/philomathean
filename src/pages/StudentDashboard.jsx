@@ -57,7 +57,7 @@ export default function StudentDashboard() {
   const name = profile.displayName || user.displayName || 'Student'
   const panelProps = { user, profile, summary, attempts, enrollments, select, openShare: () => setShare(true), openUpgrade: () => setUpgrade(true) }
   return <main className="st-page st-dash-page">
-    <StudentHeader programme={CURRICULUM_PROGRAMME[profile.curriculum] || 'ib'} active="dashboard" />
+    <StudentHeader programme={CURRICULUM_PROGRAMME[profile.curriculum] || 'igcse'} active="dashboard" />
     <div className="st-dash">
       <aside className="st-dash-side">
         <div className="st-side-profile">
@@ -203,7 +203,7 @@ function ExamsPanel({ attempts, summary }) {
   </>
 }
 
-const CURRICULA = ['IBDP', 'IB MYP', 'IGCSE', 'AS & A Level', 'SAT / ACT', 'Other']
+const CURRICULA = ['IGCSE', 'IBDP', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'SAT / ACT', 'AMC / Olympiad / PSAT', 'Other']
 const GRADES = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Gap year / Other']
 const SESSIONS = ['November 2026', 'May 2027', 'November 2027', 'May 2028', 'Oct/Nov 2026', 'May/June 2027', 'Oct/Nov 2027']
 

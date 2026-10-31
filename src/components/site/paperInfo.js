@@ -1,10 +1,10 @@
 // Turns stored past-paper records into the labels and groups students browse by.
 export const PATHWAYS = [
   { id: 'IGCSE', title: 'IGCSE', board: 'Cambridge', description: 'Cambridge International past papers, mark schemes and revision support for core subjects.' },
-  { id: 'AS & A Level', title: 'AS & A Level', board: 'Cambridge', description: 'Exam-focused past papers to strengthen preparation across advanced-level subjects.' },
-  { id: 'SAT / ACT', title: 'SAT / ACT', board: 'College admissions', description: 'Practice tests and structured preparation for international college admissions.' },
   { id: 'IBDP', title: 'IBDP', board: 'IB Diploma', description: 'Past papers and focused revision for the International Baccalaureate Diploma Programme.' },
+  { id: 'AS & A Level', title: 'AS & A Level', board: 'Cambridge', description: 'Exam-focused past papers to strengthen preparation across advanced-level subjects.' },
   { id: 'MYP', title: 'MYP', board: 'IB Middle Years', description: 'Subject resources and practice material for the IB Middle Years Programme.' },
+  { id: 'SAT / ACT', title: 'SAT / ACT', board: 'College admissions', description: 'Practice tests and structured preparation for international college admissions.' },
 ]
 export const SESSION_ORDER = ['Feb-March', 'May-June', 'Oct-Nov']
 export const SESSION_LABELS = { 'Feb-March': 'February / March', 'May-June': 'May / June', 'Oct-Nov': 'October / November' }

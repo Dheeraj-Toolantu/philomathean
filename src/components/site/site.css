@@ -315,3 +315,48 @@
   .site-topbar .header-actions .orange-button { display: none; }
   .st-login-link { padding: 9px 12px; }
 }
+
+/* ---------- Programmes: course lists, Grades 6–8 scheme, entrance exams ---------- */
+.program-rank { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 50%; color: #fff; background: #193e8d; font-size: 12px; vertical-align: 2px; }
+.program-title h3 > span.program-rank { margin-top: 0; padding: 0; color: #fff; background: #193e8d; font-size: 12px; }
+.program-courses { display: grid; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
+.program-courses li { display: flex; gap: 10px; align-items: baseline; color: #44516a; font-size: 13px; }
+.program-courses strong { flex: 0 0 auto; min-width: 64px; padding: 2px 8px; border-radius: 7px; color: #193e8d; background: rgba(255,255,255,.85); border: 1px solid #dfe6f2; font-size: 12px; text-align: center; }
+.program-extras { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; max-width: 1180px; margin: 0 auto 28px; }
+.program-extra { padding: 26px 28px; border: 1px solid #e4e9f0; border-radius: 20px; background: #fbfcfe; scroll-margin-top: 100px; }
+.program-extra h3 { margin: 0; color: #193e8d; font-size: 19px; }
+.program-extra > p { margin: 6px 0 16px; color: #61718b; font-size: 13px; }
+.scheme-steps, .exam-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.scheme-steps li, .exam-list li { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: #fff; border: 1px solid #edf0f4; font-size: 13px; }
+.scheme-steps li strong, .exam-list li strong { min-width: 72px; color: #e96417; }
+.scheme-steps em { margin-right: 6px; padding: 3px 9px; border-radius: 8px; color: #193e8d; background: #eef3ff; font-style: normal; font-size: 12px; }
+.exam-list li { counter-increment: step; }
+.exam-list li::before { content: counter(step); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: var(--orange); font-size: 11px; font-weight: 700; }
+.exam-list li span { color: #61718b; }
+@media (max-width: 620px) { .program-extras { grid-template-columns: 1fr; } .program-courses strong { min-width: 56px; } }
+
+/* ---------- Floating search, call and WhatsApp buttons ---------- */
+.float-actions { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: flex; flex-direction: column; gap: 10px; }
+.float-button { display: grid; place-items: center; width: 52px; height: 52px; border: 0; border-radius: 50%; color: #fff; box-shadow: 0 8px 20px rgba(16,24,46,.22); cursor: pointer; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
+.float-button:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(16,24,46,.28); }
+.float-button:focus-visible { outline: 3px solid #8bb2ff; outline-offset: 3px; }
+.float-search { background: #193e8d; }
+.float-call { background: var(--orange); }
+.float-whatsapp { background: #25d366; }
+body.float-no-scroll { overflow: hidden; }
+.float-overlay { position: fixed; inset: 0; z-index: 200; display: flex; justify-content: center; align-items: flex-start; padding: 12vh 16px 16px; background: rgba(16,24,46,.45); }
+.float-dialog { width: min(640px, 100%); max-height: 76vh; display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: #fff; box-shadow: 0 24px 60px rgba(16,24,46,.3); }
+.float-search-bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #e2e8f1; color: #61718b; }
+.float-search-bar input { flex: 1; min-width: 0; border: 0; outline: 0; color: var(--navy); font-size: 16px; }
+.float-search-bar button { display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 8px; color: #61718b; background: #f3f6fb; cursor: pointer; }
+.float-results { margin: 0; padding: 8px; overflow-y: auto; list-style: none; }
+.float-results a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; color: var(--navy); text-decoration: none; }
+.float-results a.active { background: #f0f5ff; }
+.float-results a > span { flex: 1; min-width: 0; }
+.float-results strong { display: block; font-size: 14px; }
+.float-results small { display: block; overflow: hidden; color: #61718b; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.float-results em { flex: 0 0 auto; padding: 2px 8px; border-radius: 7px; color: #e96417; background: #fff1e4; font-size: 11px; font-style: normal; }
+.float-hint { padding: 18px 12px; color: #61718b; font-size: 14px; }
+.float-hint a { color: var(--orange); }
+@media (max-width: 620px) { .float-actions { right: 12px; bottom: 12px; gap: 8px; } .float-button { width: 46px; height: 46px; } .float-overlay { padding-top: 8vh; } }
+@media print { .float-actions { display: none; } }
