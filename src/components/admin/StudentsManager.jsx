@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Crown, GraduationCap, Search } from 'lucide-react'
+import { Crown, GraduationCap, Plus, Search } from 'lucide-react'
 import { listStudents, setStudentPlan } from '../../firebase/student'
-import { EmptyState, SkeletonRows } from './AdminUI'
+import { displayLoginId } from '../../firebase/loginId'
+import { Drawer, EmptyState, SkeletonRows } from './AdminUI'
+import CreateAccountForm from './CreateAccountForm'
 
 const initials = (name = '') => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('') || '?'
 const date = (value) => value ? new Date(value.toDate ? value.toDate() : value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
@@ -13,6 +15,8 @@ export default function StudentsManager({ notify }) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
   const [busy, setBusy] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [createBusy, setCreateBusy] = useState(false)
   const load = useCallback(() => {
     listStudents().then((students) => setState({ loading: false, error: false, students })).catch(() => setState({ loading: false, error: true, students: [] }))
   }, [])
@@ -29,11 +33,12 @@ export default function StudentsManager({ notify }) {
   const text = query.trim().toLowerCase()
   const requests = state.students.filter((student) => student.planRequest && !isGold(student))
   const shown = state.students.filter((student) => (filter === 'all' || (filter === 'requests' ? student.planRequest && !isGold(student) : filter === 'gold' ? isGold(student) : !isGold(student)))
-    && (!text || `${student.displayName} ${student.email} ${student.school} ${student.curriculum}`.toLowerCase().includes(text)))
+    && (!text || `${student.displayName} ${student.email} ${student.loginId || ''} ${student.school} ${student.curriculum}`.toLowerCase().includes(text)))
 
   return <section className="adm-panel">
     <header className="adm-panel-head">
       <div><h2>Students</h2><p>Portal accounts, their plan and Gold upgrade requests ({requests.length} pending).</p></div>
+      <button type="button" className="adm-button adm-button-primary" onClick={() => setCreating(true)}><Plus size={16} /> Create student account</button>
     </header>
     <div className="adm-toolbar">
       <label className="adm-student-search"><Search size={15} /><span className="sr-only">Search students</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, email, school" /></label>
@@ -43,13 +48,13 @@ export default function StudentsManager({ notify }) {
     </div>
     {state.error ? <EmptyState icon={GraduationCap} title="Students could not be loaded" message="Check your connection and that the Firestore rules are deployed." action={<button type="button" className="adm-button adm-button-ghost" onClick={load}>Try again</button>} />
       : state.loading ? <SkeletonRows count={5} />
-      : !shown.length ? <EmptyState icon={GraduationCap} title={state.students.length ? 'No students match' : 'No students yet'} message={state.students.length ? 'Try a different search or filter.' : 'Students appear here when they create an account at /login.'} />
+      : !shown.length ? <EmptyState icon={GraduationCap} title={state.students.length ? 'No students match' : 'No students yet'} message={state.students.length ? 'Try a different search or filter.' : 'Create a student account above, or students can sign up themselves at /login.'} />
       : <div className="adm-list">
         <div className="adm-list-head adm-student-grid" aria-hidden="true"><span>Student</span><span>Curriculum</span><span>Plan</span><span /></div>
         {shown.map((student) => <article className="adm-row adm-student-grid" key={student.id}>
           <div className="adm-row-main">
             {student.photoURL ? <img className="adm-avatar adm-avatar-photo" src={student.photoURL} alt="" referrerPolicy="no-referrer" /> : <span className="adm-avatar">{initials(student.displayName)}</span>}
-            <div><strong>{student.displayName || 'Student'}</strong><small title={student.email}>{student.email}{student.phone ? ` · ${student.phone}` : ''} · joined {date(student.createdAt)}</small>
+            <div><strong>{student.displayName || 'Student'}</strong><small title={student.email}>{student.loginId ? `Login ID: ${student.loginId}` : displayLoginId(student.email)}{student.phone ? ` · ${student.phone}` : ''} · joined {date(student.createdAt)}</small>
               {student.planRequest && !isGold(student) && <small className="adm-request">Gold requested {date(student.planRequest.at)}{student.planRequest.note ? ` — “${student.planRequest.note}”` : ''}</small>}</div>
           </div>
           <span className="adm-student-meta">{[student.curriculum, student.grade].filter(Boolean).join(' · ') || '—'}</span>
@@ -60,5 +65,8 @@ export default function StudentsManager({ notify }) {
           </div>
         </article>)}
       </div>}
+    <Drawer open={creating} title="Create student account" subtitle="The student signs in at /login with this login ID and password." locked={createBusy} onClose={() => setCreating(false)}>
+      {creating && <CreateAccountForm role="student" busy={createBusy} setBusy={setCreateBusy} onCreated={(account) => { notify('success', `Student account ${account.loginId} created.`); load() }} onCancel={() => setCreating(false)} />}
+    </Drawer>
   </section>
 }

@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeft, BarChart3, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Link2, Mail, Share2, Trophy, UserRound } from 'lucide-react'
 import {
-  authErrorMessage, completeRedirectSignIn, getPendingLink, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent,
+  authErrorMessage, completeRedirectSignIn, getPendingLink, isTeacherAccount, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent,
 } from '../firebase/student'
+import { auth } from '../firebase/config'
 import { BrandLockup } from '../components/site/SiteChrome'
 import { safeNext, useSession } from '../student/session'
 import '../student/student.css'
 
 const params = new URLSearchParams(window.location.search)
+// With no page to return to, teachers go to the teacher portal and students to their dashboard.
+const destination = async () => {
+  const next = safeNext(params.get('next'))
+  if (params.get('next')) return next
+  const uid = auth.currentUser?.uid
+  return uid && await isTeacherAccount(uid) ? '/teacher' : next
+}
 const CURRICULA = ['IGCSE', 'IBDP', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'SAT / ACT', 'AMC / Olympiad / PSAT', 'Other']
 const GRADES = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Gap year / Other']
 const perks = [
@@ -30,26 +38,25 @@ export default function StudentLogin() {
   const [notice, setNotice] = useState('')
   const [attempted, setAttempted] = useState(false)
   const [linking, setLinking] = useState(null)
-  const next = safeNext(params.get('next'))
 
   // Finishes a Google/Facebook sign-in that fell back to a full-page redirect (popup blocked).
   useEffect(() => {
     let active = true
-    completeRedirectSignIn().then((signedIn) => { if (signedIn) window.location.replace(next) }).catch((redirectError) => {
+    completeRedirectSignIn().then(async (signedIn) => { if (signedIn) window.location.replace(await destination()) }).catch((redirectError) => {
       if (!active) return
       setAttempted(true); setError(authErrorMessage(redirectError)); signOutStudent().catch(() => {})
     })
     return () => { active = false }
-  }, [next])
+  }, [])
 
   // Already signed in when the page opened: continue to where the student was going.
-  useEffect(() => { if (status !== 'loading' && user && !attempted) window.location.replace(next) }, [status, user, attempted, next])
+  useEffect(() => { if (status !== 'loading' && user && !attempted) destination().then((target) => window.location.replace(target)) }, [status, user, attempted])
 
   const set = (key) => (event) => setForm({ ...form, [key]: event.target.type === 'checkbox' ? event.target.checked : event.target.value })
   const switchMode = (value) => { setMode(value); setError(''); setNotice('') }
   const run = async (action) => {
     setAttempted(true); setBusy(true); setError(''); setNotice('')
-    try { await action(); window.location.replace(next) } catch (authError) {
+    try { await action(); window.location.replace(await destination()) } catch (authError) {
       // If sign-in worked but the profile could not be created, sign out so the student can simply retry.
       await signOutStudent().catch(() => {})
       const pending = getPendingLink()
@@ -61,6 +68,7 @@ export default function StudentLogin() {
   const submit = (event) => {
     event.preventDefault()
     if (mode === 'reset') {
+      if (!form.email.includes('@')) return setError('Accounts with a login ID can’t reset the password by email. Ask the institute for a new password.')
       setBusy(true); setError('')
       resetStudentPassword(form.email).then(() => setNotice('If an account exists for that email, a reset link is on its way. Check your inbox and spam folder.')).catch((resetError) => setError(authErrorMessage(resetError))).finally(() => setBusy(false))
       return
@@ -73,7 +81,7 @@ export default function StudentLogin() {
     return run(() => signInStudent(form.email, form.password))
   }
 
-  const titles = { login: ['Welcome back', 'Log in to continue your revision.'], signup: ['Create your student account', 'Free forever. Upgrade to Gold any time.'], reset: ['Reset your password', 'We’ll email you a secure link to choose a new one.'] }
+  const titles = { login: ['Welcome back', 'Students and teachers log in here, with an email or the login ID the institute gave you.'], signup: ['Create your student account', 'Free forever. Upgrade to Gold any time.'], reset: ['Reset your password', 'We’ll email you a secure link to choose a new one.'] }
   return <main className="st-auth">
     <aside className="st-auth-aside">
       <BrandLockup />
@@ -107,7 +115,7 @@ export default function StudentLogin() {
 
         <form onSubmit={submit} className="st-form" noValidate={false}>
           {mode === 'signup' && <label className="st-field"><span>Full name</span><span className="st-input"><UserRound size={16} /><input required value={form.name} onChange={set('name')} autoComplete="name" placeholder="Your name" /></span></label>}
-          <label className="st-field"><span>Email address</span><span className="st-input"><Mail size={16} /><input type="email" required value={form.email} onChange={set('email')} autoComplete="email" placeholder="you@example.com" /></span></label>
+          <label className="st-field"><span>{mode === 'login' ? 'Email or login ID' : 'Email address'}</span><span className="st-input"><Mail size={16} /><input type={mode === 'login' ? 'text' : 'email'} required value={form.email} onChange={set('email')} autoComplete="username" autoCapitalize="none" spellCheck={false} placeholder={mode === 'login' ? 'you@example.com or your login ID' : 'you@example.com'} /></span></label>
           {mode !== 'reset' && <label className="st-field"><span className="st-field-row">Password{mode === 'login' && <button type="button" className="st-text-button" onClick={() => switchMode('reset')}>Forgot password?</button>}</span>
             <span className="st-input"><KeyRound size={16} /><input type={showPassword ? 'text' : 'password'} required minLength={mode === 'signup' ? 8 : undefined} value={form.password} onChange={set('password')} autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} placeholder={mode === 'signup' ? 'At least 8 characters' : 'Your password'} />
               <button type="button" className="st-input-icon" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></span></label>}

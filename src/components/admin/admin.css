@@ -337,3 +337,6 @@ body.adm-no-scroll { overflow: hidden; }
 .adm-pdf-fields { display: grid; align-content: start; gap: 10px; }
 .adm-pdf-footnote { display: inline-flex; align-items: center; gap: 6px; margin-right: auto; margin-left: 12px; color: var(--adm-muted); font-size: 13px; font-weight: 600; }
 @media (max-width: 820px) { .adm-pdf-body { grid-template-columns: 1fr; } .adm-pdf-mode { margin-left: 0; } .adm-pdf-target { margin-left: 0; } }
+
+/* Login details shown once after an administrator creates an account */
+.adm-credentials { margin: 0; padding: 14px; border: 1px dashed var(--adm-border); border-radius: 12px; background: #fbfcfe; color: var(--adm-text); font: 600 13.5px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; word-break: break-word; }

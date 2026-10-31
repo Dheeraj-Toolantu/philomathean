@@ -35,13 +35,15 @@ service cloud.firestore {
     match /students/{uid} {
       // Teachers read student profiles to enter marks and follow each student's performance.
       allow read: if isOwner(uid) || isAdmin() || isTeacher();
-      // New profiles always start on the free plan with the signed-in email.
+      // New profiles always start on the free plan with the signed-in email. Accounts an administrator creates
+      // (login ID + password) write this profile as the new student, so the same rule applies to them.
       allow create: if isOwner(uid) && request.resource.data.uid == uid && request.resource.data.plan == 'free'
         && request.resource.data.email == request.auth.token.get('email', '') && !('planExpiresAt' in request.resource.data)
-        && validProfileFields(request.resource.data);
+        && validProfileFields(request.resource.data)
+        && (!('loginId' in request.resource.data) || shortString(request.resource.data.loginId, 120));
       // Students edit their own details; plan, email and identity fields belong to administrators.
       allow update: if isAdmin() || (isOwner(uid)
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'email', 'plan', 'planExpiresAt', 'createdAt'])
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'email', 'loginId', 'createdByAdmin', 'plan', 'planExpiresAt', 'createdAt'])
         && validProfileFields(request.resource.data));
       allow delete: if isAdmin();
 

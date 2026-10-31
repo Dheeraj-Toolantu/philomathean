@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ExternalLink, Pencil, Plus, Search, Star, Trash2, UserRound } from 'lucide-react'
+import { ExternalLink, Pencil, Plus, Search, Star, Trash2, UserPlus, UserRound } from 'lucide-react'
 import { listStudents } from '../../firebase/student'
 import { listAllRatings, listTeachers, removeTeacher, saveTeacher } from '../../firebase/teaching'
 import { ratingSummary } from '../../teacher/marks'
 import { TEACHER_HIERARCHY } from '../site/faculty'
+import { displayLoginId } from '../../firebase/loginId'
 import { ConfirmDialog, Drawer, EmptyState, SkeletonRows } from './AdminUI'
+import CreateAccountForm from './CreateAccountForm'
 import '../../teacher/teacher.css'
 
 // Suggested position in the teaching hierarchy, from the order the institute set (Satish Sir first).
@@ -14,13 +16,14 @@ const suggestedOrder = (name) => {
   return index === -1 ? TEACHER_HIERARCHY.length + 1 : index + 1
 }
 
-// Teacher accounts. A teacher signs up at /login like a student; the administrator then adds that account here
-// so it can open the teacher portal at /teacher.
+// Teacher accounts. The administrator either creates a teacher account here (login ID + password), or adds an
+// account the teacher already made at /login, so it can open the teacher portal at /teacher.
 export default function TeachersManager({ notify }) {
   const [state, setState] = useState({ loading: true, error: false, teachers: [], accounts: [], ratings: [] })
   const [form, setForm] = useState(null)
   const [removing, setRemoving] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [creating, setCreating] = useState(false)
   const load = useCallback(() => {
     Promise.all([listTeachers(), listStudents(500), listAllRatings().catch(() => [])])
       .then(([teachers, accounts, ratings]) => setState({ loading: false, error: false, teachers, accounts, ratings }))
@@ -43,16 +46,16 @@ export default function TeachersManager({ notify }) {
   return <section className="adm-panel">
     <header className="adm-panel-head">
       <div><h2>Teachers</h2><p>Accounts that can open the <a href="/teacher">teacher portal</a> to enter test marks, see student-wise performance, schedule tests and read teaching material.</p></div>
-      <div className="adm-dialog-actions"><a className="adm-button adm-button-ghost" href="/teacher"><ExternalLink size={15} /> Teacher portal</a><button type="button" className="adm-button adm-button-primary" onClick={() => setForm({ uid: '', email: '', name: '', subjects: '', order: '' })}><Plus size={16} /> Add teacher</button></div>
+      <div className="adm-dialog-actions"><a className="adm-button adm-button-ghost" href="/teacher"><ExternalLink size={15} /> Teacher portal</a><button type="button" className="adm-button adm-button-ghost" onClick={() => setForm({ uid: '', email: '', name: '', subjects: '', order: '' })}><Plus size={16} /> Add existing account</button><button type="button" className="adm-button adm-button-primary" onClick={() => setCreating(true)}><UserPlus size={16} /> Create teacher account</button></div>
     </header>
-    <p className="adm-hint" style={{ margin: '0 0 14px' }}>To add a teacher: ask them to create an account at /login with their email, then choose that account here.</p>
+    <p className="adm-hint" style={{ margin: '0 0 14px' }}>Create a teacher account to give them a login ID and password. If a teacher already has an account from /login, use “Add existing account” instead.</p>
     {state.error ? <EmptyState icon={UserRound} title="Teachers could not be loaded" message="Check your connection and that the latest Firestore rules are deployed." action={<button type="button" className="adm-button adm-button-ghost" onClick={load}>Try again</button>} />
       : state.loading ? <SkeletonRows count={4} />
       : !state.teachers.length ? <EmptyState icon={UserRound} title="No teachers yet" message="Add your teachers so they can sign in to the teacher portal." />
       : <div className="adm-list">{state.teachers.map((teacher) => {
         const rating = ratingSummary(state.ratings.filter((item) => item.teacherUid === teacher.id))
         return <article className="adm-row" key={teacher.id} style={{ gridTemplateColumns: '1fr auto auto' }}>
-          <div className="adm-row-main"><span className="adm-avatar">{teacher.order}</span><div><strong>{teacher.name}</strong><small>{[teacher.subjects, teacher.email].filter(Boolean).join(' · ')}</small></div></div>
+          <div className="adm-row-main"><span className="adm-avatar">{teacher.order}</span><div><strong>{teacher.name}</strong><small>{[teacher.subjects, displayLoginId(teacher.email)].filter(Boolean).join(' · ')}</small></div></div>
           <span className="adm-student-meta"><Star size={13} /> {rating.average ?? '—'} ({rating.count})</span>
           <div className="adm-row-actions">
             <button type="button" className="adm-icon-button" onClick={() => setForm({ ...teacher, uid: teacher.id })} aria-label={`Edit ${teacher.name}`}><Pencil size={15} /></button>
@@ -62,6 +65,9 @@ export default function TeachersManager({ notify }) {
       })}</div>}
     <Drawer open={Boolean(form)} title={form?.id ? 'Edit teacher' : 'Add teacher'} subtitle="Order sets the teaching hierarchy (1 = Satish Sir)." locked={busy} onClose={() => setForm(null)}>
       {form && <TeacherForm form={form} setForm={setForm} accounts={state.accounts} teachers={state.teachers} busy={busy} onSubmit={save} onCancel={() => setForm(null)} />}
+    </Drawer>
+    <Drawer open={creating} title="Create teacher account" subtitle="The teacher signs in at /login and goes straight to the teacher portal." locked={busy} onClose={() => setCreating(false)}>
+      {creating && <CreateAccountForm role="teacher" defaultOrder={state.teachers.length + 1} busy={busy} setBusy={setBusy} onCreated={(account) => { notify('success', `Teacher account ${account.loginId} created.`); load() }} onCancel={() => setCreating(false)} />}
     </Drawer>
     <ConfirmDialog open={Boolean(removing)} title="Remove teacher access?" message={removing ? `${removing.name} will no longer be able to open the teacher portal. Marks they entered stay.` : ''} confirmLabel="Remove" busy={busy} onConfirm={remove} onCancel={() => setRemoving(null)} />
   </section>
