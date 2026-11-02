@@ -16,6 +16,7 @@ import {
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { auth, db, storage } from './config'
 import { loginIdToEmail } from './loginId'
+import { accountRole } from '../portal/roles'
 
 export const MAX_PHOTO_BYTES = 5 * 1024 * 1024
 export const PROFILE_FIELDS = ['displayName', 'phone', 'grade', 'school', 'curriculum', 'targetSession', 'bio', 'parentEmail']
@@ -23,23 +24,37 @@ export const PROFILE_FIELDS = ['displayName', 'phone', 'grade', 'school', 'curri
 const studentRef = (uid) => doc(db, 'students', uid)
 
 // ---------- Session store: one auth + profile listener shared by every component ----------
-let state = { status: 'loading', user: null, profile: null }
+// role is 'admin' | 'teacher' | 'student' (see portal/roles.js). Staff accounts never get a student profile listener.
+let state = { status: 'loading', user: null, profile: null, role: null }
 const listeners = new Set()
 let stopProfile = null
 let started = false
+let generation = 0
 const emit = (next) => { state = { ...state, ...next }; listeners.forEach((listener) => listener()) }
+
+// Admin claim, approved teacher (/teachers/{uid}) or a pending teacher request (/teacherRequests/{uid}).
+export const detectRole = async (user) => {
+  const [token, teacher, request] = await Promise.all([
+    user.getIdTokenResult().catch(() => null), isTeacherAccount(user.uid), hasTeacherRequest(user.uid),
+  ])
+  return accountRole({ admin: token?.claims?.admin === true, teacher, teacherRequest: request })
+}
 
 const start = () => {
   if (started) return
   started = true
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     stopProfile?.()
     stopProfile = null
-    if (!user) return emit({ status: 'signed-out', user: null, profile: null })
-    emit({ status: 'loading', user, profile: null })
+    const current = ++generation
+    if (!user) return emit({ status: 'signed-out', user: null, profile: null, role: null })
+    emit({ status: 'loading', user, profile: null, role: null })
+    const role = await detectRole(user)
+    if (current !== generation) return
+    if (role !== 'student') return emit({ status: 'ready', user, profile: null, role })
     stopProfile = onSnapshot(studentRef(user.uid),
-      (snapshot) => emit({ status: 'ready', user, profile: snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null }),
-      () => emit({ status: 'ready', user, profile: null }))
+      (snapshot) => emit({ status: 'ready', user, role, profile: snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null }),
+      () => emit({ status: 'ready', user, role, profile: null }))
   })
 }
 export const subscribeSession = (listener) => { start(); listeners.add(listener); return () => listeners.delete(listener) }
@@ -139,8 +154,8 @@ const finishSignIn = async (user) => {
     // Already linked or used elsewhere: the student is signed in either way, so don't block them.
     await linkWithCredential(user, credential).catch((error) => { if (!['auth/provider-already-linked', 'auth/credential-already-in-use'].includes(error.code)) throw error })
   }
-  // Teachers (and teachers waiting for approval) sign in on the same page; they don't need a student profile.
-  if (await isTeacherAccount(user.uid) || await hasTeacherRequest(user.uid)) return user
+  // Teachers, teachers waiting for approval and administrators sign in on the same page; they never get a student profile.
+  if (await detectRole(user) !== 'student') return user
   await ensureStudentProfile(user)
   return user
 }

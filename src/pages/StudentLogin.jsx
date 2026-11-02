@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
 import { ArrowLeft, BarChart3, BookOpenCheck, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Link2, Mail, Phone, Presentation, Share2, Trophy, UserRound } from 'lucide-react'
 import {
-  authErrorMessage, completeRedirectSignIn, getPendingLink, hasTeacherRequest, isTeacherAccount, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent, signUpTeacher,
+  authErrorMessage, completeRedirectSignIn, detectRole, getPendingLink, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent, signUpTeacher,
 } from '../firebase/student'
 import { auth } from '../firebase/config'
 import { BrandLockup } from '../components/site/SiteChrome'
 import { safeNext, useSession } from '../student/session'
+import { destinationFor } from '../portal/roles'
 import '../student/student.css'
 
 const params = new URLSearchParams(window.location.search)
-// With no page to return to, teachers (approved or waiting for approval) go to the teacher portal and students to their dashboard.
+// Each account goes to its own portal: teachers (approved or waiting for approval) and administrators to /teacher,
+// students to their dashboard. A requested page is kept only when it belongs to that account's portal.
 const destination = async () => {
-  const next = safeNext(params.get('next'))
-  if (params.get('next')) return next
-  const uid = auth.currentUser?.uid
-  return uid && (await isTeacherAccount(uid) || await hasTeacherRequest(uid)) ? '/teacher' : next
+  const user = auth.currentUser
+  if (!user) return safeNext(params.get('next'))
+  return destinationFor(await detectRole(user), params.get('next') ? safeNext(params.get('next')) : '')
 }
 const CURRICULA = ['IGCSE', 'IBDP', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'SAT / ACT', 'AMC / Olympiad / PSAT', 'Other']
 const GRADES = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Gap year / Other']

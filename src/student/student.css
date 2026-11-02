@@ -759,3 +759,9 @@
   .st-result-marks small { margin-left: 8px; }
   .st-streak-week li span { width: 28px; height: 28px; }
 }
+
+/* Teacher/admin account on a student page */
+.st-portal-block-bar { display: flex; align-items: center; padding: 14px 24px; border-bottom: 1px solid var(--st-line, #e5e7eb); background: #fff; }
+.st-portal-block .st-empty-page { padding-top: 80px; }
+.st-portal-block-icon { display: inline-grid; place-items: center; width: 56px; height: 56px; margin-bottom: 16px; border-radius: 50%; background: #eef2ff; color: #3730a3; }
+.st-portal-block-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }

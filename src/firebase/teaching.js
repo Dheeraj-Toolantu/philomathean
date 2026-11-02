@@ -30,9 +30,12 @@ export const subscribeStaff = (onChange) => {
     stopTeacher?.(); stopTeacher = null
     if (!user) return onChange({ status: 'signed-out', user: null, teacher: null, admin: false })
     const admin = (await user.getIdTokenResult().catch(() => null))?.claims?.admin === true
+    // Student accounts (those with a student profile) never get the teacher portal or a teacher request form.
+    const student = !admin && (await getDoc(doc(db, 'students', user.uid)).catch(() => null))?.exists() === true
+    if (auth.currentUser?.uid !== user.uid) return
     stopTeacher = onSnapshot(doc(db, 'teachers', user.uid),
-      (snapshot) => onChange({ status: 'ready', user, admin, teacher: snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null }),
-      () => onChange({ status: 'ready', user, admin, teacher: null }))
+      (snapshot) => onChange({ status: 'ready', user, admin, student, teacher: snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null }),
+      () => onChange({ status: 'ready', user, admin, student, teacher: null }))
   })
   return () => { stopTeacher?.(); stopAuth() }
 }

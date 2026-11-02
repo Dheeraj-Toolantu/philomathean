@@ -34,7 +34,7 @@ const PROFILE_CHECKS = ['photoURL', 'phone', 'grade', 'school', 'curriculum', 't
 const CURRICULUM_PROGRAMME = { IBDP: 'ib', 'IB MYP': 'ib', IGCSE: 'igcse', 'AS & A Level': 'alevel' }
 
 export default function StudentDashboard() {
-  const { status, user, profile } = useSession()
+  const { status, user, profile, role } = useSession()
   const [tab, setTab] = useState(readTab)
   const [share, setShare] = useState(false)
   const [upgrade, setUpgrade] = useState(false)
@@ -45,8 +45,8 @@ export default function StudentDashboard() {
   useEffect(() => { if (status === 'signed-out') window.location.replace(loginUrl('/dashboard')) }, [status])
   // Accounts created before the portal (or by an administrator) get their profile on first visit.
   useEffect(() => {
-    if (status === 'ready' && user && !profile && !creating.current) { creating.current = true; ensureStudentProfile(user).catch(() => setProfileError(true)) }
-  }, [status, user, profile])
+    if (status === 'ready' && role === 'student' && user && !profile && !creating.current) { creating.current = true; ensureStudentProfile(user).catch(() => setProfileError(true)) }
+  }, [status, role, user, profile])
   useEffect(() => { document.title = 'My dashboard | Philomathean' }, [])
   useEffect(() => {
     const onPop = () => setTab(readTab())
