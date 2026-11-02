@@ -25,6 +25,8 @@ const CoursesPage = lazy(() => import('./pages/CoursesPage'))
 const CoursePage = lazy(() => import('./pages/CoursePage'))
 const QuizPage = lazy(() => import('./pages/QuizPage'))
 const SharedProgress = lazy(() => import('./pages/SharedProgress'))
+// Shareable teacher-rating page (/rate/{teacherUid}), sent to students over WhatsApp.
+const RateTeacher = lazy(() => import('./pages/RateTeacher'))
 // Teacher portal: test marks, student-wise performance, test schedule, teaching material and ratings.
 const TeacherPortal = lazy(() => import('./pages/TeacherPortal'))
 
@@ -174,6 +176,8 @@ function App() {
   if (courseId) return <Suspense fallback={pageFallback}><CoursePage courseId={courseId} /></Suspense>
   const shareId = path.match(/^\/progress\/([a-z0-9]+)$/)?.[1]
   if (shareId) return <Suspense fallback={pageFallback}><SharedProgress shareId={shareId} /></Suspense>
+  const rateUid = path.match(/^\/rate\/([A-Za-z0-9_-]{1,128})$/)?.[1]
+  if (rateUid) return <Suspense fallback={pageFallback}><RateTeacher teacherUid={rateUid} /></Suspense>
   const displayedResults = publicResults.length ? publicResults.map((item) => [item.score, item.studentName, item.subjects, item.school]) : results
   return <main>
     <FloatingSymbols />

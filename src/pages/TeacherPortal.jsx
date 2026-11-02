@@ -18,6 +18,7 @@ import { Change, ProgressCardView, Worksheet } from '../teacher/ProgressCardView
 import { ConfirmDialog, Drawer, EmptyState, SkeletonRows, ToastStack } from '../components/admin/AdminUI'
 import { useToasts } from '../components/admin/hooks'
 import { loginUrl } from '../student/session'
+import ShareRatingLink from '../teacher/ShareRatingLink'
 import '../components/admin/admin.css'
 import '../teacher/teacher.css'
 
@@ -463,16 +464,16 @@ function RatingTab({ ratings, teachers, admin, me }) {
   if (admin) {
     const rows = teachers.map((teacher) => ({ teacher, ...ratingSummary(ratings.filter((rating) => rating.teacherUid === teacher.id)) }))
     return <section className="adm-panel tp-panel">
-      <header className="adm-panel-head"><div><h2>Teacher ratings</h2><p>Students rate their teachers from 1 to 5 on their dashboard. Ratings are anonymous to teachers.</p></div></header>
+      <header className="adm-panel-head"><div><h2>Teacher ratings</h2><p>Students rate their teachers from 1 to 5 on their dashboard, or from a rating link you share on WhatsApp. Ratings are anonymous to teachers.</p></div></header>
       {!rows.length ? <EmptyState icon={Star} title="No teachers yet" message="Add teacher accounts under Admin → Teachers." />
-        : <div className="pc-table-wrap"><table className="pc-table"><thead><tr><th>Teacher</th><th>Rating</th><th>Average</th><th>Ratings</th></tr></thead>
-          <tbody>{rows.map((row) => <tr key={row.teacher.id}><td>{row.teacher.name}</td><td><Stars value={row.average || 0} /></td><td>{row.average ?? '—'}</td><td>{row.count}</td></tr>)}</tbody></table></div>}
+        : <div className="pc-table-wrap"><table className="pc-table"><thead><tr><th>Teacher</th><th>Rating</th><th>Average</th><th>Ratings</th><th>Share</th></tr></thead>
+          <tbody>{rows.map((row) => <tr key={row.teacher.id}><td>{row.teacher.name}</td><td><Stars value={row.average || 0} /></td><td>{row.average ?? '—'}</td><td>{row.count}</td><td><ShareRatingLink teacher={row.teacher} compact /></td></tr>)}</tbody></table></div>}
       <CommentList ratings={ratings} showTeacher />
     </section>
   }
   const summary = ratingSummary(ratings)
   return <section className="adm-panel tp-panel">
-    <header className="adm-panel-head"><div><h2>My rating</h2><p>Students rate their teachers from 1 to 5 on their dashboard. You see the average and comments, not who wrote them.</p></div></header>
+    <header className="adm-panel-head"><div><h2>My rating</h2><p>Students rate their teachers from 1 to 5 on their dashboard, or from a rating link the institute shares. You see the average and comments, not who wrote them.</p></div></header>
     <div className="tp-card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}><strong style={{ fontSize: 36 }}>{summary.average ?? '—'}</strong><div><Stars value={summary.average || 0} size={20} /><p>{summary.count ? `${summary.count} student rating${summary.count === 1 ? '' : 's'} for ${me.name}` : 'No ratings yet'}</p></div></div>
     <CommentList ratings={ratings} />
   </section>

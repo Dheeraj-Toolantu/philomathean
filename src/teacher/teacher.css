@@ -213,3 +213,8 @@
 .tp-panel > .adm-list { margin-inline: 12px; }
 @media (max-width: 700px) { .tp-panel > :not(.adm-panel-head):not(.adm-toolbar):not(.adm-list) { margin-inline: 16px !important; } }
 .tp-muted { color: #9aa6ba; }
+
+/* Share a teacher's rating link (Admin → Teachers, Teacher ratings tab) */
+.tp-share-rating { display: inline-flex; align-items: center; gap: 6px; }
+.tp-whatsapp { color: #128c4a; border-color: #bfe5cf; }
+.tp-whatsapp:hover { color: #0b6b37; border-color: #128c4a; }

@@ -4,7 +4,7 @@
 //   testMarks/{id}                        one student's marks in one test; teachers and administrators write, the student reads their own
 //   testSchedule/{id}                     upcoming tests; teachers and administrators write, signed-in users read
 //   teachingMaterials/{id}                material for teachers to follow; administrators write, teachers read
-//   teacherRatings/{studentUid_teacherUid} a student's 1–5 rating of a teacher; the student writes, the teacher and administrators read
+//   teacherRatings/{studentUid_teacherUid} a student's 1–5 rating of a teacher; only student accounts write, the teacher and administrators read
 //   teacherRequests/{uid}                 a teacher's request for portal access (from sign-up at /login); an administrator approves it
 //   leaderboards/{weekStart}              the week's top 10 by average test %; written by staff when marks change, signed-in users read
 import {
@@ -43,6 +43,11 @@ export const saveTeacher = (uid, values) => setDoc(doc(db, 'teachers', uid), {
   uid, name: clean(values.name, 80), email: clean(values.email, 120), subjects: clean(values.subjects, 120), order: Number(values.order) || 99, updatedAt: serverTimestamp(),
 }, { merge: true })
 export const removeTeacher = (uid) => deleteDoc(doc(db, 'teachers', uid))
+// One teacher by uid, or null if there is no such teacher (used by the shareable rating page /rate/{uid}).
+export const getTeacher = async (uid) => {
+  const snapshot = await getDoc(doc(db, 'teachers', uid))
+  return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null
+}
 
 // ---------- Test marks ----------
 // Saves one test for many students at once. `entries` = [{ studentUid, studentName, score, schoolScore, note, remedial, remedialDone }];
@@ -143,4 +148,8 @@ export const rateTeacher = (studentUid, teacher, rating, comment = '') => setDoc
 })
 export const subscribeMyRatings = (studentUid, onChange) => onSnapshot(query(collection(db, 'teacherRatings'), where('studentUid', '==', studentUid)), (snapshot) => onChange(rows(snapshot)), () => onChange([]))
 export const listRatingsForTeacher = async (teacherUid) => rows(await getDocs(query(collection(db, 'teacherRatings'), where('teacherUid', '==', teacherUid))))
+export const getMyRating = async (studentUid, teacherUid) => {
+  const snapshot = await getDoc(doc(db, 'teacherRatings', ratingId(studentUid, teacherUid))).catch(() => null)
+  return snapshot?.exists() ? snapshot.data() : null
+}
 export const listAllRatings = async () => rows(await getDocs(collection(db, 'teacherRatings')))
