@@ -4,6 +4,7 @@
 //   students/{uid}/enrollments/{course}  courses the student follows
 //   students/{uid}/attempts/{id}         one document per finished quiz or exam (immutable)
 //   progressShares/{shareId}             public, read-only snapshot the student chooses to share
+//   streaks/{uid}                        the student's daily practice streak, shown on the streak wall to signed-in users
 //   student-photos/{uid}/avatar.jpg      profile photo
 import {
   createUserWithEmailAndPassword, FacebookAuthProvider, getRedirectResult, GoogleAuthProvider, linkWithCredential, onAuthStateChanged,
@@ -105,6 +106,19 @@ export const signUpStudent = async ({ name, email, password, curriculum, grade }
   await ensureStudentProfile(user, { displayName: name.trim(), curriculum, grade })
   return user
 }
+// Teachers sign up on the same page. They get no student profile; instead a request for teacher access goes to the
+// administrator, who approves it under Admin → Teachers. Until then /teacher shows the request as pending.
+export const signUpTeacher = async ({ name, email, password, phone, subjects, message }) => {
+  const { user } = await createUserWithEmailAndPassword(auth, email.trim(), password)
+  await updateProfile(user, { displayName: name.trim() })
+  await setDoc(doc(db, 'teacherRequests', user.uid), {
+    uid: user.uid, email: user.email || '', name: name.trim().slice(0, 80), phone: String(phone || '').trim().slice(0, 20), subjects: String(subjects || '').trim().slice(0, 120),
+    message: String(message || '').trim().slice(0, 500), status: 'pending', createdAt: serverTimestamp(),
+  })
+  return user
+}
+export const hasTeacherRequest = async (uid) => (await getDoc(doc(db, 'teacherRequests', uid)).catch(() => null))?.exists() === true
+
 // ---------- Social sign-in (Google, Facebook) ----------
 export const PROVIDER_LABELS = { 'google.com': 'Google', 'facebook.com': 'Facebook', password: 'Email & password' }
 const PROVIDERS = {
@@ -125,8 +139,8 @@ const finishSignIn = async (user) => {
     // Already linked or used elsewhere: the student is signed in either way, so don't block them.
     await linkWithCredential(user, credential).catch((error) => { if (!['auth/provider-already-linked', 'auth/credential-already-in-use'].includes(error.code)) throw error })
   }
-  // Teachers sign in on the same page; they don't need a student profile.
-  if (await isTeacherAccount(user.uid)) return user
+  // Teachers (and teachers waiting for approval) sign in on the same page; they don't need a student profile.
+  if (await isTeacherAccount(user.uid) || await hasTeacherRequest(user.uid)) return user
   await ensureStudentProfile(user)
   return user
 }
@@ -237,6 +251,14 @@ export const loadProgressShare = async (shareId) => {
   const snapshot = await getDoc(doc(db, 'progressShares', shareId))
   return snapshot.exists() ? { id: snapshot.id, ...snapshot.data(), updatedAt: snapshot.data().updatedAt?.toDate?.() || null } : null
 }
+
+// ---------- Practice streaks ----------
+// Published from the student's own attempt history whenever it changes; read by the streak wall.
+export const publishStreak = (uid, name, info) => setDoc(doc(db, 'streaks', uid), {
+  uid, name: String(name || 'Student').slice(0, 40), current: Math.min(3660, info.current), best: Math.min(3660, Math.max(info.best, info.current)), lastDay: info.lastDay, updatedAt: serverTimestamp(),
+})
+export const subscribeStreakWall = (onChange, max = 60) => onSnapshot(query(collection(db, 'streaks'), orderBy('current', 'desc'), limit(max)),
+  (snapshot) => onChange(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))), () => onChange([]))
 
 // ---------- Administration ----------
 export const listStudents = async (max = 200) => (await getDocs(query(collection(db, 'students'), orderBy('createdAt', 'desc'), limit(max)))).docs.map((item) => ({ id: item.id, ...item.data() }))

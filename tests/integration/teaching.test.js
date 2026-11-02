@@ -60,3 +60,43 @@ test('IGCSE Mathematics comes first and includes 0607 and 0606', () => {
   assert.equal(PROGRAMMES[0].id, 'igcse')
   for (const id of ['igcse-0607-ext', 'igcse-0607-core', 'igcse-0606', 'igcse-math-ext']) assert.ok(COURSES.some((course) => course.id === id), id)
 })
+
+test('pass marks flag students, but remedial is only what the teacher ticked', async () => {
+  const { belowPass, remedials, remedialStatus, passMarkError, splitWorksheet } = await import('../../src/teacher/marks.js')
+  assert.equal(belowPass({ score: 18, passMark: 20 }), true)
+  assert.equal(belowPass({ score: 20, passMark: 20 }), false)
+  assert.equal(belowPass({ score: 5, passMark: null }), false, 'no pass mark, nobody is flagged')
+  assert.equal(remedialStatus({ score: 5, passMark: 20 }), null, 'below the pass mark is not remedial by itself')
+  assert.equal(remedialStatus({ remedial: true }), 'pending')
+  assert.equal(remedialStatus({ remedial: true, remedialDone: true }), 'done')
+  const list = remedials([{ id: 1, remedial: true, testDate: '2026-10-05' }, { id: 2, remedial: true, remedialDone: true, testDate: '2026-10-01' }, { id: 3, testDate: '2026-10-01' }, { id: 4, remedial: true, testDate: '2026-09-01' }])
+  assert.deepEqual(list.pending.map((mark) => mark.id), [4, 1])
+  assert.deepEqual(list.done.map((mark) => mark.id), [2])
+  assert.equal(passMarkError('', 50), null)
+  assert.match(passMarkError('60', 50), /between 0 and 50/)
+  assert.deepEqual(splitWorksheet('Worksheet B · https://drive.google.com/x'), { label: 'Worksheet B', url: 'https://drive.google.com/x' })
+  assert.deepEqual(splitWorksheet('Quadratics sheet'), { label: 'Quadratics sheet', url: '' })
+})
+
+test('weekly leaderboard ranks by average % within Monday–Sunday, ties share a rank', async () => {
+  const { weekOf, weeklyLeaderboard, leaderboardDoc, shortName } = await import('../../src/teacher/marks.js')
+  assert.deepEqual(weekOf('2026-11-04'), { start: '2026-11-02', end: '2026-11-08' })
+  assert.deepEqual(weekOf('2026-11-08'), { start: '2026-11-02', end: '2026-11-08' }, 'Sunday belongs to the week that started on Monday')
+  assert.equal(shortName('Aarav Kumar Sharma'), 'Aarav S.')
+  assert.equal(shortName('Riya'), 'Riya')
+  const named = (uid, name, date, score) => ({ ...mark(uid, 'Maths', date, score, 50), studentName: name })
+  const marks = [
+    named('a', 'Aarav Sharma', '2026-11-02', 40), named('a', 'Aarav Sharma', '2026-11-05', 50), // 90%
+    named('b', 'Bela Rao', '2026-11-03', 45), // 90%, one test
+    named('c', 'Chirag Jain', '2026-11-04', 45), named('c', 'Chirag Jain', '2026-11-06', 45), // 90%, two tests
+    named('d', 'Dev Patel', '2026-11-07', 30), // 60%
+    named('e', 'Esha Nair', '2026-10-30', 50), // previous week
+  ]
+  const rows = weeklyLeaderboard(marks, '2026-11-02')
+  assert.deepEqual(rows.map((row) => [row.studentUid, row.rank]), [['a', 1], ['c', 1], ['b', 3], ['d', 4]])
+  assert.equal(rows[0].name, 'Aarav S.')
+  const board = leaderboardDoc(marks, '2026-11-05')
+  assert.equal(board.weekStart, '2026-11-02')
+  assert.equal(board.participants, 4)
+  assert.equal('fullName' in board.entries[0], false, 'only short names are published to students')
+})

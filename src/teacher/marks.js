@@ -85,3 +85,81 @@ export const markError = ({ score, maxScore, schoolScore }) => {
 }
 
 export const formatDay = (iso) => iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'
+
+// ---------- Pass marks and remedials ----------
+// A test can have a pass mark (in marks, not %). The teacher decides who goes to remedial: being below the pass
+// mark only flags the student, it never sends them to remedial on its own.
+const hasValue = (value) => value !== '' && value !== null && value !== undefined && Number.isFinite(Number(value))
+export const hasPassMark = (mark) => hasValue(mark?.passMark)
+export const belowPass = (mark) => hasPassMark(mark) && hasValue(mark.score) && Number(mark.score) < Number(mark.passMark)
+// 'pending' | 'done' | null
+export const remedialStatus = (mark) => mark?.remedial ? (mark.remedialDone ? 'done' : 'pending') : null
+export const passMarkError = (passMark, maxScore) => {
+  if (passMark === '' || passMark === null || passMark === undefined) return null
+  const value = Number(passMark)
+  if (!Number.isFinite(value) || value < 0 || value > Number(maxScore)) return `The pass mark must be between 0 and ${maxScore}.`
+  return null
+}
+// Remedial work across all tests: pending first (oldest test first, so nothing is forgotten), then completed.
+export const remedials = (marks) => {
+  const list = marks.filter((mark) => mark.remedial)
+  const pending = byDate(list.filter((mark) => !mark.remedialDone))
+  const done = byDate(list.filter((mark) => mark.remedialDone)).reverse()
+  return { pending, done }
+}
+
+// ---------- Weekly leaderboard ----------
+const pad = (value) => String(value).padStart(2, '0')
+export const localISO = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+// Weeks run Monday to Sunday. Returns { start, end } as 'YYYY-MM-DD'.
+export const weekOf = (iso) => {
+  const date = new Date(`${iso}T00:00:00`)
+  date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
+  const start = localISO(date)
+  date.setDate(date.getDate() + 6)
+  return { start, end: localISO(date) }
+}
+export const shiftWeek = (start, weeks) => { const date = new Date(`${start}T00:00:00`); date.setDate(date.getDate() + weeks * 7); return localISO(date) }
+export const formatWeek = ({ start, end }) => {
+  const from = new Date(`${start}T00:00:00`)
+  const to = new Date(`${end}T00:00:00`)
+  const sameMonth = from.getMonth() === to.getMonth()
+  return `${from.toLocaleDateString('en-IN', { day: 'numeric', ...(sameMonth ? {} : { month: 'short' }) })} – ${to.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`
+}
+// "Aarav Sharma" → "Aarav S." so the leaderboard shows who did well without full names.
+export const shortName = (name) => {
+  const parts = String(name || 'Student').trim().split(/\s+/).filter(Boolean)
+  if (!parts.length) return 'Student'
+  return parts.length === 1 ? parts[0].slice(0, 30) : `${parts[0].slice(0, 30)} ${parts[parts.length - 1][0].toUpperCase()}.`
+}
+// Everyone who sat a test in the week, ranked by their average %. Ties share a rank (1, 2, 2, 4).
+export const weeklyLeaderboard = (marks, weekStart) => {
+  const { start, end } = weekOf(weekStart)
+  const inWeek = marks.filter((mark) => String(mark.testDate) >= start && String(mark.testDate) <= end)
+  const rows = Object.values(groupBy(inWeek, 'studentUid')).map((list) => {
+    const scores = list.map(percent)
+    return { studentUid: list[0].studentUid, name: shortName(list[0].studentName), fullName: list[0].studentName, average: average(scores), best: Math.max(...scores), tests: list.length }
+  }).sort((a, b) => b.average - a.average || b.tests - a.tests || a.name.localeCompare(b.name))
+  let rank = 0
+  return rows.map((row, index) => {
+    if (index === 0 || row.average !== rows[index - 1].average || row.tests !== rows[index - 1].tests) rank = index + 1
+    return { ...row, rank }
+  })
+}
+// The public copy students read: the top 10, short names only.
+export const LEADERBOARD_SIZE = 10
+export const leaderboardDoc = (marks, weekStart) => {
+  const week = weekOf(weekStart)
+  const rows = weeklyLeaderboard(marks, week.start)
+  return {
+    weekStart: week.start, weekEnd: week.end, participants: rows.length,
+    entries: rows.slice(0, LEADERBOARD_SIZE).map(({ studentUid, name, average: avg, best, tests, rank }) => ({ studentUid, name, average: avg, best, tests, rank })),
+  }
+}
+// "Worksheet B · https://drive…" → { label: 'Worksheet B', url: 'https://drive…' }
+export const splitWorksheet = (text) => {
+  const value = String(text || '').trim()
+  const url = value.match(/https:\/\/\S+/i)?.[0] || ''
+  const label = value.replace(url, '').replace(/[\s·:,-]+$/, '').replace(/^[\s·:,-]+/, '').trim()
+  return { label, url }
+}

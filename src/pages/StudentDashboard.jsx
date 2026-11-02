@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowRight, Camera, Check, CheckCircle2, CircleHelp, ClipboardList, Clock3, Copy, Crown, Flame, Link2, LogOut, Mail, MessageCircle,
-  Share2, Target, Trash2, Upload,
+  LifeBuoy, Share2, Target, Trash2, Trophy, Upload,
 } from 'lucide-react'
 import { SiteFooter } from '../components/site/SiteChrome'
 import {
@@ -22,6 +22,10 @@ import { GOLD_FEATURES, hasGold } from '../student/access'
 import { loginUrl, useSession } from '../student/session'
 import { useStudentData } from '../student/useStudent'
 import { ReportPanel } from '../student/ReportPanel'
+import { LeaderboardPanel } from '../student/LeaderboardPanel'
+import { StreakCard } from '../student/StreakCard'
+import { subscribeLeaderboards, subscribeStudentMarks } from '../firebase/teaching'
+import { formatWeek, remedialStatus, weekOf } from '../teacher/marks'
 import '../student/student.css'
 
 const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return DASHBOARD_TABS.some(([id]) => id === tab) ? tab : 'overview' }
@@ -76,6 +80,7 @@ export default function StudentDashboard() {
         {tab === 'courses' && <CoursesPanel {...panelProps} />}
         {tab === 'progress' && <ProgressPanel {...panelProps} />}
         {tab === 'report' && <ReportPanel user={user} />}
+        {tab === 'leaderboard' && <LeaderboardPanel user={user} summary={summary} practiseHref={practiseHref(summary)} />}
         {tab === 'exams' && <ExamsPanel {...panelProps} />}
         {tab === 'profile' && <ProfilePanel {...panelProps} />}
         {tab === 'subscription' && <SubscriptionPanel {...panelProps} />}
@@ -85,6 +90,13 @@ export default function StudentDashboard() {
     {upgrade && <UpgradeDialog onClose={() => setUpgrade(false)} />}
     <SiteFooter />
   </main>
+}
+
+// Where "Practise now" goes: the course practised most recently, or the course list.
+const practiseHref = (summary) => {
+  const last = summary.courses.slice().sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0))[0]
+  const course = last && getCourse(last.courseId)
+  return course ? courseUrl(course, '#topic-quizzes') : '/courses'
 }
 
 function PanelHead({ title, text, children }) {
@@ -100,7 +112,14 @@ function StatRow({ summary }) {
   </div>
 }
 
-function Overview({ profile, summary, attempts, select, openShare, name }) {
+function Overview({ user, profile, summary, attempts, select, openShare, name }) {
+  const [marks, setMarks] = useState([])
+  useEffect(() => subscribeStudentMarks(user.uid, setMarks), [user.uid])
+  const [boards, setBoards] = useState([])
+  useEffect(() => subscribeLeaderboards(setBoards, 1), [])
+  const board = boards[0]
+  const myRow = board?.entries?.find((row) => row.studentUid === user.uid)
+  const remedial = marks.filter((mark) => remedialStatus(mark) === 'pending')
   const completeness = Math.round(PROFILE_CHECKS.filter((key) => profile[key]).length / PROFILE_CHECKS.length * 100)
   const active = summary.courses.slice().sort((a, b) => (b.lastActivity || 0) - (a.lastActivity || 0)).slice(0, 4)
   const lastCourse = active[0] && getCourse(active[0].courseId)
@@ -120,7 +139,20 @@ function Overview({ profile, summary, attempts, select, openShare, name }) {
         <span><strong>Complete your profile</strong><small>Add a photo and details so teachers know you.</small></span>
       </button>}
     </div>
+    {remedial.length > 0 && <button type="button" className="st-remedial-strip" onClick={() => select('report')}>
+      <LifeBuoy size={20} /><span><strong>Remedial worksheet to do</strong><small>{remedial.map((mark) => mark.testTitle).join(', ')} · tap to see your teacher’s comments</small></span><ArrowRight size={16} />
+    </button>}
     <StatRow summary={summary} />
+    <div className="st-grid-2 st-grid-streak">
+      <StreakCard info={summary.streakInfo} practiseHref={practiseHref(summary)} />
+      <div className="st-card st-lb-teaser"><div className="st-card-head"><h2>Weekly leaderboard</h2><button type="button" className="st-text-button" onClick={() => select('leaderboard')}>See leaderboard</button></div>
+        {board?.entries?.length ? <>
+          <small className="st-lb-week">Week of {formatWeek(weekOf(board.weekStart))}</small>
+          <ol className="st-lb-mini">{board.entries.slice(0, 3).map((row) => <li key={row.studentUid} className={row.studentUid === user.uid ? 'is-me' : ''}><span className={`st-lb-rank r${row.rank}`}>{row.rank}</span><strong>{row.name}{row.studentUid === user.uid ? ' (you)' : ''}</strong><b>{row.average}%</b></li>)}</ol>
+          {myRow && <p className="st-lb-you"><Trophy size={15} /> You’re ranked #{myRow.rank} this week. Brilliant!</p>}
+        </> : <p className="st-muted-box">Top scorers in each week’s tests appear here once teachers enter marks.</p>}
+      </div>
+    </div>
     <div className="st-grid-2">
       <div className="st-card"><div className="st-card-head"><h2>Activity</h2><small>Questions answered · last 14 days</small></div><ActivityChart daily={summary.daily} /></div>
       <div className="st-card"><div className="st-card-head"><h2>Recent attempts</h2><button type="button" className="st-text-button" onClick={() => select('exams')}>View all</button></div><AttemptList attempts={attempts.slice(0, 5)} empty="No attempts yet. Your quizzes and exams will appear here." /></div>

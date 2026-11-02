@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, BarChart3, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Link2, Mail, Share2, Trophy, UserRound } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpenCheck, CheckCircle2, Eye, EyeOff, GraduationCap, KeyRound, Link2, Mail, Phone, Presentation, Share2, Trophy, UserRound } from 'lucide-react'
 import {
-  authErrorMessage, completeRedirectSignIn, getPendingLink, isTeacherAccount, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent,
+  authErrorMessage, completeRedirectSignIn, getPendingLink, hasTeacherRequest, isTeacherAccount, resetStudentPassword, signInStudent, signInStudentWithProvider, signOutStudent, signUpStudent, signUpTeacher,
 } from '../firebase/student'
 import { auth } from '../firebase/config'
 import { BrandLockup } from '../components/site/SiteChrome'
@@ -9,15 +9,22 @@ import { safeNext, useSession } from '../student/session'
 import '../student/student.css'
 
 const params = new URLSearchParams(window.location.search)
-// With no page to return to, teachers go to the teacher portal and students to their dashboard.
+// With no page to return to, teachers (approved or waiting for approval) go to the teacher portal and students to their dashboard.
 const destination = async () => {
   const next = safeNext(params.get('next'))
   if (params.get('next')) return next
   const uid = auth.currentUser?.uid
-  return uid && await isTeacherAccount(uid) ? '/teacher' : next
+  return uid && (await isTeacherAccount(uid) || await hasTeacherRequest(uid)) ? '/teacher' : next
 }
 const CURRICULA = ['IGCSE', 'IBDP', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'SAT / ACT', 'AMC / Olympiad / PSAT', 'Other']
 const GRADES = ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Gap year / Other']
+const TEACHER_SUBJECTS = ['IGCSE Mathematics', 'IBDP Mathematics', 'AS & A Level Mathematics', 'IB MYP Mathematics', 'Grades 6–8 Mathematics', 'SAT / AMC / Olympiad / PSAT']
+const teacherPerks = [
+  [BookOpenCheck, 'Enter test marks with comments on where each student can improve'],
+  [GraduationCap, 'Decide who needs a remedial worksheet and track when it’s done'],
+  [Trophy, 'Publish the weekly test leaderboard automatically'],
+  [BarChart3, 'Follow every student’s progress card, test by test'],
+]
 const perks = [
   [GraduationCap, 'Topic quizzes, revision ladders and timed mock exams'],
   [BarChart3, 'Track accuracy, streaks and topic mastery as you practise'],
@@ -30,8 +37,9 @@ const GoogleMark = () => <svg width="18" height="18" viewBox="0 0 48 48" aria-hi
 
 export default function StudentLogin() {
   const { status, user } = useSession()
-  const [mode, setMode] = useState(params.get('mode') === 'signup' ? 'signup' : 'login')
-  const [form, setForm] = useState({ name: '', email: '', password: '', curriculum: '', grade: '', terms: false })
+  const [mode, setMode] = useState(params.get('mode') === 'signup' || params.get('role') === 'teacher' ? 'signup' : 'login')
+  const [role, setRole] = useState(params.get('role') === 'teacher' ? 'teacher' : 'student')
+  const [form, setForm] = useState({ name: '', email: '', password: '', curriculum: '', grade: '', phone: '', subjects: '', message: '', terms: false })
   const [showPassword, setShowPassword] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -54,9 +62,11 @@ export default function StudentLogin() {
 
   const set = (key) => (event) => setForm({ ...form, [key]: event.target.type === 'checkbox' ? event.target.checked : event.target.value })
   const switchMode = (value) => { setMode(value); setError(''); setNotice('') }
-  const run = async (action) => {
+  const switchRole = (value) => { setRole(value); setError(''); window.history.replaceState(null, '', value === 'teacher' ? '/login?role=teacher' : '/login?mode=signup') }
+  const teacherSignup = mode === 'signup' && role === 'teacher'
+  const run = async (action, target) => {
     setAttempted(true); setBusy(true); setError(''); setNotice('')
-    try { await action(); window.location.replace(await destination()) } catch (authError) {
+    try { await action(); window.location.replace(target || await destination()) } catch (authError) {
       // If sign-in worked but the profile could not be created, sign out so the student can simply retry.
       await signOutStudent().catch(() => {})
       const pending = getPendingLink()
@@ -76,19 +86,29 @@ export default function StudentLogin() {
     if (mode === 'signup') {
       if (form.password.length < 8) return setError('Use a password of at least 8 characters.')
       if (!form.terms) return setError('Please accept the terms to create your account.')
+      if (role === 'teacher') {
+        if (!form.name.trim()) return setError('Add your full name.')
+        if (!form.subjects) return setError('Choose what you teach.')
+        return run(() => signUpTeacher(form), '/teacher')
+      }
       return run(() => signUpStudent(form))
     }
     return run(() => signInStudent(form.email, form.password))
   }
 
-  const titles = { login: ['Welcome back', 'Students and teachers log in here, with an email or the login ID the institute gave you.'], signup: ['Create your student account', 'Free forever. Upgrade to Gold any time.'], reset: ['Reset your password', 'We’ll email you a secure link to choose a new one.'] }
+  const titles = {
+    login: ['Welcome back', 'Students and teachers log in here, with an email or the login ID the institute gave you.'],
+    signup: teacherSignup ? ['Create your teacher account', 'The institute approves teacher accounts. You’ll get the teacher portal as soon as they do.'] : ['Create your student account', 'Free forever. Upgrade to Gold any time.'],
+    reset: ['Reset your password', 'We’ll email you a secure link to choose a new one.'],
+  }
+  const asidePerks = teacherSignup ? teacherPerks : perks
   return <main className="st-auth">
     <aside className="st-auth-aside">
       <BrandLockup />
       <div className="st-auth-pitch">
-        <span className="st-eyebrow">Philomathean Student Portal</span>
-        <h1>Revise smarter. <span>See your progress.</span></h1>
-        <ul>{perks.map(([Icon, text]) => <li key={text}><span><Icon size={18} /></span>{text}</li>)}</ul>
+        <span className="st-eyebrow">{teacherSignup ? 'Philomathean Teacher Portal' : 'Philomathean Student Portal'}</span>
+        {teacherSignup ? <h1>Teach better. <span>See every student grow.</span></h1> : <h1>Revise smarter. <span>See your progress.</span></h1>}
+        <ul>{asidePerks.map(([Icon, text]) => <li key={text}><span><Icon size={18} /></span>{text}</li>)}</ul>
       </div>
       <p className="st-auth-quote">Questions written and reviewed by the Philomathean faculty — the teachers behind our 45/45 IBDP results.</p>
     </aside>
@@ -100,10 +120,14 @@ export default function StudentLogin() {
           <button type="button" role="tab" aria-selected={mode === 'login'} className={mode === 'login' ? 'active' : ''} onClick={() => switchMode('login')}>Log in</button>
           <button type="button" role="tab" aria-selected={mode === 'signup'} className={mode === 'signup' ? 'active' : ''} onClick={() => switchMode('signup')}>Sign up</button>
         </div>}
+        {mode === 'signup' && <div className="st-role" role="radiogroup" aria-label="I am a">
+          {[['student', 'Student', GraduationCap, 'Practise & track progress'], ['teacher', 'Teacher', Presentation, 'Enter marks & remedials']].map(([id, label, Icon, hint]) => <button key={id} type="button" role="radio" aria-checked={role === id} className={role === id ? 'active' : ''} onClick={() => switchRole(id)}>
+            <Icon size={20} /><span><strong>I’m a {label.toLowerCase()}</strong><small>{hint}</small></span></button>)}
+        </div>}
         <h2>{titles[mode][0]}</h2>
         <p className="st-auth-sub">{titles[mode][1]}</p>
 
-        {mode !== 'reset' && <>
+        {mode !== 'reset' && !teacherSignup && <>
           {linking && <p className="st-alert st-alert-info" role="status"><Link2 size={16} /> <span>Connecting {linking.label}{linking.email ? ` to ${linking.email}` : ''}. Log in below with the method you used before and {linking.label} will work for this account from now on.</span></p>}
           <div className="st-social">
             <button type="button" className="st-social-button" onClick={() => run(() => signInStudentWithProvider('google.com'))} disabled={busy || linking?.provider === 'google.com'}><GoogleMark /> {mode === 'signup' ? 'Sign up' : 'Log in'} with Google</button>
@@ -119,17 +143,23 @@ export default function StudentLogin() {
           {mode !== 'reset' && <label className="st-field"><span className="st-field-row">Password{mode === 'login' && <button type="button" className="st-text-button" onClick={() => switchMode('reset')}>Forgot password?</button>}</span>
             <span className="st-input"><KeyRound size={16} /><input type={showPassword ? 'text' : 'password'} required minLength={mode === 'signup' ? 8 : undefined} value={form.password} onChange={set('password')} autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} placeholder={mode === 'signup' ? 'At least 8 characters' : 'Your password'} />
               <button type="button" className="st-input-icon" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={16} /> : <Eye size={16} />}</button></span></label>}
-          {mode === 'signup' && <div className="st-field-grid">
+          {teacherSignup && <>
+            <label className="st-field"><span>Phone (optional)</span><span className="st-input"><Phone size={16} /><input type="tel" value={form.phone} onChange={set('phone')} autoComplete="tel" maxLength={20} placeholder="+91 98765 43210" /></span></label>
+            <label className="st-field"><span>What do you teach?</span><select required value={form.subjects} onChange={set('subjects')}><option value="">Select…</option>{TEACHER_SUBJECTS.map((item) => <option key={item}>{item}</option>)}</select></label>
+            <label className="st-field"><span>Note for the institute (optional)</span><textarea rows={2} value={form.message} onChange={set('message')} maxLength={500} placeholder="e.g. I teach the Saturday Grade 9 batch" /></label>
+          </>}
+          {mode === 'signup' && !teacherSignup && <div className="st-field-grid">
             <label className="st-field"><span>Curriculum</span><select value={form.curriculum} onChange={set('curriculum')}><option value="">Select…</option>{CURRICULA.map((item) => <option key={item}>{item}</option>)}</select></label>
             <label className="st-field"><span>Grade</span><select value={form.grade} onChange={set('grade')}><option value="">Select…</option>{GRADES.map((item) => <option key={item}>{item}</option>)}</select></label>
           </div>}
           {mode === 'signup' && <label className="st-check"><input type="checkbox" checked={form.terms} onChange={set('terms')} /> <span>I agree to the terms of use and to Philomathean contacting me about my studies.</span></label>}
           {error && <p className="st-alert st-alert-error" role="alert">{error}</p>}
           {notice && <p className="st-alert st-alert-success" role="status"><CheckCircle2 size={16} /> {notice}</p>}
-          <button className="st-primary st-block" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Log in' : mode === 'signup' ? 'Create account' : 'Send reset link'}</button>
+          <button className="st-primary st-block" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Log in' : mode === 'signup' ? (teacherSignup ? 'Create teacher account' : 'Create account') : 'Send reset link'}</button>
         </form>
         {mode === 'reset' && <button type="button" className="st-text-button st-center" onClick={() => switchMode('login')}><ArrowLeft size={14} /> Back to log in</button>}
-        {mode === 'login' && <p className="st-auth-switch">New to Philomathean? <button type="button" className="st-text-button" onClick={() => switchMode('signup')}>Create a free account</button></p>}
+        {mode === 'login' && <p className="st-auth-switch">New to Philomathean? <button type="button" className="st-text-button" onClick={() => { switchRole('student'); switchMode('signup') }}>Create a free account</button></p>}
+        {mode === 'login' && <p className="st-auth-switch st-auth-switch-teacher">Teaching at Philomathean? <button type="button" className="st-text-button" onClick={() => { switchRole('teacher'); switchMode('signup') }}><Presentation size={14} /> Create a teacher account</button></p>}
         {mode === 'signup' && <p className="st-auth-switch">Already have an account? <button type="button" className="st-text-button" onClick={() => switchMode('login')}>Log in</button></p>}
       </div>
     </section>

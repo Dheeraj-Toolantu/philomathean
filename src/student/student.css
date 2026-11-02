@@ -668,3 +668,94 @@
 .st-quiz-empty .st-outline-pill, .st-quiz-empty .st-round-icon { pointer-events: none; border-color: #c9d5e6; color: var(--st-muted); }
 .st-question-image { display: block; max-width: 100%; max-height: 360px; margin: -10px 0 22px; border: 1px solid var(--st-line); border-radius: 12px; background: #fff; }
 .st-question-image-sm { max-height: 200px; margin: 8px 0; }
+
+/* ---------- Sign-up role choice (student / teacher) ---------- */
+.st-role { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 20px; }
+.st-role button { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #d6dfeb; border-radius: 14px; color: var(--st-muted); background: #fff; text-align: left; cursor: pointer; transition: border-color .15s, box-shadow .15s, background .15s; }
+.st-role button:hover { border-color: #a9bed8; }
+.st-role button.active { border-color: var(--st-blue); color: var(--st-blue); background: var(--st-blue-soft); box-shadow: 0 0 0 3px rgba(11, 116, 209, .1); }
+.st-role button span { display: grid; gap: 1px; }
+.st-role strong { color: var(--st-ink); font-size: 14px; }
+.st-role small { font-size: 12px; }
+.st-auth-switch-teacher { margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--st-line); }
+
+/* ---------- My marks: remedial status and test results ---------- */
+.st-remedial-banner { display: flex; gap: 14px; padding: 18px 20px; border-radius: var(--st-radius); }
+.st-remedial-banner.is-pending { color: #6b4100; background: linear-gradient(120deg, #fff3dc, #fffaf0); border: 1px solid #f3d79e; }
+.st-remedial-banner.is-clear { color: #0d5c41; background: linear-gradient(120deg, #e3f5ed, #f4fbf8); border: 1px solid #bfe5d3; }
+.st-remedial-icon { display: grid; flex: 0 0 auto; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: #fff; box-shadow: 0 2px 8px rgba(11, 33, 73, .08); }
+.st-remedial-banner strong { display: block; color: inherit; font: 800 17px var(--display); }
+.st-remedial-banner p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; }
+.st-remedial-banner ul { margin: 10px 0 0; padding-left: 18px; font-size: 14px; }
+.st-remedial-banner a { color: inherit; font-weight: 800; }
+.st-results { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.st-results > li { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--st-line); border-radius: 14px; }
+.st-results > li.is-remedial { border-color: #f3d79e; background: #fffcf5; }
+.st-result-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; }
+.st-result-head strong { display: block; color: var(--st-ink); font-size: 15px; }
+.st-result-head small { color: var(--st-muted); font-size: 12.5px; }
+.st-result-pct { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; font-size: 16px; font-weight: 800; }
+.st-result-marks { display: grid; justify-items: end; color: var(--st-muted); font-size: 13px; }
+.st-result-marks b { color: var(--st-ink); font-size: 18px; }
+.st-result-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.st-pill { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 10px; border-radius: 999px; color: var(--st-muted); background: #f0f3f7; font-size: 12px; font-weight: 700; }
+.st-pill-green { color: var(--st-green); background: var(--st-green-soft); }
+.st-pill-red { color: var(--st-red); background: var(--st-red-soft); }
+.st-pill-amber { color: var(--st-amber); background: var(--st-amber-soft); }
+.st-result-note { display: flex; gap: 8px; margin: 0; padding: 10px 12px; border-radius: 10px; color: var(--st-text); background: var(--st-sky); font-size: 14px; line-height: 1.5; }
+.st-result-note svg { flex: 0 0 auto; margin-top: 3px; color: var(--st-blue); }
+.st-remedial-strip { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 18px; border: 1px solid #f3d79e; border-radius: 16px; color: #6b4100; background: linear-gradient(120deg, #fff3dc, #fffaf0); text-align: left; cursor: pointer; font: inherit; }
+.st-remedial-strip span { display: grid; flex: 1; gap: 2px; }
+.st-remedial-strip strong { font-size: 15px; }
+.st-remedial-strip small { font-size: 13px; }
+.st-remedial-strip:hover { border-color: #e6b858; }
+
+/* ---------- Daily streak card ---------- */
+.st-grid-streak { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); }
+.st-streak { display: grid; align-content: start; gap: 16px; padding: 24px; border-radius: var(--st-radius); color: #fff; background: radial-gradient(circle at 85% 0%, rgba(255, 200, 120, .35), transparent 50%), linear-gradient(140deg, #3b1d0e, #7a2e0b 55%, #c2410c); }
+.st-streak:not(.is-lit) { background: radial-gradient(circle at 85% 0%, rgba(255, 255, 255, .12), transparent 50%), linear-gradient(140deg, #0b2149, #1c3b6e); }
+.st-streak-top { display: flex; align-items: center; gap: 14px; }
+.st-streak-flame { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 18px; color: #fff; background: rgba(255, 255, 255, .14); }
+.st-streak.is-lit .st-streak-flame { color: #fff; background: linear-gradient(160deg, #ffc35c, #f05a1a); box-shadow: 0 8px 24px rgba(240, 90, 26, .45); animation: st-flicker 2.4s ease-in-out infinite; }
+@keyframes st-flicker { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.06) rotate(-2deg); } }
+@media (prefers-reduced-motion: reduce) { .st-streak.is-lit .st-streak-flame { animation: none; } }
+.st-streak-count { display: grid; line-height: 1; }
+.st-streak-count strong { font: 800 40px var(--display); }
+.st-streak-count span { margin-top: 4px; color: rgba(255, 255, 255, .78); font-size: 13px; font-weight: 700; }
+.st-streak-best { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; padding: 5px 10px; border-radius: 999px; color: #ffe2a8; background: rgba(0, 0, 0, .2); font-size: 12px; font-weight: 800; }
+.st-streak-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
+.st-streak-week li { display: grid; justify-items: center; gap: 4px; }
+.st-streak-week li span { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 2px dashed rgba(255, 255, 255, .3); }
+.st-streak-week li.done span { border: 0; color: #c2410c; background: #ffd9a3; }
+.st-streak-week li.today span { border-style: solid; border-color: #fff; }
+.st-streak-week li.future span { opacity: .45; }
+.st-streak-week small { color: rgba(255, 255, 255, .7); font-size: 11px; font-weight: 700; }
+.st-streak-msg { margin: 0; font-size: 14px; font-weight: 600; }
+.st-streak-goal { display: grid; gap: 6px; }
+.st-streak-goal::before { content: ''; grid-area: 1 / 1; height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .18); }
+.st-streak-goal span { grid-area: 1 / 1; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #ffd27a, #ffb347); }
+.st-streak-goal small { color: rgba(255, 255, 255, .75); font-size: 12px; }
+.st-streak-cta { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; border-radius: 999px; color: #0b2149; background: #fff; font-size: 14px; font-weight: 800; text-decoration: none; }
+.st-streak-cta:hover { background: #ffe9c7; }
+
+/* Overview leaderboard teaser */
+.st-lb-week { display: block; margin: -10px 0 10px; color: var(--st-muted); font-size: 12.5px; }
+.st-lb-mini { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.st-lb-mini li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: #f7f9fc; }
+.st-lb-mini li.is-me { background: var(--st-blue-soft); }
+.st-lb-mini strong { overflow: hidden; color: var(--st-ink); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.st-lb-mini b { color: var(--st-ink); font-size: 15px; }
+.st-lb-rank { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: #fff; background: #9aa6ba; font-size: 13px; font-weight: 800; }
+.st-lb-rank.r1 { background: linear-gradient(135deg, #f2c94c, #d9a21b); }
+.st-lb-rank.r2 { background: linear-gradient(135deg, #b9c4d4, #8a97ab); }
+.st-lb-rank.r3 { background: linear-gradient(135deg, #e3a072, #b8693a); }
+.st-lb-you { display: flex; align-items: center; gap: 6px; margin: 12px 0 0; color: var(--st-gold-dark); font-size: 13.5px; font-weight: 700; }
+
+@media (max-width: 900px) { .st-grid-streak { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .st-role { grid-template-columns: 1fr; }
+  .st-result-head { grid-template-columns: auto minmax(0, 1fr); }
+  .st-result-marks { grid-column: 1 / -1; display: flex; gap: 6px; align-items: baseline; }
+  .st-result-marks small { margin-left: 8px; }
+  .st-streak-week li span { width: 28px; height: 28px; }
+}
