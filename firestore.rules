@@ -92,11 +92,10 @@ service cloud.firestore {
 
     match /teachers/{uid} {
       allow read: if request.auth != null;
-      // A student account can't be turned into a teacher; teachers get their own account (create only, so older
-      // teacher records keep working).
+      // An administrator may turn an existing account into a teacher (Admin → Teachers → Add existing account).
+      // From then on it is a teacher account only: the student rules above stop it writing student data.
       allow create, update: if isAdmin() && request.resource.data.uid == uid && shortString(request.resource.data.name, 80)
-        && shortString(request.resource.data.get('email', ''), 120) && shortString(request.resource.data.get('subjects', ''), 120) && request.resource.data.order is number
-        && (resource != null || !hasStudentProfile(uid));
+        && shortString(request.resource.data.get('email', ''), 120) && shortString(request.resource.data.get('subjects', ''), 120) && request.resource.data.order is number;
       allow delete: if isAdmin();
     }
 
