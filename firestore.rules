@@ -93,16 +93,53 @@ service cloud.firestore {
     }
 
     // Marks are entered by teachers or administrators; each student can read only their own.
+    // passMark is optional; remedial is the teacher's decision (never automatic) and remedialDone records the finished worksheet.
     match /testMarks/{markId} {
       allow read: if isStaff() || (request.auth != null && resource.data.studentUid == request.auth.uid);
       allow create, update: if isStaff()
-        && request.resource.data.keys().hasOnly(['testId', 'studentUid', 'studentName', 'subject', 'testTitle', 'testDate', 'score', 'maxScore', 'schoolScore', 'note', 'teacherUid', 'teacherName', 'createdAt', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['testId', 'studentUid', 'studentName', 'subject', 'testTitle', 'testDate', 'score', 'maxScore', 'schoolScore', 'passMark', 'note', 'remedial', 'remedialWork', 'remedialDone', 'teacherUid', 'teacherName', 'createdAt', 'updatedAt'])
         && shortString(request.resource.data.testId, 64) && shortString(request.resource.data.studentUid, 128) && shortString(request.resource.data.studentName, 80)
         && shortString(request.resource.data.subject, 60) && shortString(request.resource.data.testTitle, 120) && request.resource.data.testDate is string && request.resource.data.testDate.size() == 10
         && isScore(request.resource.data.maxScore, 1000) && request.resource.data.maxScore > 0 && isScore(request.resource.data.score, request.resource.data.maxScore)
         && (request.resource.data.schoolScore == null || isScore(request.resource.data.schoolScore, 100))
-        && shortString(request.resource.data.note, 300) && request.resource.data.teacherUid == request.auth.uid && shortString(request.resource.data.teacherName, 80);
+        && (request.resource.data.get('passMark', null) == null || isScore(request.resource.data.passMark, request.resource.data.maxScore))
+        && request.resource.data.get('remedial', false) is bool && request.resource.data.get('remedialDone', false) is bool
+        && shortString(request.resource.data.get('remedialWork', ''), 300)
+        && shortString(request.resource.data.note, 500) && request.resource.data.teacherUid == request.auth.uid && shortString(request.resource.data.teacherName, 80);
       allow delete: if isStaff();
+    }
+
+    // Each week's top 10 by average test %, published by staff whenever marks change (students can't read others' marks).
+    match /leaderboards/{weekStart} {
+      allow read: if request.auth != null;
+      allow create, update: if isStaff() && request.resource.data.keys().hasOnly(['weekStart', 'weekEnd', 'participants', 'entries', 'updatedAt'])
+        && request.resource.data.weekStart == weekStart && weekStart.size() == 10 && request.resource.data.weekEnd is string && request.resource.data.weekEnd.size() == 10
+        && request.resource.data.participants is int && request.resource.data.entries is list && request.resource.data.entries.size() <= 10;
+      allow delete: if isStaff();
+    }
+
+    // Teachers who sign up at /login ask for teacher access here; an administrator approves (adds /teachers/{uid}) or declines.
+    match /teacherRequests/{uid} {
+      allow get: if isAdmin() || isOwner(uid);
+      allow list: if isAdmin();
+      allow create: if isOwner(uid) && request.resource.data.keys().hasOnly(['uid', 'email', 'name', 'phone', 'subjects', 'message', 'status', 'createdAt'])
+        && request.resource.data.uid == uid && request.resource.data.email == request.auth.token.get('email', '')
+        && shortString(request.resource.data.name, 80) && request.resource.data.name.size() > 0 && shortString(request.resource.data.phone, 20)
+        && shortString(request.resource.data.subjects, 120) && shortString(request.resource.data.message, 500)
+        && request.resource.data.status == 'pending' && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && request.resource.data.status in ['pending', 'declined'];
+      allow delete: if isAdmin() || isOwner(uid);
+    }
+
+    // Daily practice streaks for the streak wall. Each student publishes their own; any signed-in user can read them.
+    match /streaks/{uid} {
+      allow read: if request.auth != null;
+      allow create, update: if isOwner(uid) && request.resource.data.keys().hasOnly(['uid', 'name', 'current', 'best', 'lastDay', 'updatedAt'])
+        && request.resource.data.uid == uid && shortString(request.resource.data.name, 40)
+        && request.resource.data.current is int && request.resource.data.current >= 0 && request.resource.data.current <= 3660
+        && request.resource.data.best is int && request.resource.data.best >= request.resource.data.current && request.resource.data.best <= 3660
+        && request.resource.data.lastDay is string && request.resource.data.lastDay.size() <= 10 && request.resource.data.updatedAt == request.time;
+      allow delete: if isOwner(uid) || isAdmin();
     }
 
     match /testSchedule/{testId} {

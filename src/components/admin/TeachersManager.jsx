@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ExternalLink, Pencil, Plus, Search, Star, Trash2, UserPlus, UserRound } from 'lucide-react'
+import { Check, Clock3, ExternalLink, Pencil, Plus, Search, Star, Trash2, UserPlus, UserRound, X } from 'lucide-react'
 import { listStudents } from '../../firebase/student'
-import { listAllRatings, listTeachers, removeTeacher, saveTeacher } from '../../firebase/teaching'
+import { approveTeacherRequest, declineTeacherRequest, listAllRatings, listTeacherRequests, listTeachers, removeTeacher, saveTeacher } from '../../firebase/teaching'
 import { ratingSummary } from '../../teacher/marks'
 import { TEACHER_HIERARCHY } from '../site/faculty'
 import { displayLoginId } from '../../firebase/loginId'
@@ -19,14 +19,14 @@ const suggestedOrder = (name) => {
 // Teacher accounts. The administrator either creates a teacher account here (login ID + password), or adds an
 // account the teacher already made at /login, so it can open the teacher portal at /teacher.
 export default function TeachersManager({ notify }) {
-  const [state, setState] = useState({ loading: true, error: false, teachers: [], accounts: [], ratings: [] })
+  const [state, setState] = useState({ loading: true, error: false, teachers: [], accounts: [], ratings: [], requests: [] })
   const [form, setForm] = useState(null)
   const [removing, setRemoving] = useState(null)
   const [busy, setBusy] = useState(false)
   const [creating, setCreating] = useState(false)
   const load = useCallback(() => {
-    Promise.all([listTeachers(), listStudents(500), listAllRatings().catch(() => [])])
-      .then(([teachers, accounts, ratings]) => setState({ loading: false, error: false, teachers, accounts, ratings }))
+    Promise.all([listTeachers(), listStudents(500), listAllRatings().catch(() => []), listTeacherRequests().catch(() => [])])
+      .then(([teachers, accounts, ratings, requests]) => setState({ loading: false, error: false, teachers, accounts, ratings, requests }))
       .catch(() => setState((current) => ({ ...current, loading: false, error: true })))
   }, [])
   useEffect(() => { load() }, [load])
@@ -38,6 +38,16 @@ export default function TeachersManager({ notify }) {
     setBusy(true)
     try { await saveTeacher(form.uid, form); notify('success', `${form.name} can now use the teacher portal.`); setForm(null); load() } catch { notify('error', 'The teacher could not be saved.') } finally { setBusy(false) }
   }
+  const approve = async (request) => {
+    setBusy(true)
+    try { await approveTeacherRequest(request, suggestedOrder(request.name) > TEACHER_HIERARCHY.length ? state.teachers.length + 1 : suggestedOrder(request.name)); notify('success', `${request.name} can now use the teacher portal.`); load() } catch { notify('error', 'The request could not be approved.') } finally { setBusy(false) }
+  }
+  const decline = async (request) => {
+    setBusy(true)
+    try { await declineTeacherRequest(request.uid); notify('success', `${request.name}’s request was declined.`); load() } catch { notify('error', 'The request could not be declined.') } finally { setBusy(false) }
+  }
+  const pending = state.requests.filter((request) => request.status !== 'declined' && !state.teachers.some((teacher) => teacher.id === request.uid))
+  const declined = state.requests.filter((request) => request.status === 'declined')
   const remove = async () => {
     setBusy(true)
     try { await removeTeacher(removing.id); notify('success', `${removing.name} no longer has teacher access.`); setRemoving(null); load() } catch { notify('error', 'Teacher access could not be removed.') } finally { setBusy(false) }
@@ -48,6 +58,13 @@ export default function TeachersManager({ notify }) {
       <div><h2>Teachers</h2><p>Accounts that can open the <a href="/teacher">teacher portal</a> to enter test marks, see student-wise performance, schedule tests and read teaching material.</p></div>
       <div className="adm-dialog-actions"><a className="adm-button adm-button-ghost" href="/teacher"><ExternalLink size={15} /> Teacher portal</a><button type="button" className="adm-button adm-button-ghost" onClick={() => setForm({ uid: '', email: '', name: '', subjects: '', order: '' })}><Plus size={16} /> Add existing account</button><button type="button" className="adm-button adm-button-primary" onClick={() => setCreating(true)}><UserPlus size={16} /> Create teacher account</button></div>
     </header>
+    {pending.length > 0 && <div className="tp-requests">
+      <h3><Clock3 size={16} /> Waiting for approval <span className="tp-count">{pending.length}</span></h3>
+      <p className="adm-hint" style={{ margin: '0 0 10px' }}>These teachers signed up at /login. Approve to give them the teacher portal.</p>
+      <div className="adm-list">{pending.map((request) => <RequestRow key={request.id} request={request} busy={busy} onApprove={approve} onDecline={decline} />)}</div>
+    </div>}
+    {declined.length > 0 && <details className="tp-done" style={{ marginBottom: 14 }}><summary>Declined requests <span className="tp-count">{declined.length}</span></summary>
+      <div className="adm-list">{declined.map((request) => <RequestRow key={request.id} request={request} busy={busy} onApprove={approve} />)}</div></details>}
     <p className="adm-hint" style={{ margin: '0 0 14px' }}>Create a teacher account to give them a login ID and password. If a teacher already has an account from /login, use “Add existing account” instead.</p>
     {state.error ? <EmptyState icon={UserRound} title="Teachers could not be loaded" message="Check your connection and that the latest Firestore rules are deployed." action={<button type="button" className="adm-button adm-button-ghost" onClick={load}>Try again</button>} />
       : state.loading ? <SkeletonRows count={4} />
@@ -71,6 +88,17 @@ export default function TeachersManager({ notify }) {
     </Drawer>
     <ConfirmDialog open={Boolean(removing)} title="Remove teacher access?" message={removing ? `${removing.name} will no longer be able to open the teacher portal. Marks they entered stay.` : ''} confirmLabel="Remove" busy={busy} onConfirm={remove} onCancel={() => setRemoving(null)} />
   </section>
+}
+
+function RequestRow({ request, busy, onApprove, onDecline }) {
+  return <article className="adm-row" style={{ gridTemplateColumns: '1fr auto' }}>
+    <div className="adm-row-main"><span className="adm-avatar">{String(request.name || '?')[0].toUpperCase()}</span><div><strong>{request.name}</strong>
+      <small>{[request.subjects, request.email, request.phone].filter(Boolean).join(' · ')}</small>{request.message && <small>“{request.message}”</small>}</div></div>
+    <div className="adm-row-actions">
+      {onDecline && <button type="button" className="adm-button adm-button-ghost adm-button-small" disabled={busy} onClick={() => onDecline(request)}><X size={14} /> Decline</button>}
+      <button type="button" className="adm-button adm-button-primary adm-button-small" disabled={busy} onClick={() => onApprove(request)}><Check size={14} /> Approve</button>
+    </div>
+  </article>
 }
 
 function TeacherForm({ form, setForm, accounts, teachers, busy, onSubmit, onCancel }) {

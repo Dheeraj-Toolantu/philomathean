@@ -1,5 +1,5 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight, School } from 'lucide-react'
-import { formatDay, progressCard } from './marks'
+import { formatDay, progressCard, splitWorksheet } from './marks'
 import './teacher.css'
 
 const tone = (value) => value >= 75 ? 'good' : value >= 50 ? 'mid' : 'low'
@@ -53,4 +53,10 @@ export function ProgressCardView({ marks, emptyText = 'No test marks have been r
       <tbody>{[...card.timeline].reverse().map((mark) => <tr key={mark.id}><td>{formatDay(mark.testDate)}</td><td>{mark.testTitle}{mark.note ? <small>{mark.note}</small> : null}</td><td>{mark.subject}</td><td>{mark.score} / {mark.maxScore}</td><td><span className={`pc-pill pc-${tone(mark.pct)}`}>{mark.pct}%</span></td><td>{mark.schoolScore ?? '—'}{mark.schoolScore !== null && mark.schoolScore !== undefined ? '%' : ''}</td></tr>)}</tbody>
     </table></div>
   </div>
+}
+
+// A remedial worksheet as the teacher typed it: a name, a link, or both.
+export function Worksheet({ text }) {
+  const { label, url } = splitWorksheet(text)
+  return <>{label}{label && url ? ' · ' : ''}{url && <a href={url} target="_blank" rel="noreferrer">Open worksheet</a>}</>
 }

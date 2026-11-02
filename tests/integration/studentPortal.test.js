@@ -110,3 +110,24 @@ test('share snapshot never includes contact details', () => {
   assert.ok(!text.includes('example.com') && !text.includes('99999'))
   assert.equal(snapshot.stats.answered, 32)
 })
+
+test('streak info: best streak, this week and the next milestone', async () => {
+  const { streakInfo, bestStreak, liveStreak, streakMessage } = await import('../../src/student/progress.js')
+  const at = (day, hour = 10) => ({ createdAt: new Date(2026, 10, day, hour) })
+  const now = new Date(2026, 10, 5, 18) // Thursday 5 Nov 2026
+  const attempts = [at(5), at(4), at(3), at(3, 20), at(1)]
+  const history = [...attempts, { createdAt: new Date(2026, 9, 20) }, { createdAt: new Date(2026, 9, 21) }, { createdAt: new Date(2026, 9, 22) }, { createdAt: new Date(2026, 9, 23) }]
+  const info = streakInfo(history, now)
+  assert.equal(info.current, 3)
+  assert.equal(info.best, 4)
+  assert.equal(bestStreak(history), 4)
+  assert.equal(info.practisedToday, true)
+  assert.equal(info.week.length, 7)
+  assert.equal(info.week[0].key, '2026-11-02', 'the week starts on Monday')
+  assert.deepEqual(info.week.map((day) => day.done), [false, true, true, true, false, false, false])
+  assert.equal(info.next, 7)
+  assert.match(streakMessage(info), /4 more days to reach a 7-day streak/)
+  assert.match(streakMessage(streakInfo(history, new Date(2026, 10, 6, 9))), /Practise today to keep your 3-day streak/)
+  assert.equal(liveStreak({ current: 5, lastDay: '2026-11-04' }, now), 5, 'still alive the day after')
+  assert.equal(liveStreak({ current: 5, lastDay: '2026-11-03' }, now), 0, 'a missed day ends the streak')
+})
