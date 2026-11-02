@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown, ChevronUp, Crown, FileText, Home, LogOut, Sigma, UserRound } from 'lucide-react'
+import { ChevronDown, ChevronUp, Crown, FileText, Home, LogOut, Presentation, Sigma, UserRound } from 'lucide-react'
 import { signOutStudent } from '../firebase/student'
 import { hasGold } from './access'
 import { DASHBOARD_TABS, dashboardUrl } from './links'
 import { useSession } from './session'
+import { isStaffRole } from '../portal/roles'
 
 const initials = (name = '') => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('') || 'S'
 export function Avatar({ name, src, size = 36, className = '' }) {
@@ -34,7 +35,7 @@ export const useOutsideClose = (open, setOpen) => {
 
 // Header control: "Log in" for visitors, "Hi, Name" with a menu for signed-in students.
 export function AccountMenu() {
-  const { status, user, profile } = useSession()
+  const { status, user, profile, role } = useSession()
   const [open, setOpen] = useState(false)
   const ref = useOutsideClose(open, setOpen)
   if (status === 'loading' && !user) return <span className="st-account-skeleton" aria-hidden="true" />
@@ -49,12 +50,13 @@ export function AccountMenu() {
       {open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
     </button>
     {open && <div className="st-account-menu" role="menu">
-      <div className="st-account-head"><Avatar name={name} src={photo} size={44} /><span><strong>{name}</strong><small>{user.email}</small><PlanBadge profile={profile} /></span></div>
-      {DASHBOARD_TABS.map(([id, label, Icon]) => <a key={id} role="menuitem" href={dashboardUrl(id)}><Icon size={16} /> {label}</a>)}
+      <div className="st-account-head"><Avatar name={name} src={photo} size={44} /><span><strong>{name}</strong><small>{user.email}</small>{!isStaffRole(role) && <PlanBadge profile={profile} />}</span></div>
+      {isStaffRole(role) ? <a role="menuitem" href={role === 'admin' ? '/admin' : '/teacher'}><Presentation size={16} /> {role === 'admin' ? 'Admin panel' : 'Teacher portal'}</a>
+        : DASHBOARD_TABS.map(([id, label, Icon]) => <a key={id} role="menuitem" href={dashboardUrl(id)}><Icon size={16} /> {label}</a>)}
       <a role="menuitem" href="/courses"><Sigma size={16} /> Browse courses</a>
       <a role="menuitem" href="/premium-sources"><FileText size={16} /> Past papers</a>
       <a role="menuitem" href="/"><Home size={16} /> Philomathean website</a>
-      {!hasGold(profile) && <a role="menuitem" className="st-account-upgrade" href={dashboardUrl('subscription')}><Crown size={16} /> Upgrade to Gold</a>}
+      {!isStaffRole(role) && !hasGold(profile) && <a role="menuitem" className="st-account-upgrade" href={dashboardUrl('subscription')}><Crown size={16} /> Upgrade to Gold</a>}
       <button type="button" role="menuitem" onClick={logout}><LogOut size={16} /> Sign out</button>
     </div>}
   </div>

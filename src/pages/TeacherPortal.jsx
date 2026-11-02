@@ -46,8 +46,20 @@ export default function TeacherPortal() {
   useEffect(() => { if (staff.status === 'signed-out') window.location.replace(loginUrl('/teacher')) }, [staff.status])
   useEffect(() => { document.title = 'Teacher portal | Philomathean' }, [])
   if (staff.status !== 'ready') return <main className="admin-loading"><p>Checking teacher access…</p></main>
-  if (!staff.teacher && !staff.admin) return <TeacherAccessGate user={staff.user} />
+  if (!staff.teacher && !staff.admin) return staff.student ? <StudentAccountNotice user={staff.user} /> : <TeacherAccessGate user={staff.user} />
   return <Workspace staff={staff} />
+}
+
+// The teacher portal is only for teacher accounts. A student account signed in here is sent back to its own dashboard.
+function StudentAccountNotice({ user }) {
+  const other = () => signOut(auth).then(() => window.location.replace(loginUrl('/teacher')))
+  return <div className="adm-shell"><main className="adm-main tp-gate"><section className="tp-gate-card">
+    <span className="tp-gate-icon"><UserRound size={26} /></span>
+    <p className="adm-eyebrow">Teacher portal</p>
+    <h1>This is a student account</h1>
+    <p>You’re signed in as <b>{user.email}</b>. The teacher portal is only for teacher accounts, so it isn’t available here. Teachers use a separate account from the one they study with.</p>
+    <div className="adm-dialog-actions" style={{ justifyContent: 'center' }}><a className="adm-button adm-button-primary" href="/dashboard">Go to my dashboard</a><button type="button" className="adm-button adm-button-ghost" onClick={other}>Sign in as a teacher</button></div>
+  </section></main></div>
 }
 
 // Signed in, but not (yet) a teacher: show the pending request, or let the account ask for teacher access.

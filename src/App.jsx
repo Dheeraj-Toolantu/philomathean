@@ -24,6 +24,7 @@ const StudentDashboard = lazy(() => import('./pages/StudentDashboard'))
 const CoursesPage = lazy(() => import('./pages/CoursesPage'))
 const CoursePage = lazy(() => import('./pages/CoursePage'))
 const QuizPage = lazy(() => import('./pages/QuizPage'))
+const StudentOnly = lazy(() => import('./student/StudentOnly'))
 const SharedProgress = lazy(() => import('./pages/SharedProgress'))
 // Shareable teacher-rating page (/rate/{teacherUid}), sent to students over WhatsApp.
 const RateTeacher = lazy(() => import('./pages/RateTeacher'))
@@ -169,11 +170,11 @@ function App() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
   if (path === '/login') return <Suspense fallback={pageFallback}><StudentLogin /></Suspense>
   if (path === '/teacher') return <Suspense fallback={adminFallback}><TeacherPortal /></Suspense>
-  if (path === '/dashboard') return <Suspense fallback={pageFallback}><StudentDashboard /></Suspense>
-  if (path === '/courses') return <Suspense fallback={pageFallback}><CoursesPage /></Suspense>
-  if (path === '/quiz') return <Suspense fallback={pageFallback}><QuizPage /></Suspense>
+  if (path === '/dashboard') return <Suspense fallback={pageFallback}><StudentOnly><StudentDashboard /></StudentOnly></Suspense>
+  if (path === '/courses') return <Suspense fallback={pageFallback}><StudentOnly><CoursesPage /></StudentOnly></Suspense>
+  if (path === '/quiz') return <Suspense fallback={pageFallback}><StudentOnly><QuizPage /></StudentOnly></Suspense>
   const courseId = path.match(/^\/courses\/([a-z0-9-]+)$/)?.[1]
-  if (courseId) return <Suspense fallback={pageFallback}><CoursePage courseId={courseId} /></Suspense>
+  if (courseId) return <Suspense fallback={pageFallback}><StudentOnly><CoursePage courseId={courseId} /></StudentOnly></Suspense>
   const shareId = path.match(/^\/progress\/([a-z0-9]+)$/)?.[1]
   if (shareId) return <Suspense fallback={pageFallback}><SharedProgress shareId={shareId} /></Suspense>
   const rateUid = path.match(/^\/rate\/([A-Za-z0-9_-]{1,128})$/)?.[1]
