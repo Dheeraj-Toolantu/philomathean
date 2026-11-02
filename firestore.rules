@@ -158,9 +158,14 @@ service cloud.firestore {
     }
 
     // Students rate teachers 1–5 (one rating per teacher, which they can change). Teachers see only ratings of themselves.
+    // Only student accounts can rate: the rater needs a student profile and must not be a teacher or waiting for teacher access.
+    function isStudentAccount() {
+      return request.auth != null && exists(/databases/$(database)/documents/students/$(request.auth.uid)) && !isTeacher()
+        && !exists(/databases/$(database)/documents/teacherRequests/$(request.auth.uid));
+    }
     match /teacherRatings/{ratingId} {
       allow read: if isAdmin() || (request.auth != null && (resource.data.studentUid == request.auth.uid || resource.data.teacherUid == request.auth.uid));
-      allow create, update: if request.auth != null && request.resource.data.studentUid == request.auth.uid
+      allow create, update: if isStudentAccount() && request.resource.data.studentUid == request.auth.uid
         && ratingId == request.auth.uid + '_' + request.resource.data.teacherUid
         && exists(/databases/$(database)/documents/teachers/$(request.resource.data.teacherUid))
         && request.resource.data.keys().hasOnly(['studentUid', 'teacherUid', 'teacherName', 'rating', 'comment', 'updatedAt'])

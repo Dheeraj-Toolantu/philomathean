@@ -7,6 +7,7 @@ import { TEACHER_HIERARCHY } from '../site/faculty'
 import { displayLoginId } from '../../firebase/loginId'
 import { ConfirmDialog, Drawer, EmptyState, SkeletonRows } from './AdminUI'
 import CreateAccountForm from './CreateAccountForm'
+import ShareRatingLink from '../../teacher/ShareRatingLink'
 import '../../teacher/teacher.css'
 
 // Suggested position in the teaching hierarchy, from the order the institute set (Satish Sir first).
@@ -65,15 +66,16 @@ export default function TeachersManager({ notify }) {
     </div>}
     {declined.length > 0 && <details className="tp-done" style={{ marginBottom: 14 }}><summary>Declined requests <span className="tp-count">{declined.length}</span></summary>
       <div className="adm-list">{declined.map((request) => <RequestRow key={request.id} request={request} busy={busy} onApprove={approve} />)}</div></details>}
-    <p className="adm-hint" style={{ margin: '0 0 14px' }}>Create a teacher account to give them a login ID and password. If a teacher already has an account from /login, use “Add existing account” instead.</p>
+    <p className="adm-hint" style={{ margin: '0 0 14px' }}>To collect ratings, use WhatsApp next to a teacher to send students that teacher’s rating link. Students log in with their student account to rate; teacher accounts can’t rate. Create a teacher account to give them a login ID and password. If a teacher already has an account from /login, use “Add existing account” instead.</p>
     {state.error ? <EmptyState icon={UserRound} title="Teachers could not be loaded" message="Check your connection and that the latest Firestore rules are deployed." action={<button type="button" className="adm-button adm-button-ghost" onClick={load}>Try again</button>} />
       : state.loading ? <SkeletonRows count={4} />
       : !state.teachers.length ? <EmptyState icon={UserRound} title="No teachers yet" message="Add your teachers so they can sign in to the teacher portal." />
       : <div className="adm-list">{state.teachers.map((teacher) => {
         const rating = ratingSummary(state.ratings.filter((item) => item.teacherUid === teacher.id))
-        return <article className="adm-row" key={teacher.id} style={{ gridTemplateColumns: '1fr auto auto' }}>
+        return <article className="adm-row" key={teacher.id} style={{ gridTemplateColumns: '1fr auto auto auto' }}>
           <div className="adm-row-main"><span className="adm-avatar">{teacher.order}</span><div><strong>{teacher.name}</strong><small>{[teacher.subjects, displayLoginId(teacher.email)].filter(Boolean).join(' · ')}</small></div></div>
           <span className="adm-student-meta"><Star size={13} /> {rating.average ?? '—'} ({rating.count})</span>
+          <ShareRatingLink teacher={teacher} />
           <div className="adm-row-actions">
             <button type="button" className="adm-icon-button" onClick={() => setForm({ ...teacher, uid: teacher.id })} aria-label={`Edit ${teacher.name}`}><Pencil size={15} /></button>
             <button type="button" className="adm-icon-button" onClick={() => setRemoving(teacher)} aria-label={`Remove ${teacher.name}`}><Trash2 size={15} /></button>
