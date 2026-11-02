@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, Mail, MapPin, Menu, Phone, X } from 'lucide-react'
 import { AccountMenu } from '../../student/AccountMenu'
+import { useSession } from '../../student/session'
 import { ENTRANCE_EXAMS, OTHER_EXAMS } from './programmes'
 import { FloatingActions } from './FloatingActions'
 
@@ -49,6 +50,13 @@ export function SiteHeader({ active, home = false }) {
 }
 
 export function SiteFooter() {
+  const { user } = useSession()
+  // Signed-in students and teachers get a slim footer: the full marketing
+  // footer (contact, programmes, resources, quick links) and the floating
+  // WhatsApp/call buttons are for visitors.
+  if (user) return <footer className="site-footer site-footer-slim">
+    <small className="copyright">© {new Date().getFullYear()} Philomathean Career Institute Pvt. Ltd. All rights reserved.</small>
+  </footer>
   return <footer className="site-footer">
     <div className="footer-brand"><img src="/media/logo.png" alt="Philomathean" /><p>India's premier tutoring institute for MYP, IBDP,<br /> IGCSE, AS &amp; A-Level, and competitive exams.<br /> Your partner for academic success.</p><p className="footer-contact"><a href="tel:+919324164073"><Phone size={14} /> {PHONE}</a><a href="mailto:philomathean22@gmail.com"><Mail size={14} /> philomathean22@gmail.com</a><span><MapPin size={14} /> Shop no 35, Aardhya Highpark, Mumbai</span></p></div>
     <div><h3>Programs</h3><p><a href="/#programs">IGCSE Mathematics</a><br /><a href="/#programs">IBDP Mathematics</a><br /><a href="/#programs">AS &amp; A Level</a><br /><a href="/#programs">IB MYP</a><br /><a href="/#programs">Grades 6–8 Foundation</a><br /><a href="/#programs">All Programs</a></p></div>
