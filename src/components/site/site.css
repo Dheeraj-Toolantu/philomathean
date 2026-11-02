@@ -21,6 +21,9 @@
 .site-footer a:hover, .site-footer a:focus-visible { color: #fff; }
 .site-footer .footer-contact { display: grid; gap: 6px; }
 .site-footer .footer-contact a, .site-footer .footer-contact span { display: inline-flex; align-items: center; gap: 8px; }
+/* Signed-in footer: just the copyright line */
+footer.site-footer-slim { display: block; padding: 18px 6vw; }
+footer.site-footer-slim .copyright { position: static; display: block; padding-top: 0; border-top: 0; }
 
 /* Shared section heading */
 .ps-section-head { max-width: 680px; margin: 0 auto 34px; text-align: center; }
