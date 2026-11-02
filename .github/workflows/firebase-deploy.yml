@@ -47,6 +47,16 @@ jobs:
         with:
           name: dist
           path: dist
+      # Without this secret nothing is deployed: the live site keeps its old code and old security rules, so new
+      # features that need new rules (such as teacher sign-up) fail there even though they work in this repository.
+      - name: Check the Firebase deploy key
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error title=FIREBASE_SERVICE_ACCOUNT secret is missing::Nothing was deployed. Add the service-account JSON key as the FIREBASE_SERVICE_ACCOUNT secret under Settings → Secrets and variables → Actions (or under Settings → Environments → production), then re-run this workflow."
+            exit 1
+          fi
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

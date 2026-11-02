@@ -62,6 +62,9 @@ export const getSession = () => state
 
 // ---------- Authentication ----------
 const AUTH_ERRORS = {
+  'teacher/student-account': 'This email already has a student account. Use a different email for your teacher account.',
+  'teacher/request-offline': 'We couldn’t reach the server to send your teacher request. Check your connection and press Create teacher account again.',
+  'teacher/request-blocked': 'Your login was created, but the institute’s system didn’t accept the teacher request. Please try again in a little while with the same email and password, or contact the institute on WhatsApp.',
   'auth/invalid-credential': 'That login ID or email and password don’t match an account.',
   'auth/wrong-password': 'That login ID or email and password don’t match an account.',
   'auth/user-not-found': 'That login ID or email and password don’t match an account.',
@@ -123,13 +126,31 @@ export const signUpStudent = async ({ name, email, password, curriculum, grade }
 }
 // Teachers sign up on the same page. They get no student profile; instead a request for teacher access goes to the
 // administrator, who approves it under Admin → Teachers. Until then /teacher shows the request as pending.
+// Sign-up creates the login first and the request second. If the request could not be saved last time (for example the
+// live database rules were out of date), the login already exists: signing up again with the same email and password
+// signs in and saves the missing request, instead of stopping at "an account with this email already exists".
+const teacherError = (code, cause) => Object.assign(new Error(code), { code, cause })
 export const signUpTeacher = async ({ name, email, password, phone, subjects, message }) => {
-  const { user } = await createUserWithEmailAndPassword(auth, email.trim(), password)
-  await updateProfile(user, { displayName: name.trim() })
-  await setDoc(doc(db, 'teacherRequests', user.uid), {
-    uid: user.uid, email: user.email || '', name: name.trim().slice(0, 80), phone: String(phone || '').trim().slice(0, 20), subjects: String(subjects || '').trim().slice(0, 120),
-    message: String(message || '').trim().slice(0, 500), status: 'pending', createdAt: serverTimestamp(),
-  })
+  let user
+  try {
+    ({ user } = await createUserWithEmailAndPassword(auth, email.trim(), password))
+    await updateProfile(user, { displayName: name.trim() })
+  } catch (error) {
+    if (error?.code !== 'auth/email-already-in-use') throw error
+    user = (await signInWithEmailAndPassword(auth, email.trim(), password).catch(() => { throw error })).user
+    if (await isTeacherAccount(user.uid) || await hasTeacherRequest(user.uid)) return user
+    // Teacher and student accounts stay separate: a student's login can't become a teacher's.
+    if ((await getDoc(studentRef(user.uid)).catch(() => null))?.exists()) throw teacherError('teacher/student-account')
+  }
+  try {
+    await setDoc(doc(db, 'teacherRequests', user.uid), {
+      uid: user.uid, email: user.email || '', name: name.trim().slice(0, 80), phone: String(phone || '').trim().slice(0, 20), subjects: String(subjects || '').trim().slice(0, 120),
+      message: String(message || '').trim().slice(0, 500), status: 'pending', createdAt: serverTimestamp(),
+    })
+  } catch (error) {
+    console.error('Teacher request could not be saved:', error)
+    throw teacherError(error?.code === 'unavailable' || error?.code === 'deadline-exceeded' ? 'teacher/request-offline' : 'teacher/request-blocked', error)
+  }
   return user
 }
 export const hasTeacherRequest = async (uid) => (await getDoc(doc(db, 'teacherRequests', uid)).catch(() => null))?.exists() === true
