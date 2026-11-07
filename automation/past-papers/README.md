@@ -64,21 +64,27 @@ To rebrand a folder downloaded before this existed: `npm run rebrand -- ../../pa
 
 ## Remove a matching embedded image from PDFs
 
-Use `remove-matching-image.js` for PDFs you own or are authorized to edit. It compares a PNG or JPEG
-reference image with separate raster images embedded in each PDF, removes matching image placements,
-and writes edited copies beside the originals with `.cleaned` before `.pdf`:
+Use `remove-matching-image.js` for PDFs you own or are authorized to edit. Give it a PNG or JPEG of the
+image to erase (for example `logo.png`) and a PDF file or a folder of PDFs. Every image in the PDFs that
+matches the reference is erased from every page, and each changed PDF is **saved back to the same path**:
 
 ```bash
 cd automation/past-papers
 npm run remove-matching-image -- "D:\path\to\reference.png" "D:\path\to\pdf-folder"
+npm run remove-matching-image -- "D:\path\to\reference.png" "D:\path\to\paper.pdf"
+# See what would be erased without changing any file:
+npm run remove-matching-image -- "D:\path\to\reference.png" "D:\path\to\pdf-folder" --dry-run
 ```
 
-The comparison allows small image-quality and scaling differences. Original PDFs are never overwritten;
-files without a match are left unchanged and no cleaned copy is created. The tool handles standalone
-PDF image objects, including images inside form objects. It does not remove vector/text artwork, inline
-images, or images flattened into page scans, and it cannot reconstruct page content that was obscured
-inside a flattened image. Unsupported image encodings are reported rather than silently treated as
-matches.
+The originals are overwritten, so keep a copy if you may want them back. PDFs with no match are not
+touched. Matching ignores size, JPEG quality and white or transparent margins, so a resized or re-saved
+copy of the image still matches; images of a different shape or colour do not. It finds images placed
+directly on a page, inside form objects and watermark layers (one shared watermark counts on every page
+that shows it), tiling patterns, annotation appearances and inline images, and decodes JPEG, Flate/LZW
+(with predictors), indexed, gray, RGB and CMYK images. The image data itself is dropped from the file,
+not just hidden. Text and other images are left as they are. Vector artwork, text, and pictures that are
+part of a scanned page cannot be removed this way, and fax/JBIG2/JPEG 2000 images are reported as
+"could not check" rather than guessed at. Set `REMOVE_IMAGE_DEBUG=1` to print how each image compared.
 
 Search terms match on every word, so `Mathematics 0444` finds "Mathematics - US (0444)" but not 0580.
 `FILE_FILTER=solved` keeps only solved papers (CAIE mark schemes, `_ms_`, or links labelled solved / mark scheme / answers).
