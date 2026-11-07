@@ -8,9 +8,11 @@
     "download": "node download-past-papers.js",
     "cambridge": "node cambridge-past-papers.js",
     "rebrand": "node rebrand-pdf.js",
+    "remove-matching-image": "node remove-matching-image.js",
     "test": "node --test test/*.test.js"
   },
   "dependencies": {
+    "jpeg-js": "0.4.4",
     "pdf-lib": "1.17.1",
     "playwright": "1.56.1",
     "pngjs": "7.0.0"

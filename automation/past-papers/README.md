@@ -62,6 +62,24 @@ skip papers that were renamed. Set `REBRAND=false` to keep PDFs exactly as downl
 To rebrand a folder downloaded before this existed: `npm run rebrand -- ../../past-papers/igcse/accounting-0452`
 (add `--subject "Accounting 0452"` if the folder name isn't the search term).
 
+## Remove a matching embedded image from PDFs
+
+Use `remove-matching-image.js` for PDFs you own or are authorized to edit. It compares a PNG or JPEG
+reference image with separate raster images embedded in each PDF, removes matching image placements,
+and writes edited copies beside the originals with `.cleaned` before `.pdf`:
+
+```bash
+cd automation/past-papers
+npm run remove-matching-image -- "D:\path\to\reference.png" "D:\path\to\pdf-folder"
+```
+
+The comparison allows small image-quality and scaling differences. Original PDFs are never overwritten;
+files without a match are left unchanged and no cleaned copy is created. The tool handles standalone
+PDF image objects, including images inside form objects. It does not remove vector/text artwork, inline
+images, or images flattened into page scans, and it cannot reconstruct page content that was obscured
+inside a flattened image. Unsupported image encodings are reported rather than silently treated as
+matches.
+
 Search terms match on every word, so `Mathematics 0444` finds "Mathematics - US (0444)" but not 0580.
 `FILE_FILTER=solved` keeps only solved papers (CAIE mark schemes, `_ms_`, or links labelled solved / mark scheme / answers).
 
