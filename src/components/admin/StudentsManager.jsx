@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Crown, GraduationCap, Plus, Search } from 'lucide-react'
-import { listStudents, setStudentPlan } from '../../firebase/student'
+import { listStudents, setStudentPlan, withoutTeachers } from '../../firebase/student'
+import { listTeachers } from '../../firebase/teaching'
 import { displayLoginId } from '../../firebase/loginId'
 import { Drawer, EmptyState, SkeletonRows } from './AdminUI'
 import CreateAccountForm from './CreateAccountForm'
@@ -18,7 +19,7 @@ export default function StudentsManager({ notify }) {
   const [creating, setCreating] = useState(false)
   const [createBusy, setCreateBusy] = useState(false)
   const load = useCallback(() => {
-    listStudents().then((students) => setState({ loading: false, error: false, students })).catch(() => setState({ loading: false, error: true, students: [] }))
+    Promise.all([listStudents(), listTeachers().catch(() => [])]).then(([students, teachers]) => setState({ loading: false, error: false, students: withoutTeachers(students, teachers) })).catch(() => setState({ loading: false, error: true, students: [] }))
   }, [])
   useEffect(() => { load() }, [load])
 

@@ -297,6 +297,8 @@ export const subscribeStreakWall = (onChange, max = 60) => onSnapshot(query(coll
   (snapshot) => onChange(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))), () => onChange([]))
 
 // ---------- Administration ----------
+// Student lists leave out accounts that have since become teachers (they may still have an old student profile).
+export const withoutTeachers = (students, teachers) => { const ids = new Set(teachers.map((teacher) => teacher.id || teacher.uid)); return students.filter((student) => !ids.has(student.id)) }
 export const listStudents = async (max = 200) => (await getDocs(query(collection(db, 'students'), orderBy('createdAt', 'desc'), limit(max)))).docs.map((item) => ({ id: item.id, ...item.data() }))
 export const setStudentPlan = (uid, plan, months = 12) => {
   const expires = new Date(); expires.setMonth(expires.getMonth() + months)
