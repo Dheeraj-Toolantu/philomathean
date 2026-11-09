@@ -190,7 +190,6 @@ footer.site-footer-slim .copyright { position: static; display: block; padding-t
 .lib-doc-free.lib-doc-solution:hover { border-color: #6b3fa0; }
 .lib-doc-locked { color: var(--lib-lock); background: var(--lib-lock-soft); border-color: #f1dfbd; }
 .lib-doc-locked:hover { border-color: #d9b46f; }
-.lib-doc-missing { color: #8a94a8; background: #f5f6f9; border: 1px dashed #d4dae4; cursor: default; }
 .lib-skeleton { height: 150px; background: linear-gradient(90deg, #eceff5 25%, #f6f8fb 50%, #eceff5 75%); background-size: 200% 100%; animation: lib-shimmer 1.2s linear infinite; }
 @keyframes lib-shimmer { to { background-position: -200% 0; } }
 .lib-more { display: flex; justify-content: center; margin-top: 30px; }

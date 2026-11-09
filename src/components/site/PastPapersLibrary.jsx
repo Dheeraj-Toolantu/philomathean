@@ -42,8 +42,9 @@ function Chip({ active, onClick, children }) {
   return <button type="button" className={active ? 'lib-chip active' : 'lib-chip'} aria-pressed={active} onClick={onClick}>{children}</button>
 }
 
-function DocButton({ paper, label, icon, onOpen, emptyText }) {
-  if (!paper) return <span className="lib-doc lib-doc-missing">{icon}<span><b>{label}</b><small>{emptyText}</small></span></span>
+// Only documents that exist get a button: a paper without a mark scheme or solution simply shows fewer buttons.
+function DocButton({ paper, label, icon, onOpen }) {
+  if (!paper) return null
   const free = isFree(paper)
   return <button type="button" className={`lib-doc ${free ? 'lib-doc-free' : 'lib-doc-locked'} lib-doc-${paper.kind}`} onClick={() => onOpen(paper)} aria-label={`${free ? 'View' : 'Unlock'} ${label.toLowerCase()}: ${paper.title}`}>
     {free ? icon : <Lock size={18} />}
@@ -62,9 +63,9 @@ function PaperCard({ set, onOpen }) {
       <span className={free ? 'lib-badge lib-badge-free' : 'lib-badge lib-badge-premium'}>{free ? 'Free' : <><Lock size={11} /> Premium</>}</span>
     </div>
     <div className="lib-card-docs">
-      <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.solution} label="Solution" icon={<NotebookPen size={18} />} emptyText="Coming soon" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.solution} label="Solution" icon={<NotebookPen size={18} />} onOpen={(paper) => onOpen(set, paper)} />
     </div>
   </article>
 }
