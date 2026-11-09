@@ -1,4 +1,4 @@
-import { deleteObject, getDownloadURL, ref, updateMetadata, uploadBytesResumable } from 'firebase/storage'
+import { deleteObject, getBlob, getDownloadURL, ref, updateMetadata, uploadBytesResumable } from 'firebase/storage'
 import { storage } from './config'
 import { MAX_PDF_BYTES } from './validation'
 
@@ -11,3 +11,5 @@ export const validatePdfFile = (file) => file && file.type === 'application/pdf'
 export const removePdf = (filePath) => filePath ? deleteObject(ref(storage, filePath)) : Promise.resolve()
 export const getFreePdfUrl = async (filePath) => `${await getDownloadURL(ref(storage, filePath))}#toolbar=1&navpanes=0&view=FitH`
 export const syncPdfPermission = (filePath, access, published) => filePath ? updateMetadata(ref(storage, filePath), { customMetadata: { access, published: String(published) } }) : Promise.resolve()
+// Members-only PDFs have no public link: they are read through Storage, where the rules check the student's Gold plan.
+export const loadMemberPdf = async (resourceId) => URL.createObjectURL(await getBlob(ref(storage, `past-papers/${resourceId}/current.pdf`)))

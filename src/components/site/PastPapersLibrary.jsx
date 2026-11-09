@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
-import { ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, ExternalLink, FileCheck2, FileText, Lock, NotebookPen, Search, X } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, Crown, ExternalLink, FileCheck2, FileText, Lock, LogIn, NotebookPen, Search, X } from 'lucide-react'
 import { filterPapers, groupPapers, pairPapers, PATHWAYS, SESSION_LABELS, SESSION_ORDER } from './paperInfo'
 import { usePublishedPapers } from './usePublishedPapers'
 import { SiteFooter, SiteHeader } from './SiteChrome'
+import { loadMemberPdf } from '../../firebase/storage'
+import { loginUrl, useSession } from '../../student/session'
+import { hasGold } from '../../student/access'
+import { dashboardUrl } from '../../student/links'
 
 const GROUPS_PER_PAGE = 6
 
@@ -30,6 +34,28 @@ const writeParams = (state) => {
 
 const pdfUrl = (paper) => (paper?.access === 'free' && paper.freeDownloadUrl) || ''
 const isFree = (paper) => Boolean(pdfUrl(paper))
+// Premium documents (solved papers) are for members: students on an active Gold plan, plus administrators.
+const isMembersOnly = (paper) => paper?.access === 'premium'
+const canOpen = (paper, member) => isFree(paper) || (member && isMembersOnly(paper))
+const useMembership = () => {
+  const session = useSession()
+  return { session, member: session.role === 'admin' || hasGold(session.profile) }
+}
+// A member's premium PDF is downloaded through Storage (the rules check the plan) and shown from a local blob URL.
+function useMemberPdf(paper, member) {
+  const id = member && isMembersOnly(paper) ? paper.resourceId || paper.id : ''
+  const [state, setState] = useState({ id: '', url: '', failed: false })
+  useEffect(() => {
+    if (!id) return undefined
+    let cancelled = false
+    let created = ''
+    loadMemberPdf(id).then((url) => { created = url; if (cancelled) URL.revokeObjectURL(url); else setState({ id, url, failed: false }) })
+      .catch(() => { if (!cancelled) setState({ id, url: '', failed: true }) })
+    return () => { cancelled = true; if (created) URL.revokeObjectURL(created) }
+  }, [id])
+  if (!id) return { url: '', loading: false, failed: false }
+  return state.id === id ? { url: state.url, loading: false, failed: state.failed } : { url: '', loading: true, failed: false }
+}
 // Phones and tablets can't show a PDF inside a page, so they get Google's PDF viewer; desktops use the browser's own.
 const embedUrl = (url, touch) => touch ? `https://docs.google.com/viewer?embedded=true&url=${encodeURIComponent(url.split('#')[0])}` : url
 const sessionText = (paper) => paper.paperType === 'topic-wise' ? `Topic: ${paper.topic}` : [SESSION_LABELS[paper.session] || paper.session, paper.year].filter(Boolean).join(' ')
@@ -43,16 +69,17 @@ function Chip({ active, onClick, children }) {
 }
 
 // Only documents that exist get a button: a paper without a mark scheme or solution simply shows fewer buttons.
-function DocButton({ paper, label, icon, onOpen }) {
+function DocButton({ paper, label, icon, onOpen, member }) {
   if (!paper) return null
-  const free = isFree(paper)
-  return <button type="button" className={`lib-doc ${free ? 'lib-doc-free' : 'lib-doc-locked'} lib-doc-${paper.kind}`} onClick={() => onOpen(paper)} aria-label={`${free ? 'View' : 'Unlock'} ${label.toLowerCase()}: ${paper.title}`}>
-    {free ? icon : <Lock size={18} />}
-    <span><b>{label}</b><small>{free ? 'Tap to view' : 'Premium'}</small></span>
+  const open = canOpen(paper, member)
+  const note = !open ? (isMembersOnly(paper) ? 'Members only' : 'Premium') : isFree(paper) ? 'Tap to view' : 'Members · tap to view'
+  return <button type="button" className={`lib-doc ${open ? 'lib-doc-free' : 'lib-doc-locked'} lib-doc-${paper.kind}`} onClick={() => onOpen(paper)} aria-label={`${open ? 'View' : 'Unlock'} ${label.toLowerCase()}: ${paper.title}`}>
+    {open ? icon : <Lock size={18} />}
+    <span><b>{label}</b><small>{note}</small></span>
   </button>
 }
 
-function PaperCard({ set, onOpen }) {
+function PaperCard({ set, onOpen, member }) {
   const free = set.papers.some(isFree)
   return <article className="lib-card">
     <div className="lib-card-head">
@@ -63,18 +90,53 @@ function PaperCard({ set, onOpen }) {
       <span className={free ? 'lib-badge lib-badge-free' : 'lib-badge lib-badge-premium'}>{free ? 'Free' : <><Lock size={11} /> Premium</>}</span>
     </div>
     <div className="lib-card-docs">
-      <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.solvedQuestionPaper} label="Solved paper" icon={<NotebookPen size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.examinerReport} label="Examiner report" icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.gradeThresholds} label="Grade thresholds" icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.topicPractice} label="Topic practice" icon={<BookOpenCheck size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.questionPaper} label="Question paper" member={member} icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.markScheme} label="Mark scheme" member={member} icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.solvedQuestionPaper} label="Solved paper" member={member} icon={<NotebookPen size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.examinerReport} label="Examiner report" member={member} icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.gradeThresholds} label="Grade thresholds" member={member} icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.topicPractice} label="Topic practice" member={member} icon={<BookOpenCheck size={18} />} onOpen={(paper) => onOpen(set, paper)} />
     </div>
   </article>
 }
 
+// What a visitor sees for a document they can't open: members-only papers explain how to get access.
+function LockedPaper({ paper, session, member, failed, onClose }) {
+  const name = { 'mark-scheme': 'mark scheme', 'solved-question-paper': 'solved paper' }[paper.kind] || 'paper'
+  let title = `This is a premium ${name}`
+  let text = "Premium papers come with our guided practice programme. Ask our team and we'll share access along with a study plan for your exam."
+  let actions = <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Request access <ArrowRight size={16} /></a>
+  if (isMembersOnly(paper) && member && failed) {
+    title = `This ${name} couldn't be opened`
+    text = 'Please check your connection and try again. If it keeps happening, contact us and we will sort it out.'
+    actions = <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Contact us <ArrowRight size={16} /></a>
+  } else if (isMembersOnly(paper) && session.status === 'loading') {
+    return <div className="lib-locked"><span className="lib-spinner" /><p>Checking your membership…</p></div>
+  } else if (isMembersOnly(paper) && session.status === 'signed-out') {
+    title = `Solved papers are for members`
+    text = 'Log in with your student account. Gold members can read every solved paper, with full step-by-step working for each question.'
+    actions = <><a className="lib-btn lib-btn-primary lib-btn-wide" href={loginUrl()}><LogIn size={16} /> Log in to continue</a>
+      <a className="lib-btn lib-btn-wide" href={loginUrl(dashboardUrl('subscription'))}><Crown size={16} /> Become a member</a></>
+  } else if (isMembersOnly(paper) && session.role === 'student') {
+    title = 'Upgrade to Gold to read solved papers'
+    text = 'Your account is on the Free plan. Gold members can read every solved paper, with full step-by-step working for each question.'
+    actions = <a className="lib-btn lib-btn-primary lib-btn-wide" href={dashboardUrl('subscription')}><Crown size={16} /> Upgrade to Gold</a>
+  } else if (isMembersOnly(paper)) {
+    title = 'Solved papers are for Gold members'
+    text = 'Solved papers are available to students on the Gold plan.'
+  }
+  return <div className="lib-locked">
+    <span className="lib-locked-icon"><Lock size={26} /></span>
+    <h3>{title}</h3>
+    <p>{text}</p>
+    {actions}
+  </div>
+}
+
 function PaperViewer({ set, initial, onClose }) {
   const [paper, setPaper] = useState(initial)
+  const { session, member } = useMembership()
+  const memberPdf = useMemberPdf(paper, member)
   const [loaded, setLoaded] = useState('')
   const touch = useTouchDevice()
   useEffect(() => {
@@ -83,8 +145,10 @@ function PaperViewer({ set, initial, onClose }) {
     document.body.style.overflow = 'hidden'
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
   }, [onClose])
-  const url = pdfUrl(paper)
-  const src = url ? embedUrl(url, touch) : ''
+  const url = pdfUrl(paper) || memberPdf.url
+  // Google's phone viewer needs a public link, so members' PDFs open in the browser's own viewer instead.
+  const src = !url ? '' : memberPdf.url ? url : embedUrl(url, touch)
+  const showPdf = Boolean(url) || memberPdf.loading
   const tabs = [
     ['Question paper', set.questionPaper, <FileText size={16} key="qp" />],
     ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />],
@@ -95,7 +159,7 @@ function PaperViewer({ set, initial, onClose }) {
   ].filter(([, item]) => item)
 
   return <div className="lib-modal-backdrop" role="presentation" onClick={onClose}>
-    <section className={url ? 'lib-modal' : 'lib-modal lib-modal-small'} role="dialog" aria-modal="true" aria-labelledby="lib-modal-title" onClick={(event) => event.stopPropagation()}>
+    <section className={showPdf ? 'lib-modal' : 'lib-modal lib-modal-small'} role="dialog" aria-modal="true" aria-labelledby="lib-modal-title" onClick={(event) => event.stopPropagation()}>
       <header className="lib-modal-head">
         <div className="lib-modal-title">
           <p>{[set.subjectLabel, set.code, sessionText(set)].filter(Boolean).join(' · ')}</p>
@@ -104,29 +168,25 @@ function PaperViewer({ set, initial, onClose }) {
         <button type="button" className="lib-icon-btn" onClick={onClose} aria-label="Close"><X size={20} /></button>
       </header>
       {tabs.length > 1 && <div className="lib-modal-tabs" role="tablist" aria-label="Document">
-        {tabs.map(([label, item, icon]) => <button key={label} type="button" role="tab" aria-selected={item === paper} className={item === paper ? 'active' : ''} onClick={() => setPaper(item)}>{isFree(item) ? icon : <Lock size={15} />} {label}</button>)}
+        {tabs.map(([label, item, icon]) => <button key={label} type="button" role="tab" aria-selected={item === paper} className={item === paper ? 'active' : ''} onClick={() => setPaper(item)}>{canOpen(item, member) ? icon : <Lock size={15} />} {label}</button>)}
       </div>}
-      {url ? <>
+      {showPdf ? <>
         <div className="lib-pdf">
-          {loaded !== src && <div className="lib-pdf-loading" aria-hidden="true"><span className="lib-spinner" />Opening the paper…</div>}
-          <iframe key={src} title={`${paper.title} (PDF)`} src={src} onLoad={() => setLoaded(src)} />
+          {(memberPdf.loading || loaded !== src) && <div className="lib-pdf-loading" aria-hidden="true"><span className="lib-spinner" />Opening the paper…</div>}
+          {src && <iframe key={src} title={`${paper.title} (PDF)`} src={src} onLoad={() => setLoaded(src)} />}
         </div>
         <footer className="lib-modal-foot">
           <p className="lib-modal-hint">{touch ? 'Pinch to zoom. Paper not showing? Open it in a new tab.' : paper.kind === 'solved-question-paper' ? 'Tip: try each question yourself before reading the solved paper.' : 'Tip: finish the paper first, then check your answers in the mark scheme and solved paper.'}</p>
-          <a className="lib-btn lib-btn-primary" href={url} target="_blank" rel="noreferrer"><ExternalLink size={16} /> Open full PDF</a>
+          {url && <a className="lib-btn lib-btn-primary" href={url} target="_blank" rel="noreferrer"><ExternalLink size={16} /> Open full PDF</a>}
         </footer>
-      </> : <div className="lib-locked">
-        <span className="lib-locked-icon"><Lock size={26} /></span>
-        <h3>This is a premium {{ 'mark-scheme': 'mark scheme', 'solved-question-paper': 'solved paper' }[paper.kind] || 'paper'}</h3>
-        <p>Premium papers come with our guided practice programme. Ask our team and we'll share access along with a study plan for your exam.</p>
-        <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Request access <ArrowRight size={16} /></a>
-      </div>}
+      </> : <LockedPaper paper={paper} session={session} member={member} failed={memberPdf.failed} onClose={onClose} />}
     </section>
   </div>
 }
 
 export default function PastPapersLibrary() {
   const { loading, complete, papers } = usePublishedPapers()
+  const { member } = useMembership()
   const [filters, setFilters] = useState(readParams)
   const [viewing, setViewing] = useState(null)
   const closeViewer = useCallback(() => setViewing(null), [])
@@ -199,7 +259,7 @@ export default function PastPapersLibrary() {
 
           {groups.length ? groups.slice(0, groupLimit).map((group) => <section className="lib-group" key={group.key} aria-labelledby={`g-${group.key}`}>
             <h2 id={`g-${group.key}`}>{group.title}<span>{group.papers.length} {group.papers.length === 1 ? 'paper' : 'papers'}</span></h2>
-            <div className="lib-grid">{group.papers.map((set) => <PaperCard key={set.id} set={set} onOpen={(item, paper) => setViewing({ set: item, paper })} />)}</div>
+            <div className="lib-grid">{group.papers.map((set) => <PaperCard key={set.id} set={set} member={member} onOpen={(item, paper) => setViewing({ set: item, paper })} />)}</div>
           </section>) : <div className="lib-empty lib-empty-small"><h2>No papers match</h2><p>Try a different year or session, or clear your search.</p><button type="button" className="lib-btn" onClick={clearFilters}>Clear filters</button></div>}
 
           {remainingGroups > 0 && <div className="lib-more"><button type="button" className="lib-btn" onClick={() => setShown({ key: filterKey, count: groupLimit + GROUPS_PER_PAGE })}>Show older papers <span>{remainingGroups} more {remainingGroups === 1 ? 'session' : 'sessions'}</span></button></div>}
