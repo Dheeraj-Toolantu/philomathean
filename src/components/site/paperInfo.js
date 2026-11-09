@@ -24,7 +24,7 @@ export const describePaper = (paper) => {
   const labelled = title.match(/\b(?:question\s*paper|mark\s*scheme|qp|ms)[\s_-]*(\d)(\d)\b/i)
   const code = joined ? { syllabus: joined[1], number: joined[2], variant: joined[3] }
     : labelled ? { syllabus: subjectCode, number: labelled[1], variant: labelled[2] } : null
-  const kind = /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme' : 'question-paper'
+  const kind = /\b(?:worked\s+)?solutions?\b/i.test(title) ? 'solution' : /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme' : 'question-paper'
   const name = paper.paperType === 'topic-wise' ? (paper.topic || title)
     : code ? `Paper ${code.number} · Variant ${code.variant}` : title
   const subjectName = titleCase(paper.subjectName || paper.subject || 'General')
@@ -41,12 +41,12 @@ export const describePaper = (paper) => {
   }
 }
 
-// One entry per exam paper: its question paper and mark scheme side by side, the way students revise.
+// One entry per exam paper: its question paper, mark scheme and worked solution side by side, the way students revise.
 // Papers whose number can't be read (e.g. topic-wise packs) stay as their own entry.
 export const pairPapers = (papers) => {
   const sets = new Map()
   for (const paper of papers) {
-    const slot = paper.kind === 'mark-scheme' ? 'markScheme' : 'questionPaper'
+    const slot = { 'mark-scheme': 'markScheme', solution: 'solution' }[paper.kind] || 'questionPaper'
     let key = paper.paperType !== 'topic-wise' && paper.paperNumber !== 99
       ? `${paper.subjectKey}|${paper.year}|${paper.session}|${paper.paperNumber}${paper.variant}` : `id|${paper.id}`
     if (sets.get(key)?.[slot]) key = `${key}|${paper.id}`
@@ -56,14 +56,14 @@ export const pairPapers = (papers) => {
     set.papers.push(paper)
   }
   return [...sets.values()].map((set) => {
-    const lead = set.questionPaper || set.markScheme
+    const lead = set.questionPaper || set.markScheme || set.solution
     return { ...lead, ...set, id: set.key, kind: lead.kind, title: lead.title }
   })
 }
 
 const matches = (paper, query) => {
   if (!query) return true
-  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${paper.kind === 'mark-scheme' ? 'mark scheme ms' : 'question paper qp'}`.toLowerCase()
+  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${{ 'mark-scheme': 'mark scheme ms', solution: 'solution worked answers' }[paper.kind] || 'question paper qp'}`.toLowerCase()
   return query.toLowerCase().split(/\s+/).filter(Boolean).every((word) => haystack.includes(word.replace('/', '-')) || haystack.includes(word))
 }
 
@@ -74,7 +74,8 @@ export const filterPapers = (papers, { subject, year, session, kind, query }) =>
   && (!kind || paper.kind === kind)
   && matches(paper, query))
 
-const byPaper = (first, second) => first.paperNumber - second.paperNumber || first.variant - second.variant || (first.kind === second.kind ? 0 : first.kind === 'question-paper' ? -1 : 1) || first.name.localeCompare(second.name)
+const KIND_ORDER = ['question-paper', 'mark-scheme', 'solution']
+const byPaper = (first, second) => first.paperNumber - second.paperNumber || first.variant - second.variant || (KIND_ORDER.indexOf(first.kind) - KIND_ORDER.indexOf(second.kind)) || first.name.localeCompare(second.name)
 
 // Year-wise papers grouped newest year first, then by exam session; topic-wise papers grouped by topic.
 export const groupPapers = (papers) => {

@@ -123,7 +123,7 @@ footer.site-footer-slim .copyright { position: static; display: block; padding-t
 .lib-crumbs a:hover { text-decoration: underline; }
 .lib-hero h1 { margin: 10px auto 6px; color: var(--navy); font-size: clamp(32px, 4.2vw, 48px); line-height: 1.08; }
 .lib-hero-sub { margin-top: 0; margin-bottom: 22px; color: var(--lib-muted); font-size: 17px; }
-.lib-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; padding: 0; list-style: none; }
+.lib-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; padding: 0; list-style: none; }
 .lib-steps li { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1px solid var(--lib-line); border-radius: 14px; background: #fafbfd; }
 .lib-steps b { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 50%; color: #fff; background: var(--navy); font-size: 14px; }
 .lib-steps span { display: grid; gap: 2px; color: var(--lib-muted); font-size: 14px; line-height: 1.4; }
@@ -176,7 +176,7 @@ footer.site-footer-slim .copyright { position: static; display: block; padding-t
 .lib-badge { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
 .lib-badge-free { color: var(--lib-free); background: var(--lib-free-soft); }
 .lib-badge-premium { color: var(--lib-lock); background: var(--lib-lock-soft); }
-.lib-card-docs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.lib-card-docs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: auto; }
 .lib-doc { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; text-align: left; font-family: var(--sans); cursor: pointer; transition: background .15s, border-color .15s; }
 .lib-doc svg { flex: 0 0 auto; }
 .lib-doc span { display: grid; min-width: 0; line-height: 1.25; }
@@ -186,6 +186,8 @@ footer.site-footer-slim .copyright { position: static; display: block; padding-t
 .lib-doc-free.lib-doc-question-paper:hover { border-color: var(--lib-action); }
 .lib-doc-free.lib-doc-mark-scheme { color: var(--lib-ms); background: var(--lib-ms-soft); border-color: #c4e8e2; }
 .lib-doc-free.lib-doc-mark-scheme:hover { border-color: var(--lib-ms); }
+.lib-doc-free.lib-doc-solution { color: #6b3fa0; background: #f4eefb; border-color: #e0d2f2; }
+.lib-doc-free.lib-doc-solution:hover { border-color: #6b3fa0; }
 .lib-doc-locked { color: var(--lib-lock); background: var(--lib-lock-soft); border-color: #f1dfbd; }
 .lib-doc-locked:hover { border-color: #d9b46f; }
 .lib-doc-missing { color: #8a94a8; background: #f5f6f9; border: 1px dashed #d4dae4; cursor: default; }
