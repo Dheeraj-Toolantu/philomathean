@@ -91,7 +91,7 @@ export default function PastPaperForm({ user, editing, onSaved, onCancel, onBusy
         <h3>Access</h3>
         <div className="adm-choice-grid" role="radiogroup" aria-label="Paper permission">
           <button type="button" role="radio" aria-checked={values.access === 'free'} className={`adm-choice${values.access === 'free' ? ' active' : ''}`} onClick={() => change('access', 'free')}><Unlock size={18} /><b>Free</b><small>Anyone can preview and download</small></button>
-          <button type="button" role="radio" aria-checked={values.access === 'premium'} className={`adm-choice${values.access === 'premium' ? ' active' : ''}`} onClick={() => change('access', 'premium')}><Lock size={18} /><b>Premium</b><small>Listed, but the PDF stays locked</small></button>
+          <button type="button" role="radio" aria-checked={values.access === 'premium'} className={`adm-choice${values.access === 'premium' ? ' active' : ''}`} onClick={() => change('access', 'premium')}><Lock size={18} /><b>Premium</b><small>Listed for everyone; only Gold members can open the PDF</small></button>
         </div>
         <label className="adm-switch"><input type="checkbox" checked={values.published !== false} onChange={(event) => change('published', event.target.checked)} /><span aria-hidden="true" /><div><b>Show on website</b><small>Turn off to hide this paper from students</small></div></label>
       </section>

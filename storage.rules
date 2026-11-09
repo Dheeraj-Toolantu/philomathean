@@ -2,8 +2,20 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     function isAdmin() { return request.auth != null && request.auth.token.admin == true; }
+    // Members are students on an active Gold plan. planExpiresAt is an ISO date string ("2027-11-09T…Z"), so it is
+    // compared with today's date written the same way; the plan stays active until the end of its expiry day.
+    function twoDigits(n) { return n < 10 ? '0' + string(n) : string(n); }
+    function today() { return string(request.time.year()) + '-' + twoDigits(request.time.month()) + '-' + twoDigits(request.time.day()); }
+    function studentPath() { return /databases/(default)/documents/students/$(request.auth.uid); }
+    function isMember() {
+      return request.auth != null && firestore.exists(studentPath())
+        && firestore.get(studentPath()).data.get('plan', 'free') == 'gold'
+        && (firestore.get(studentPath()).data.get('planExpiresAt', null) == null || firestore.get(studentPath()).data.planExpiresAt >= today());
+    }
+    // Free PDFs are open to everyone; premium PDFs (such as solved papers) only to members.
     match /past-papers/{resourceId}/{fileName} {
-      allow read: if isAdmin() || (resource.metadata.published == 'true' && resource.metadata.access == 'free');
+      allow read: if isAdmin() || (resource.metadata.published == 'true'
+        && (resource.metadata.access == 'free' || (resource.metadata.access == 'premium' && isMember())));
       allow create: if isAdmin() && request.resource.contentType == 'application/pdf' && request.resource.size <= 25 * 1024 * 1024;
       allow update: if isAdmin();
       allow delete: if isAdmin();

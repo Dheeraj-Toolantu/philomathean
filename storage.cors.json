@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://philomathean-a2c93.web.app", "https://philomathean-a2c93.firebaseapp.com", "http://localhost:5173"],
+    "method": ["GET", "HEAD"],
+    "responseHeader": ["Content-Type", "Authorization", "Content-Range"],
+    "maxAgeSeconds": 3600
+  }
+]
