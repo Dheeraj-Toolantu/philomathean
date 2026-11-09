@@ -70,11 +70,3 @@ jobs:
             echo "::error title=Security rules were not deployed::Give the FIREBASE_SERVICE_ACCOUNT service account the 'Firebase Rules Admin' role in Google Cloud IAM (or 'Firebase Admin'), then re-run this workflow. Until the rules are deployed, student sign-up and login fail."
             exit 1
           fi
-      # Members-only PDFs (solved papers) are downloaded by the browser through Firebase Storage, which needs this
-      # bucket CORS setting (add any custom domain to storage.cors.json). Run once by hand instead if the service account lacks 'Storage Admin':
-      #   gcloud storage buckets update gs://philomathean-a2c93.firebasestorage.app --cors-file=storage.cors.json
-      - name: Allow members' browsers to download premium PDFs (Storage CORS)
-        run: |
-          if ! gcloud storage buckets update gs://philomathean-a2c93.firebasestorage.app --cors-file=storage.cors.json; then
-            echo "::warning title=Storage CORS was not updated::Give the FIREBASE_SERVICE_ACCOUNT service account the 'Storage Admin' role, or run: gcloud storage buckets update gs://philomathean-a2c93.firebasestorage.app --cors-file=storage.cors.json. Until then Gold members can't open solved papers."
-          fi

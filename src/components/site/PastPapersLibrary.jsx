@@ -41,17 +41,16 @@ const useMembership = () => {
   const session = useSession()
   return { session, member: session.role === 'admin' || hasGold(session.profile) }
 }
-// A member's premium PDF is downloaded through Storage (the rules check the plan) and shown from a local blob URL.
+// A member's premium PDF link comes from Storage, which checks the Gold plan in its rules.
 function useMemberPdf(paper, member) {
   const id = member && isMembersOnly(paper) ? paper.resourceId || paper.id : ''
   const [state, setState] = useState({ id: '', url: '', failed: false })
   useEffect(() => {
     if (!id) return undefined
     let cancelled = false
-    let created = ''
-    loadMemberPdf(id).then((url) => { created = url; if (cancelled) URL.revokeObjectURL(url); else setState({ id, url, failed: false }) })
+    loadMemberPdf(id).then((url) => { if (!cancelled) setState({ id, url, failed: false }) })
       .catch(() => { if (!cancelled) setState({ id, url: '', failed: true }) })
-    return () => { cancelled = true; if (created) URL.revokeObjectURL(created) }
+    return () => { cancelled = true }
   }, [id])
   if (!id) return { url: '', loading: false, failed: false }
   return state.id === id ? { url: state.url, loading: false, failed: state.failed } : { url: '', loading: true, failed: false }
@@ -146,8 +145,7 @@ function PaperViewer({ set, initial, onClose }) {
     return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
   }, [onClose])
   const url = pdfUrl(paper) || memberPdf.url
-  // Google's phone viewer needs a public link, so members' PDFs open in the browser's own viewer instead.
-  const src = !url ? '' : memberPdf.url ? url : embedUrl(url, touch)
+  const src = url ? embedUrl(url, touch) : ''
   const showPdf = Boolean(url) || memberPdf.loading
   const tabs = [
     ['Question paper', set.questionPaper, <FileText size={16} key="qp" />],
