@@ -23,6 +23,8 @@ const toCsv = (questions) => {
 export default function QuestionsManager({ user, notify }) {
   const [managed, setManaged] = useState(null)
   const [loadError, setLoadError] = useState(false)
+  // The live Firestore rules predate question banks: show the built-in questions read-only and say why.
+  const [rulesMissing, setRulesMissing] = useState(false)
   const [courseId, setCourseId] = useState(COURSES[0].id)
   const course = COURSES.find((item) => item.id === courseId)
   const banks = useMemo(() => course.topics.flatMap((topic) => topic.quizzes.map((quiz) => ({ ...quiz, topic }))), [course])
@@ -36,9 +38,12 @@ export default function QuestionsManager({ user, notify }) {
   const [pdfOpen, setPdfOpen] = useState(false)
   const [pdfBusy, setPdfBusy] = useState(false)
 
-  const fetchBanks = useCallback(() => loadManagedBanks().then(setManaged).catch(() => setLoadError(true)), [])
+  const fetchBanks = useCallback(() => loadManagedBanks().then((banks) => { setManaged(banks); setRulesMissing(false) }).catch((error) => {
+    if (error?.code === 'permission-denied') { setManaged({}); setRulesMissing(true) } else setLoadError(true)
+  }), [])
   useEffect(() => { fetchBanks() }, [fetchBanks])
   const load = () => { setLoadError(false); fetchBanks() }
+  const locked = busy || rulesMissing
 
   const record = managed?.[bank.bank]
   const isManaged = Boolean(record)
@@ -110,15 +115,20 @@ export default function QuestionsManager({ user, notify }) {
               {record?.updatedBy && <p className="adm-muted">Last edited by {record.updatedBy}{record.updatedAt ? ` on ${record.updatedAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}` : ''}</p>}
             </div>
             <div className="adm-qb-actions">
-              <button type="button" className="adm-button adm-button-primary" disabled={busy} onClick={() => setDrawer({ question: blankQuestion() })}><Plus size={16} /> Add question</button>
-              <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={() => setPdfOpen(true)}><FileScan size={16} /> Import from PDF</button>
-              <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={() => setImporter({ text: '', mode: 'append' })}><FileUp size={16} /> Import CSV</button>
+              <button type="button" className="adm-button adm-button-primary" disabled={locked} onClick={() => setDrawer({ question: blankQuestion() })}><Plus size={16} /> Add question</button>
+              <button type="button" className="adm-button adm-button-ghost" disabled={locked} onClick={() => setPdfOpen(true)}><FileScan size={16} /> Import from PDF</button>
+              <button type="button" className="adm-button adm-button-ghost" disabled={locked} onClick={() => setImporter({ text: '', mode: 'append' })}><FileUp size={16} /> Import CSV</button>
               <button type="button" className="adm-button adm-button-ghost" onClick={() => download(`${bank.bank}.csv`, toCsv(questions))}><Download size={16} /> Export</button>
-              {!isManaged && <button type="button" className="adm-button adm-button-ghost" disabled={busy} onClick={startManaging}><Sparkles size={16} /> Copy built-in to edit</button>}
-              {isManaged && <button type="button" className="adm-button adm-button-ghost adm-text-danger" disabled={busy} onClick={() => setConfirm({ kind: 'reset' })}><RotateCcw size={16} /> Reset to built-in</button>}
+              {!isManaged && <button type="button" className="adm-button adm-button-ghost" disabled={locked} onClick={startManaging}><Sparkles size={16} /> Copy built-in to edit</button>}
+              {isManaged && <button type="button" className="adm-button adm-button-ghost adm-text-danger" disabled={locked} onClick={() => setConfirm({ kind: 'reset' })}><RotateCcw size={16} /> Reset to built-in</button>}
             </div>
           </div>
-          {!isManaged && <p className="adm-note">These are the website’s built-in starter questions. Editing, adding or importing copies them here first, and from then on this bank is fully managed from this panel.</p>}
+          {rulesMissing && <div className="adm-rules-banner" role="alert">
+            <b>Read-only: the live database rules don’t include question banks yet.</b>
+            <span>Students still see the built-in questions. To edit and import, publish the latest rules from the repository: in the Firebase console open <b>Firestore Database → Rules</b> and paste <code>firestore.rules</code>, then <b>Storage → Rules</b> and paste <code>storage.rules</code>, and click Publish. Or run <code>firebase deploy --only firestore:rules,storage</code>.</span>
+            <button type="button" className="adm-button adm-button-ghost adm-button-small" onClick={load}>I’ve published them — check again</button>
+          </div>}
+          {!isManaged && !rulesMissing && <p className="adm-note">These are the website’s built-in starter questions. Editing, adding or importing copies them here first, and from then on this bank is fully managed from this panel.</p>}
 
           {!questions.length ? <EmptyState icon={CircleHelp} title="No questions in this bank" message="Students see “No questions yet” for this quiz. Add a question or import a CSV." />
             : <ol className="adm-qb-list">{questions.map((question, index) => <li key={question.id} className={question.hidden ? 'adm-qb-item hidden' : 'adm-qb-item'}>
@@ -134,11 +144,11 @@ export default function QuestionsManager({ user, notify }) {
                 </div>
               </div>
               <div className="adm-row-actions">
-                <button type="button" className="adm-icon-button" disabled={busy || index === 0} onClick={() => move(index, -1)} aria-label="Move up" title="Move up"><ArrowUp size={15} /></button>
-                <button type="button" className="adm-icon-button" disabled={busy || index === questions.length - 1} onClick={() => move(index, 1)} aria-label="Move down" title="Move down"><ArrowDown size={15} /></button>
-                <button type="button" className="adm-icon-button" disabled={busy} onClick={() => toggleHidden(question)} aria-label={question.hidden ? 'Show to students' : 'Hide from students'} title={question.hidden ? 'Show to students' : 'Hide from students'}>{question.hidden ? <Eye size={15} /> : <EyeOff size={15} />}</button>
-                <button type="button" className="adm-icon-button" disabled={busy} onClick={() => setDrawer({ question })} aria-label="Edit question" title="Edit"><Pencil size={15} /></button>
-                <button type="button" className="adm-icon-button adm-icon-danger" disabled={busy} onClick={() => setConfirm({ kind: 'question', question })} aria-label="Delete question" title="Delete"><Trash2 size={15} /></button>
+                <button type="button" className="adm-icon-button" disabled={locked || index === 0} onClick={() => move(index, -1)} aria-label="Move up" title="Move up"><ArrowUp size={15} /></button>
+                <button type="button" className="adm-icon-button" disabled={locked || index === questions.length - 1} onClick={() => move(index, 1)} aria-label="Move down" title="Move down"><ArrowDown size={15} /></button>
+                <button type="button" className="adm-icon-button" disabled={locked} onClick={() => toggleHidden(question)} aria-label={question.hidden ? 'Show to students' : 'Hide from students'} title={question.hidden ? 'Show to students' : 'Hide from students'}>{question.hidden ? <Eye size={15} /> : <EyeOff size={15} />}</button>
+                <button type="button" className="adm-icon-button" disabled={locked} onClick={() => setDrawer({ question })} aria-label="Edit question" title="Edit"><Pencil size={15} /></button>
+                <button type="button" className="adm-icon-button adm-icon-danger" disabled={locked} onClick={() => setConfirm({ kind: 'question', question })} aria-label="Delete question" title="Delete"><Trash2 size={15} /></button>
               </div>
             </li>)}</ol>}
         </div>

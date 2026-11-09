@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
-import { ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, ExternalLink, FileCheck2, FileText, Lock, Search, X } from 'lucide-react'
+import { ArrowRight, BookOpenCheck, CheckCircle2, ChevronDown, ExternalLink, FileCheck2, FileText, Lock, NotebookPen, Search, X } from 'lucide-react'
 import { filterPapers, groupPapers, pairPapers, PATHWAYS, SESSION_LABELS, SESSION_ORDER } from './paperInfo'
 import { usePublishedPapers } from './usePublishedPapers'
 import { SiteFooter, SiteHeader } from './SiteChrome'
@@ -64,6 +64,7 @@ function PaperCard({ set, onOpen }) {
     <div className="lib-card-docs">
       <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
       <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.solution} label="Solution" icon={<NotebookPen size={18} />} emptyText="Coming soon" onOpen={(paper) => onOpen(set, paper)} />
     </div>
   </article>
 }
@@ -80,7 +81,7 @@ function PaperViewer({ set, initial, onClose }) {
   }, [onClose])
   const url = pdfUrl(paper)
   const src = url ? embedUrl(url, touch) : ''
-  const tabs = [['Question paper', set.questionPaper, <FileText size={16} key="qp" />], ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />]].filter(([, item]) => item)
+  const tabs = [['Question paper', set.questionPaper, <FileText size={16} key="qp" />], ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />], ['Solution', set.solution, <NotebookPen size={16} key="sol" />]].filter(([, item]) => item)
 
   return <div className="lib-modal-backdrop" role="presentation" onClick={onClose}>
     <section className={url ? 'lib-modal' : 'lib-modal lib-modal-small'} role="dialog" aria-modal="true" aria-labelledby="lib-modal-title" onClick={(event) => event.stopPropagation()}>
@@ -100,12 +101,12 @@ function PaperViewer({ set, initial, onClose }) {
           <iframe key={src} title={`${paper.title} (PDF)`} src={src} onLoad={() => setLoaded(src)} />
         </div>
         <footer className="lib-modal-foot">
-          <p className="lib-modal-hint">{touch ? 'Pinch to zoom. Paper not showing? Open it in a new tab.' : 'Tip: finish the paper first, then check your answers in the mark scheme.'}</p>
+          <p className="lib-modal-hint">{touch ? 'Pinch to zoom. Paper not showing? Open it in a new tab.' : paper.kind === 'solution' ? 'Tip: try each question yourself before reading its worked solution.' : 'Tip: finish the paper first, then check your answers in the mark scheme and worked solution.'}</p>
           <a className="lib-btn lib-btn-primary" href={url} target="_blank" rel="noreferrer"><ExternalLink size={16} /> Open full PDF</a>
         </footer>
       </> : <div className="lib-locked">
         <span className="lib-locked-icon"><Lock size={26} /></span>
-        <h3>This is a premium {paper.kind === 'mark-scheme' ? 'mark scheme' : 'paper'}</h3>
+        <h3>This is a premium {{ 'mark-scheme': 'mark scheme', solution: 'worked solution' }[paper.kind] || 'paper'}</h3>
         <p>Premium papers come with our guided practice programme. Ask our team and we'll share access along with a study plan for your exam.</p>
         <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Request access <ArrowRight size={16} /></a>
       </div>}
@@ -139,6 +140,7 @@ export default function PastPapersLibrary() {
   const pathwayInfo = PATHWAYS.find((item) => item.id === pathway)
   const freeCount = subjectPapers.filter(isFree).length
   const markSchemeCount = visible.filter((set) => set.markScheme).length
+  const solutionCount = visible.filter((set) => set.solution).length
   const filterKey = `${pathway}|${subject}|${filters.year}|${filters.session}|${filters.access}|${filters.query}`
   const groupLimit = shown.key === filterKey ? shown.count : GROUPS_PER_PAGE
   const remainingGroups = groups.length - groupLimit
@@ -148,11 +150,12 @@ export default function PastPapersLibrary() {
     <section className="lib-hero">
       <nav className="lib-crumbs" aria-label="Breadcrumb"><a href="/premium-sources">Past papers</a><span aria-hidden="true">/</span><span aria-current="page">{pathwayInfo.title}</span></nav>
       <h1>{pathwayInfo.title} <span>past papers</span></h1>
-      <p className="lib-hero-sub">{loading ? 'Loading the library…' : pathwayPapers.length ? `${pathwayPapers.length.toLocaleString('en-IN')} question papers and mark schemes${years.length ? ` from ${years.at(-1)} to ${years[0]}` : ''}${freeCount ? ` · ${freeCount === subjectPapers.length ? 'all' : freeCount} free to view` : ''}.` : pathwayInfo.description}</p>
+      <p className="lib-hero-sub">{loading ? 'Loading the library…' : pathwayPapers.length ? `${pathwayPapers.length.toLocaleString('en-IN')} question papers, mark schemes and solutions${years.length ? ` from ${years.at(-1)} to ${years[0]}` : ''}${freeCount ? ` · ${freeCount === subjectPapers.length ? 'all' : freeCount} free to view` : ''}.` : pathwayInfo.description}</p>
       <ol className="lib-steps" aria-label="How to use the library">
         <li><b>1</b><span><strong>Choose your subject</strong><small>and your exam year</small></span></li>
         <li><b>2</b><span><strong>Attempt the question paper</strong><small>with a timer, like the real exam</small></span></li>
         <li><b>3</b><span><strong>Check the mark scheme</strong><small>to see how marks are given</small></span></li>
+        <li><b>4</b><span><strong>Read the worked solution</strong><small>step by step, where available</small></span></li>
       </ol>
       <div className="lib-pathways" role="tablist" aria-label="Exam pathway">
         {PATHWAYS.map((item) => <button key={item.id} type="button" role="tab" aria-selected={item.id === pathway} className={item.id === pathway ? 'active' : ''} onClick={() => update({ pathway: item.id, subject: '', year: '', session: '', access: '', query: '' })}>{item.title}<span>{loading ? '…' : counts[item.id] ? counts[item.id].toLocaleString('en-IN') : 'Soon'}</span></button>)}
@@ -179,7 +182,7 @@ export default function PastPapersLibrary() {
           </div>
 
           <div className="lib-summary" aria-live="polite">
-            <span><b>{visible.length.toLocaleString('en-IN')}</b> {visible.length === 1 ? 'paper' : 'papers'}{markSchemeCount ? `, ${markSchemeCount.toLocaleString('en-IN')} with mark schemes` : ''}{!complete && ' · loading more…'}</span>
+            <span><b>{visible.length.toLocaleString('en-IN')}</b> {visible.length === 1 ? 'paper' : 'papers'}{markSchemeCount ? `, ${markSchemeCount.toLocaleString('en-IN')} with mark schemes` : ''}{solutionCount ? `, ${solutionCount.toLocaleString('en-IN')} with worked solutions` : ''}{!complete && ' · loading more…'}</span>
             {activeFilters > 0 && <button type="button" onClick={clearFilters}><X size={14} /> Clear filters</button>}
           </div>
 
