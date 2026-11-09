@@ -43,19 +43,32 @@ const normalize = (snapshot, publicView = false) => snapshot.docs.map((item) => 
 })
 
 export const subscribeToPublishedResults = (onChange, onError) => onSnapshot(query(resultsCollection, where('published', '==', true), orderBy('sortOrder'), limit(100)), (snapshot) => onChange(normalize(snapshot)), onError)
-// Loads every published paper in pages (no hard cap), reporting each page so the library can render while the rest arrive.
+// Loads every published paper (no hard cap). The document-id space is split into ranges that load at the same time,
+// each in pages, so the whole library (with every mark scheme and solved paper paired up) arrives in a few seconds
+// instead of one page after another. Progress is first reported once every range has its first page, so cards don't
+// appear before their mark scheme or solved paper has loaded.
 const PUBLIC_PAGE_SIZE = 500
+// Firestore auto-ids use 0-9, A-Z and a-z (in that sort order); any other id still falls into the first or last range.
+// 31 ranges keep each one well under a page today (largest ~310 of ~6,200 records), so most finish in a single request.
+const ID_BOUNDARIES = [...'3579BDFHJLNPRTVXZbdfhjlnprtvxz']
 export const loadPublishedPapers = async (onProgress) => {
-	const papers = []
-	let cursor
-	for (;;) {
-		const snapshot = await getDocs(query(publicPapersCollection, where('published', '==', true), orderBy(documentId()), ...(cursor ? [startAfter(cursor)] : []), limit(PUBLIC_PAGE_SIZE)))
-		papers.push(...normalize(snapshot, true).filter((paper) => paper.status === 'published'))
-		const done = snapshot.size < PUBLIC_PAGE_SIZE
-		onProgress?.(papers.slice(), done)
-		if (done) return papers
-		cursor = snapshot.docs.at(-1)
-	}
+	const bounds = [null, ...ID_BOUNDARIES, null]
+	const ranges = bounds.slice(0, -1).map((low, index) => ({ low, high: bounds[index + 1], papers: [], started: false, done: false }))
+	const report = () => { if (ranges.every((range) => range.started)) onProgress?.(ranges.flatMap((range) => range.papers), ranges.every((range) => range.done)) }
+	await Promise.all(ranges.map(async (range) => {
+		let cursor
+		for (;;) {
+			const inRange = [...(range.low ? [where(documentId(), '>=', range.low)] : []), ...(range.high ? [where(documentId(), '<', range.high)] : [])]
+			const snapshot = await getDocs(query(publicPapersCollection, where('published', '==', true), ...inRange, orderBy(documentId()), ...(cursor ? [startAfter(cursor)] : []), limit(PUBLIC_PAGE_SIZE)))
+			range.papers.push(...normalize(snapshot, true).filter((paper) => paper.status === 'published'))
+			range.started = true
+			range.done = snapshot.size < PUBLIC_PAGE_SIZE
+			report()
+			if (range.done) return
+			cursor = snapshot.docs.at(-1)
+		}
+	}))
+	return ranges.flatMap((range) => range.papers)
 }
 
 export const createResult = (values, uid) => addDoc(resultsCollection, { ...values, published: Boolean(values.published), sortOrder: Number(values.sortOrder) || 0, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
