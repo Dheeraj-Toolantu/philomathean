@@ -24,12 +24,12 @@ export const describePaper = (paper) => {
   const labelled = title.match(/\b(?:question\s*paper|mark\s*scheme|qp|ms)[\s_-]*(\d)(\d)\b/i)
   const code = joined ? { syllabus: joined[1], number: joined[2], variant: joined[3] }
     : labelled ? { syllabus: subjectCode, number: labelled[1], variant: labelled[2] } : null
-  const inferredKind = /\b(?:worked\s+)?solutions?\b/i.test(title) ? 'solution'
-    : /solved/i.test(title) ? 'solved-question-paper'
+  const inferredKind = /\b(?:worked\s+)?solutions?\b|solved/i.test(title) ? 'solved-question-paper'
     : /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme'
       : /examiner'?s?\s*report/i.test(title) ? 'examiner-report'
         : /grade\s*threshold/i.test(title) ? 'grade-thresholds' : 'question-paper'
-  const kind = paper.resourceType || inferredKind
+  // Worked solutions and solved question papers are the same thing to a student: both appear as "Solved paper".
+  const kind = paper.resourceType === 'solution' ? 'solved-question-paper' : paper.resourceType || inferredKind
   const name = paper.paperType === 'topic-wise' ? (paper.topic || title)
     : code ? `Paper ${code.number} · Variant ${code.variant}` : title
   const subjectName = titleCase(paper.subjectName || paper.subject || 'General')
@@ -54,7 +54,6 @@ export const pairPapers = (papers) => {
     const slots = {
       'question-paper': 'questionPaper',
       'mark-scheme': 'markScheme',
-      solution: 'solution',
       'solved-question-paper': 'solvedQuestionPaper',
       'examiner-report': 'examinerReport',
       'grade-thresholds': 'gradeThresholds',
@@ -71,14 +70,14 @@ export const pairPapers = (papers) => {
     set.papers.push(paper)
   }
   return [...sets.values()].map((set) => {
-  const lead = set.questionPaper || set.markScheme || set.solution || set.solvedQuestionPaper || set.examinerReport || set.gradeThresholds || set.topicPractice
+  const lead = set.questionPaper || set.markScheme || set.solvedQuestionPaper || set.examinerReport || set.gradeThresholds || set.topicPractice
     return { ...lead, ...set, id: set.key, kind: lead.kind, title: lead.title }
   })
 }
 
 const matches = (paper, query) => {
   if (!query) return true
-  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${{ 'mark-scheme': 'mark scheme ms', solution: 'solution worked answers', 'solved-question-paper': 'solved paper answers', 'examiner-report': 'examiner report', 'grade-thresholds': 'grade thresholds', 'topic-practice': 'topic practice' }[paper.kind] || 'question paper qp'}`.toLowerCase()
+  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${{ 'mark-scheme': 'mark scheme ms', 'solved-question-paper': 'solved paper solution worked answers', 'examiner-report': 'examiner report', 'grade-thresholds': 'grade thresholds', 'topic-practice': 'topic practice' }[paper.kind] || 'question paper qp'}`.toLowerCase()
   return query.toLowerCase().split(/\s+/).filter(Boolean).every((word) => haystack.includes(word.replace('/', '-')) || haystack.includes(word))
 }
 
@@ -89,7 +88,7 @@ export const filterPapers = (papers, { subject, year, session, kind, query }) =>
   && (!kind || paper.kind === kind)
   && matches(paper, query))
 
-const KIND_ORDER = ['question-paper', 'mark-scheme', 'solution', 'solved-question-paper', 'examiner-report', 'grade-thresholds', 'topic-practice']
+const KIND_ORDER = ['question-paper', 'mark-scheme', 'solved-question-paper', 'examiner-report', 'grade-thresholds', 'topic-practice']
 const byPaper = (first, second) => first.paperNumber - second.paperNumber || first.variant - second.variant || (KIND_ORDER.indexOf(first.kind) - KIND_ORDER.indexOf(second.kind)) || first.name.localeCompare(second.name)
 
 // Year-wise papers grouped newest year first, then by exam session; topic-wise papers grouped by topic.
