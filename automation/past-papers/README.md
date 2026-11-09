@@ -149,12 +149,14 @@ a single search term (overrides the file), `solved` or a regex to filter PDFs, a
 Actions → **Upload past papers** → **Run workflow** (`.github/workflows/upload-past-papers.yml`). It
 downloads and rebrands the subject's question papers on the runner, renames them with `prepare-for-upload.js`
 (`0452_s23_qp_12.pdf` → `IGCSE-ACCOUNTING - 0452-12 - May-June 2023.pdf`, found through `manifest.json`) and uploads them
-with `functions/scripts/bulk-upload-past-papers.cjs`. That script skips papers already on the site and
-PDFs whose printed paper code or session doesn't match the name. Nothing is committed to the repository.
+with `functions/scripts/bulk-upload-past-papers.cjs`. That uploader can also process descriptive names for
+question papers, mark schemes, solved papers, examiner reports, grade thresholds and the Year 11 topic
+practice PDFs; solved papers are premium while the other types are free. It skips existing records by
+default; `--overwrite` replaces a matching record and its stored PDF. Nothing is committed to the repository.
 
 - The first run should keep **dry run** ticked and a small **max files**; the upload report is attached to
   the run as an artifact.
-- Mark schemes and examiner reports are not uploaded: the site keeps one PDF per paper code, session and year.
+- The public library pairs question papers, mark schemes and solved papers by paper code, lists examiner reports and grade thresholds by year/session, and groups topic practice by topic.
 - Needs the `FIREBASE_UPLOAD_SERVICE_ACCOUNT` repository secret (service-account JSON key with Cloud
   Datastore User, Storage Object Admin and Firebase Authentication Viewer roles).
 

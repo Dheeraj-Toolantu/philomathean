@@ -186,8 +186,12 @@ footer.site-footer-slim .copyright { position: static; display: block; padding-t
 .lib-doc-free.lib-doc-question-paper:hover { border-color: var(--lib-action); }
 .lib-doc-free.lib-doc-mark-scheme { color: var(--lib-ms); background: var(--lib-ms-soft); border-color: #c4e8e2; }
 .lib-doc-free.lib-doc-mark-scheme:hover { border-color: var(--lib-ms); }
-.lib-doc-free.lib-doc-solution { color: #6b3fa0; background: #f4eefb; border-color: #e0d2f2; }
-.lib-doc-free.lib-doc-solution:hover { border-color: #6b3fa0; }
+.lib-doc-free.lib-doc-solved-question-paper { color: #6b3fa0; background: #f4eefb; border-color: #e0d2f2; }
+.lib-doc-free.lib-doc-solved-question-paper:hover { border-color: #6b3fa0; }
+.lib-doc-free.lib-doc-examiner-report, .lib-doc-free.lib-doc-grade-thresholds { color: #3d4b66; background: #f1f4f9; border-color: #d9e0ec; }
+.lib-doc-free.lib-doc-examiner-report:hover, .lib-doc-free.lib-doc-grade-thresholds:hover { border-color: #3d4b66; }
+.lib-doc-free.lib-doc-topic-practice { color: #9a4d0b; background: #fff4e8; border-color: #f6dcc0; }
+.lib-doc-free.lib-doc-topic-practice:hover { border-color: #9a4d0b; }
 .lib-doc-locked { color: var(--lib-lock); background: var(--lib-lock-soft); border-color: #f1dfbd; }
 .lib-doc-locked:hover { border-color: #d9b46f; }
 .lib-skeleton { height: 150px; background: linear-gradient(90deg, #eceff5 25%, #f6f8fb 50%, #eceff5 75%); background-size: 200% 100%; animation: lib-shimmer 1.2s linear infinite; }

@@ -65,7 +65,10 @@ function PaperCard({ set, onOpen }) {
     <div className="lib-card-docs">
       <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
       <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
-      <DocButton paper={set.solution} label="Solved paper" icon={<NotebookPen size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.solvedQuestionPaper} label="Solved paper" icon={<NotebookPen size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.examinerReport} label="Examiner report" icon={<FileText size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.gradeThresholds} label="Grade thresholds" icon={<FileCheck2 size={18} />} onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.topicPractice} label="Topic practice" icon={<BookOpenCheck size={18} />} onOpen={(paper) => onOpen(set, paper)} />
     </div>
   </article>
 }
@@ -82,7 +85,14 @@ function PaperViewer({ set, initial, onClose }) {
   }, [onClose])
   const url = pdfUrl(paper)
   const src = url ? embedUrl(url, touch) : ''
-  const tabs = [['Question paper', set.questionPaper, <FileText size={16} key="qp" />], ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />], ['Solved paper', set.solution, <NotebookPen size={16} key="sol" />]].filter(([, item]) => item)
+  const tabs = [
+    ['Question paper', set.questionPaper, <FileText size={16} key="qp" />],
+    ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />],
+    ['Solved paper', set.solvedQuestionPaper, <NotebookPen size={16} key="solved" />],
+    ['Examiner report', set.examinerReport, <FileText size={16} key="report" />],
+    ['Grade thresholds', set.gradeThresholds, <FileCheck2 size={16} key="thresholds" />],
+    ['Topic practice', set.topicPractice, <BookOpenCheck size={16} key="topic" />],
+  ].filter(([, item]) => item)
 
   return <div className="lib-modal-backdrop" role="presentation" onClick={onClose}>
     <section className={url ? 'lib-modal' : 'lib-modal lib-modal-small'} role="dialog" aria-modal="true" aria-labelledby="lib-modal-title" onClick={(event) => event.stopPropagation()}>
@@ -102,12 +112,12 @@ function PaperViewer({ set, initial, onClose }) {
           <iframe key={src} title={`${paper.title} (PDF)`} src={src} onLoad={() => setLoaded(src)} />
         </div>
         <footer className="lib-modal-foot">
-          <p className="lib-modal-hint">{touch ? 'Pinch to zoom. Paper not showing? Open it in a new tab.' : paper.kind === 'solution' ? 'Tip: try each question yourself before reading the solved paper.' : 'Tip: finish the paper first, then check your answers in the mark scheme and solved paper.'}</p>
+          <p className="lib-modal-hint">{touch ? 'Pinch to zoom. Paper not showing? Open it in a new tab.' : paper.kind === 'solved-question-paper' ? 'Tip: try each question yourself before reading the solved paper.' : 'Tip: finish the paper first, then check your answers in the mark scheme and solved paper.'}</p>
           <a className="lib-btn lib-btn-primary" href={url} target="_blank" rel="noreferrer"><ExternalLink size={16} /> Open full PDF</a>
         </footer>
       </> : <div className="lib-locked">
         <span className="lib-locked-icon"><Lock size={26} /></span>
-        <h3>This is a premium {{ 'mark-scheme': 'mark scheme', solution: 'solved paper' }[paper.kind] || 'paper'}</h3>
+        <h3>This is a premium {{ 'mark-scheme': 'mark scheme', 'solved-question-paper': 'solved paper' }[paper.kind] || 'paper'}</h3>
         <p>Premium papers come with our guided practice programme. Ask our team and we'll share access along with a study plan for your exam.</p>
         <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Request access <ArrowRight size={16} /></a>
       </div>}
@@ -141,7 +151,7 @@ export default function PastPapersLibrary() {
   const pathwayInfo = PATHWAYS.find((item) => item.id === pathway)
   const freeCount = subjectPapers.filter(isFree).length
   const markSchemeCount = visible.filter((set) => set.markScheme).length
-  const solutionCount = visible.filter((set) => set.solution).length
+  const solutionCount = visible.filter((set) => set.solvedQuestionPaper).length
   const filterKey = `${pathway}|${subject}|${filters.year}|${filters.session}|${filters.access}|${filters.query}`
   const groupLimit = shown.key === filterKey ? shown.count : GROUPS_PER_PAGE
   const remainingGroups = groups.length - groupLimit

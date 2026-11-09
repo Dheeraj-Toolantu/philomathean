@@ -9,8 +9,8 @@
 .ts-track::-webkit-scrollbar { display: none; }
 .ts-card { flex: 0 0 300px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-radius: 18px; color: #fff; background: rgba(255,255,255,.06); text-align: left; cursor: pointer; font: inherit; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
 .ts-card:hover, .ts-card:focus-visible { transform: translateY(-4px); border-color: rgba(255,176,32,.7); background: rgba(255,255,255,.1); outline: none; }
-.ts-thumb { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: #0e0828; }
-.ts-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.ts-thumb { position: relative; display: block; flex: 0 0 auto; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: #0e0828; }
+.ts-thumb img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
 .ts-card:hover .ts-thumb img { transform: scale(1.05); }
 .ts-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(10,6,30,.55)); }
 .ts-play { position: absolute; top: 50%; left: 50%; z-index: 1; display: grid; place-items: center; width: 56px; height: 56px; padding-left: 3px; border-radius: 50%; color: #f45b0a; background: rgba(255,255,255,.95); box-shadow: 0 8px 24px rgba(0,0,0,.35); transform: translate(-50%, -50%); transition: transform .2s ease; }

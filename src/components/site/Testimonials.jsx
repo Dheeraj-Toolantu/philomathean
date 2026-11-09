@@ -66,7 +66,7 @@ export function Testimonials() {
       <div className="ts-heading"><span>Watch their stories</span><div className="ts-controls"><button type="button" onClick={() => nudge(-1)} aria-label="Previous stories"><ChevronLeft size={20} /></button><button type="button" onClick={() => nudge(1)} aria-label="More stories"><ChevronRight size={20} /></button></div></div>
       <div className="ts-track" ref={track} onMouseEnter={pause} onMouseLeave={resume} onFocus={pause} onBlur={resume} onTouchStart={pause} onTouchEnd={() => window.setTimeout(resume, 2500)}>
         {[0, 1].map((copy) => TESTIMONIALS.map((story, index) => <button type="button" className="ts-card" key={`${copy}-${index}`} onClick={() => setPlaying(story)} aria-label={`Play ${story.name}'s story`} tabIndex={copy ? -1 : 0} aria-hidden={copy ? 'true' : undefined}>
-          <span className="ts-thumb"><img src={story.thumbnail} alt="" loading="lazy" /><span className="ts-play"><Play size={22} fill="currentColor" /></span><span className="ts-duration">Video</span></span>
+          <span className="ts-thumb"><img src={story.thumbnail} alt="" loading={copy ? 'lazy' : 'eager'} /><span className="ts-play"><Play size={22} fill="currentColor" /></span><span className="ts-duration">Video</span></span>
           <span className="ts-body"><Quote size={18} aria-hidden="true" /><strong>{story.name}</strong><small>{story.detail}</small></span>
         </button>))}
       </div>

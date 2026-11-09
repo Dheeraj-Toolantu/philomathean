@@ -69,7 +69,40 @@ test('solved papers join their question paper and mark scheme in one entry', () 
   ])
   assert.equal(sets.length, 1)
   assert.equal(sets[0].kind, 'question-paper')
-  assert.ok(sets[0].questionPaper && sets[0].markScheme && sets[0].solution)
-  assert.equal(paper('IGCSE-MATHEMATICS - 0607-11 - May-June 2026 - Solved Paper').kind, 'solution')
-  assert.deepEqual(filterPapers(sets.flatMap((set) => set.papers), { query: 'solved paper' }).map((item) => item.kind), ['solution'])
+  assert.ok(sets[0].questionPaper && sets[0].markScheme && sets[0].solvedQuestionPaper)
+  assert.equal(paper('IGCSE-MATHEMATICS - 0607-11 - May-June 2026 - Solved Paper').kind, 'solved-question-paper')
+  assert.deepEqual(filterPapers(sets.flatMap((set) => set.papers), { query: 'solved paper' }).map((item) => item.kind), ['solved-question-paper'])
+})
+
+test('solved papers stay separate from free papers, with reference PDFs grouped by year', () => {
+  const shared = { year: 2019, session: 'May-June', subjectCode: '0607' }
+  const sets = pairPapers([
+    paper('IGCSE-MATHS - 0607-31 - May-June 2019', shared),
+    paper('IGCSE-MATHS - 0607-31 - May-June 2019 - Mark Scheme', shared),
+    paper('IGCSE-MATHS - 0607-31 - May-June 2019 - Solved Question Paper', { ...shared, resourceType: 'solved-question-paper', access: 'premium' }),
+    paper('IGCSE-MATHS - 0607 - May-June 2019 - Examiner Report', { ...shared, resourceType: 'examiner-report' }),
+    paper('IGCSE-MATHS - 0607 - May-June 2019 - Grade Thresholds', { ...shared, resourceType: 'grade-thresholds' }),
+  ])
+  const paperSet = sets.find((set) => set.code === '0607/31')
+  const referenceSet = sets.find((set) => set.examinerReport)
+
+  assert.equal(sets.length, 2)
+  assert.equal(paperSet.questionPaper.kind, 'question-paper')
+  assert.equal(paperSet.markScheme.kind, 'mark-scheme')
+  assert.equal(paperSet.solvedQuestionPaper.kind, 'solved-question-paper')
+  assert.equal(referenceSet.examinerReport.kind, 'examiner-report')
+  assert.equal(referenceSet.gradeThresholds.kind, 'grade-thresholds')
+  assert.deepEqual(groupPapers(sets).map((group) => group.papers.length), [2])
+})
+
+test('topic practice is listed as a free topic-wise resource', () => {
+  const topic = paper('IGCSE-MATHEMATICS - 0607 - Topic - Year 11 - Circle Theorems', {
+    id: 'circle-theorems',
+    paperType: 'topic-wise',
+    resourceType: 'topic-practice',
+    topic: 'Year 11 - Circle Theorems',
+  })
+  const [set] = pairPapers([topic])
+  assert.equal(set.topicPractice.kind, 'topic-practice')
+  assert.equal(groupPapers([set])[0].title, 'Year 11 - Circle Theorems')
 })

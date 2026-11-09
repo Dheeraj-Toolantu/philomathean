@@ -13,14 +13,14 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const SESSIONS = { m: 'February-March', s: 'May-June', w: 'October-November' }
-const CAIE_NAME = /^(\d{4})_([msw])(\d{2})_qp_(\d{2})\.pdf$/i
+const CAIE_NAME = /^(\d{4})_([msw])(\d{2})_qp_(\d{1,2})\.pdf$/i
 
 export const uploadName = (fileName, { pathway = 'IGCSE', subject }) => {
   const match = fileName.match(CAIE_NAME)
   if (!match) return null
   const [, syllabus, session, year, variant] = match
   const subjectToken = String(subject).toUpperCase().replace(/[^A-Z& ]+/g, ' ').trim()
-  return `${pathway}-${subjectToken} - ${syllabus}-${variant} - ${SESSIONS[session.toLowerCase()]} 20${year}.pdf`
+  return `${pathway}-${subjectToken} - ${syllabus}-${variant.padStart(2, '0')} - ${SESSIONS[session.toLowerCase()]} 20${year}.pdf`
 }
 
 // Maps each renamed file back to the CAIE name it was downloaded as.
