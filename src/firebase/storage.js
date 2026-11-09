@@ -1,5 +1,6 @@
 import { deleteObject, getDownloadURL, ref, updateMetadata, uploadBytesResumable } from 'firebase/storage'
 import { storage } from './config'
+import { getMemberPaperLink } from './content'
 import { MAX_PDF_BYTES } from './validation'
 
 export const uploadPdf = (file, resourceId, access, onProgress) => new Promise((resolve, reject) => {
@@ -11,6 +12,9 @@ export const validatePdfFile = (file) => file && file.type === 'application/pdf'
 export const removePdf = (filePath) => filePath ? deleteObject(ref(storage, filePath)) : Promise.resolve()
 export const getFreePdfUrl = async (filePath) => `${await getDownloadURL(ref(storage, filePath))}#toolbar=1&navpanes=0&view=FitH`
 export const syncPdfPermission = (filePath, access, published) => filePath ? updateMetadata(ref(storage, filePath), { customMetadata: { access, published: String(published) } }) : Promise.resolve()
-// Members-only PDFs have no public link in the library: their link is asked for when a member opens one, and Storage
-// only hands it over when the rules confirm an active Gold plan. (A metadata request, so no bucket CORS setup is needed.)
-export const loadMemberPdf = (resourceId) => getFreePdfUrl(`past-papers/${resourceId}/current.pdf`)
+// Members-only PDFs have no public link in the library. A member's link comes from Firestore (memberPaperLinks, readable
+// only with an active Gold plan); Storage, whose rules check the same plan, is the fallback.
+export const loadMemberPdf = async (resourceId) => {
+  try { return `${await getMemberPaperLink(resourceId)}#toolbar=1&navpanes=0&view=FitH` }
+  catch { return getFreePdfUrl(`past-papers/${resourceId}/current.pdf`) }
+}

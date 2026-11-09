@@ -34,7 +34,8 @@ export default function PastPaperForm({ user, editing, onSaved, onCancel, onBusy
       uploadedPath = file ? details.filePath : undefined
       const published = values.published !== false
       await syncPdfPermission(details.filePath, values.access, published).catch(() => {})
-      const freeDownloadUrl = values.access === 'free' ? await getFreePdfUrl(details.filePath).catch(() => null) : null
+      // Free papers publish this link; premium papers give it only to Gold members (memberPaperLinks).
+      const freeDownloadUrl = await getFreePdfUrl(details.filePath).catch(() => null)
       if (editing) {
         await updatePaper(editing.id, { ...values, published }, user.uid, editing.version || 1, file ? details : {}, freeDownloadUrl)
         if (file && editing.filePath && editing.filePath !== details.filePath) await removePdf(editing.filePath).catch(() => {})
