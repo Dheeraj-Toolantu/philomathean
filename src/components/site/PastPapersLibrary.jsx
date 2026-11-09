@@ -65,6 +65,10 @@ function PaperCard({ set, onOpen }) {
       <DocButton paper={set.questionPaper} label="Question paper" icon={<FileText size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
       <DocButton paper={set.markScheme} label="Mark scheme" icon={<FileCheck2 size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
       <DocButton paper={set.solution} label="Solution" icon={<NotebookPen size={18} />} emptyText="Coming soon" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.solvedQuestionPaper} label="Solved paper" icon={<BookOpenCheck size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.examinerReport} label="Examiner report" icon={<FileText size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.gradeThresholds} label="Grade thresholds" icon={<FileCheck2 size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
+      <DocButton paper={set.topicPractice} label="Topic practice" icon={<BookOpenCheck size={18} />} emptyText="Not added yet" onOpen={(paper) => onOpen(set, paper)} />
     </div>
   </article>
 }
@@ -81,7 +85,15 @@ function PaperViewer({ set, initial, onClose }) {
   }, [onClose])
   const url = pdfUrl(paper)
   const src = url ? embedUrl(url, touch) : ''
-  const tabs = [['Question paper', set.questionPaper, <FileText size={16} key="qp" />], ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />], ['Solution', set.solution, <NotebookPen size={16} key="sol" />]].filter(([, item]) => item)
+  const tabs = [
+    ['Question paper', set.questionPaper, <FileText size={16} key="qp" />],
+    ['Mark scheme', set.markScheme, <FileCheck2 size={16} key="ms" />],
+    ['Solution', set.solution, <NotebookPen size={16} key="sol" />],
+    ['Solved paper', set.solvedQuestionPaper, <BookOpenCheck size={16} key="solved" />],
+    ['Examiner report', set.examinerReport, <FileText size={16} key="report" />],
+    ['Grade thresholds', set.gradeThresholds, <FileCheck2 size={16} key="thresholds" />],
+    ['Topic practice', set.topicPractice, <BookOpenCheck size={16} key="topic" />],
+  ].filter(([, item]) => item)
 
   return <div className="lib-modal-backdrop" role="presentation" onClick={onClose}>
     <section className={url ? 'lib-modal' : 'lib-modal lib-modal-small'} role="dialog" aria-modal="true" aria-labelledby="lib-modal-title" onClick={(event) => event.stopPropagation()}>
@@ -106,7 +118,7 @@ function PaperViewer({ set, initial, onClose }) {
         </footer>
       </> : <div className="lib-locked">
         <span className="lib-locked-icon"><Lock size={26} /></span>
-        <h3>This is a premium {{ 'mark-scheme': 'mark scheme', solution: 'worked solution' }[paper.kind] || 'paper'}</h3>
+  <h3>This is a premium {{ 'mark-scheme': 'mark scheme', solution: 'worked solution', 'solved-question-paper': 'solved paper' }[paper.kind] || 'paper'}</h3>
         <p>Premium papers come with our guided practice programme. Ask our team and we'll share access along with a study plan for your exam.</p>
         <a className="lib-btn lib-btn-primary lib-btn-wide" href="/#contact" onClick={onClose}>Request access <ArrowRight size={16} /></a>
       </div>}

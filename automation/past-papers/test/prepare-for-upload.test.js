@@ -21,6 +21,12 @@ test('renames question papers into the bulk uploader format', () => {
   assert.equal(parsePaperName(uploadName('0452_w20_qp_21.pdf', { subject: 'Accounting' })).session, 'Oct-Nov')
 })
 
+test('pads one-digit paper numbers to match the uploader format', () => {
+  const name = uploadName('0626_s17_qp_1.pdf', { subject: 'Mathematics' })
+  assert.equal(name, 'IGCSE-MATHEMATICS - 0626-01 - May-June 2017.pdf')
+  assert.equal(parsePaperName(name).paperCode, '0626-01')
+})
+
 test('leaves out mark schemes, examiner reports and specimen papers', async () => {
   for (const name of ['0452_s23_ms_12.pdf', '0452_s23_er.pdf', '0452_y25_sp_1.pdf', '0452_s23_in_12.pdf']) assert.equal(uploadName(name, { subject: 'Accounting' }), null)
   const source = await mkdtemp(path.join(tmpdir(), 'src-'))

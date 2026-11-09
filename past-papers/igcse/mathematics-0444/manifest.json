@@ -1,40 +1,2353 @@
 {
   "files": {
-    "0444_s24_ms_21.pdf": {
-      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_ms_21.pdf",
-      "bytes": 252646,
-      "sha256": "7d6d9b33e54ede8d8450cc5773a3944743100f86fab06a50b73b96284e793f56",
-      "downloadedAt": "2026-10-07T10:28:25.140Z"
-    },
-    "0444_s24_ms_41.pdf": {
-      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_ms_41.pdf",
-      "bytes": 301052,
-      "sha256": "93e87ea81e609331fc6f90272486d3b30542721041bb452e19f9f11ff6fa6b53",
-      "downloadedAt": "2026-10-07T10:28:26.975Z"
-    },
-    "0444_w23_ms_23.pdf": {
-      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_ms_23.pdf",
-      "bytes": 280937,
-      "sha256": "f62b9d4ea4a3f218c9e63c2966f2e743f0a530102d717d9b161e847dedba090a",
-      "downloadedAt": "2026-10-07T10:48:14.565Z"
-    },
-    "0444_w23_ms_43.pdf": {
-      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_ms_43.pdf",
-      "bytes": 361260,
-      "sha256": "62b786ca5230c8b2999c6327aa418006e6cc8ec31ab19752d044fb8c6101a6d1",
-      "downloadedAt": "2026-10-07T10:48:16.403Z"
-    },
     "0444_s24_er.pdf": {
       "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_er.pdf",
       "bytes": 291777,
       "sha256": "5d3777c0aac395a93be1f76d13efd50cfecbc8a17ae6b16e6abbe3edf7ccca62",
-      "downloadedAt": "2026-10-07T10:57:53.936Z"
+      "downloadedAt": "2026-10-08T13:18:45.640Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 354268
     },
     "0444_s24_gt.pdf": {
       "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_gt.pdf",
       "bytes": 93193,
       "sha256": "05ff323886673553edd324dc37d9fe7c05ec77c921bb3280d83687f20372cb79",
-      "downloadedAt": "2026-10-07T10:57:55.752Z"
+      "downloadedAt": "2026-10-08T13:18:48.375Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 165393
+    },
+    "0444_s24_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_ms_21.pdf",
+      "bytes": 252646,
+      "sha256": "7d6d9b33e54ede8d8450cc5773a3944743100f86fab06a50b73b96284e793f56",
+      "downloadedAt": "2026-10-08T13:18:50.413Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 321769
+    },
+    "0444_s24_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_ms_41.pdf",
+      "bytes": 301052,
+      "sha256": "93e87ea81e609331fc6f90272486d3b30542721041bb452e19f9f11ff6fa6b53",
+      "downloadedAt": "2026-10-08T13:18:52.542Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 369935
+    },
+    "0444_s24_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_qp_21.pdf",
+      "bytes": 1342714,
+      "sha256": "57737c7dd8b69a0432bca7b2bc1103d24b5cc4012c93fe15e44519813048932a",
+      "downloadedAt": "2026-10-08T13:18:54.714Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1350122
+    },
+    "0444_s24_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s24_qp_41.pdf",
+      "bytes": 1326560,
+      "sha256": "56a8dd3a41b62251c6700c467c4fbe46153f018e7c54a6a0c69af3ba1e1599f8",
+      "downloadedAt": "2026-10-08T13:18:57.998Z",
+      "savedAs": "2024 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1323900
+    },
+    "0444_w23_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_er.pdf",
+      "bytes": 369889,
+      "sha256": "4adc8ab49dd367f2117653f6554f5dd2522ce6b8de4216ecfe43eb1c19935ecf",
+      "downloadedAt": "2026-10-08T13:19:17.866Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 438677
+    },
+    "0444_w23_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_gt.pdf",
+      "bytes": 131410,
+      "sha256": "cb2548bcc95a9fa3d456e574d3e728b74858fa7987414e8d6245c75c2af45e7f",
+      "downloadedAt": "2026-10-08T13:19:19.920Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 203597
+    },
+    "0444_w23_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_ms_23.pdf",
+      "bytes": 280937,
+      "sha256": "f62b9d4ea4a3f218c9e63c2966f2e743f0a530102d717d9b161e847dedba090a",
+      "downloadedAt": "2026-10-08T13:19:22.156Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 337172
+    },
+    "0444_w23_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_ms_43.pdf",
+      "bytes": 361260,
+      "sha256": "62b786ca5230c8b2999c6327aa418006e6cc8ec31ab19752d044fb8c6101a6d1",
+      "downloadedAt": "2026-10-08T13:19:24.367Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 409315
+    },
+    "0444_w23_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_qp_23.pdf",
+      "bytes": 1033055,
+      "sha256": "cdab5513a553f3f26a6653d399d5573fe0769677482e8e85cdce9eb0d8d7fbbe",
+      "downloadedAt": "2026-10-08T13:19:26.879Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1063570
+    },
+    "0444_w23_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w23_qp_43.pdf",
+      "bytes": 1279591,
+      "sha256": "fa0fded7c82655ba7b76087842922167a3340780e2768273c680aaa94fd8e9d2",
+      "downloadedAt": "2026-10-08T13:19:28.998Z",
+      "savedAs": "2023 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1291757
+    },
+    "0444_s23_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_er.pdf",
+      "bytes": 1306511,
+      "sha256": "81220db316f05835427d8cd3c1e2c10e64914b2da7df37c677aaa90deef815f0",
+      "downloadedAt": "2026-10-08T13:19:34.901Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1369397
+    },
+    "0444_s23_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_gt.pdf",
+      "bytes": 130083,
+      "sha256": "bcac2707fed419b3ec29a5fbc54056d17eef7ac7559ba231771554843bf87eca",
+      "downloadedAt": "2026-10-08T13:19:37.321Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 202291
+    },
+    "0444_s23_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_ms_21.pdf",
+      "bytes": 294362,
+      "sha256": "e0699ed13e2552ad4cedfe1731f4076f9cd81ac90cb386a989fb91336a7f6c80",
+      "downloadedAt": "2026-10-08T13:19:39.315Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 363279
+    },
+    "0444_s23_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_ms_41.pdf",
+      "bytes": 348729,
+      "sha256": "c70ca8fdbb723c897885ca584ab94547e07cedd050cc1909ac3ba8f9c23fba48",
+      "downloadedAt": "2026-10-08T13:19:41.337Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 416968
+    },
+    "0444_s23_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_qp_21.pdf",
+      "bytes": 1244082,
+      "sha256": "ecf755b5ff692fffd83b3210a9914922fdce61caf1d80a1d8fd38061c7987af0",
+      "downloadedAt": "2026-10-08T13:19:43.427Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1276626
+    },
+    "0444_s23_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s23_qp_41.pdf",
+      "bytes": 1224418,
+      "sha256": "39b6cdbb9a23da669d7e037adf409c5b19a6a74ddee047aa943221d2bbfbbccb",
+      "downloadedAt": "2026-10-08T13:19:46.332Z",
+      "savedAs": "2023 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1249420
+    },
+    "0444_w22_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_er.pdf",
+      "bytes": 368617,
+      "sha256": "f9556ee8201afa9914f4107a7c315626e4ee3d55d7f77c76a51637eab6f5a4e3",
+      "downloadedAt": "2026-10-08T13:20:06.066Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 437419
+    },
+    "0444_w22_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_gt.pdf",
+      "bytes": 130211,
+      "sha256": "67ed4dbf84583f023af5ed41f7678b63632c021b7482db0702daa5fa802e4ef9",
+      "downloadedAt": "2026-10-08T13:20:08.090Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 202431
+    },
+    "0444_w22_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_ms_23.pdf",
+      "bytes": 268839,
+      "sha256": "e912ed118dafca7a5af544b3e51289356efd5e5560986e15299540ff74b48996",
+      "downloadedAt": "2026-10-08T13:20:10.098Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 324875
+    },
+    "0444_w22_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_ms_43.pdf",
+      "bytes": 413005,
+      "sha256": "4ff785d5353ab3f1abc7fb234e571ca62b4ee8f3e252345ee9cf9b996ccf6a23",
+      "downloadedAt": "2026-10-08T13:20:12.306Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 458896
+    },
+    "0444_w22_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_qp_23.pdf",
+      "bytes": 1322991,
+      "sha256": "e237959d81532cb17db948e8e4599150be04fbe9b74cd7ce9fd4a5d384f2bb65",
+      "downloadedAt": "2026-10-08T13:20:14.901Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1355006
+    },
+    "0444_w22_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w22_qp_43.pdf",
+      "bytes": 1549150,
+      "sha256": "8598299ecaad79cb7396ee6379ef7834b71209a6cde33dc7a128e2f6e3ac9bc8",
+      "downloadedAt": "2026-10-08T13:20:17.201Z",
+      "savedAs": "2022 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1559379
+    },
+    "2021-Algebra-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Algebra-IGCSE-0444.pdf",
+      "bytes": 505615,
+      "sha256": "f71263727a02ca40983ffd036c79ce9c51b485a4f9023a684086aba91efb68b1",
+      "downloadedAt": "2026-10-08T13:20:40.752Z",
+      "savedAs": "2021-Algebra-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 591459
+    },
+    "2021-Coordinate-geometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Coordinate-geometry-IGCSE-0444.pdf",
+      "bytes": 282869,
+      "sha256": "89bfd1e5f6be67fb0ecf155ca07cd717018e7a50e165e0ccc9360bf7b769910c",
+      "downloadedAt": "2026-10-08T13:20:42.753Z",
+      "savedAs": "2021-Coordinate-geometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 357144
+    },
+    "2021-Functions-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Functions-IGCSE-0444.pdf",
+      "bytes": 363798,
+      "sha256": "81b37cf94caa1ba6471985f73b82c9e176d48c94bc9756fff32ebe2680a577cf",
+      "downloadedAt": "2026-10-08T13:20:44.692Z",
+      "savedAs": "2021-Functions-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 440767
+    },
+    "2021-Geometrical-Mensuration-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "bytes": 426568,
+      "sha256": "e388e7736237b0bb9dd30867c5fdac26f494fc4e5f02bb9a34e6d5a281941cce",
+      "downloadedAt": "2026-10-08T13:20:46.711Z",
+      "savedAs": "2021-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 503173
+    },
+    "2021-Geometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Geometry-IGCSE-0444.pdf",
+      "bytes": 409446,
+      "sha256": "1305803e1886863fa78fc7a9e5c1fcff169bba730d5bfd0953d22b1a8874c943",
+      "downloadedAt": "2026-10-08T13:20:48.704Z",
+      "savedAs": "2021-Geometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 488681
+    },
+    "2021-Numbers-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Numbers-IGCSE-0444.pdf",
+      "bytes": 541255,
+      "sha256": "856c9d4d399e35a917dca26b30e16ad20995f182dc2d9ab95656fb098c5121b6",
+      "downloadedAt": "2026-10-08T13:20:50.687Z",
+      "savedAs": "2021-Numbers-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 635657
+    },
+    "2021-Probability-and-Statistics-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Probability-and-Statistics-IGCSE-0444.pdf",
+      "bytes": 514469,
+      "sha256": "5ed2e85766967559d4b829043419b5c49a057632a48bcfd07c68b6570ec825fc",
+      "downloadedAt": "2026-10-08T13:20:52.748Z",
+      "savedAs": "2021-Probability-and-Statistics-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 594691
+    },
+    "2021-Transformations-and-Vectors-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "bytes": 356612,
+      "sha256": "c87580523e62cc2c71ec7631c032ac7c968c2bc34a2e8c46848774e73415420a",
+      "downloadedAt": "2026-10-08T13:20:54.734Z",
+      "savedAs": "2021-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 432399
+    },
+    "2021-Trigonometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Trigonometry-IGCSE-0444.pdf",
+      "bytes": 333943,
+      "sha256": "5eee346d7a9b9e53d50ec2c2e20bde1e0a45e8c7a7383176fd0816409c9805f6",
+      "downloadedAt": "2026-10-08T13:20:56.672Z",
+      "savedAs": "2021-Trigonometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 409428
+    },
+    "2020-Algebra-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Algebra-IGCSE-0444.pdf",
+      "bytes": 806981,
+      "sha256": "1e0f1308eff107a78af80e8d62207ec2c14aafedaef23329b2fb81449f3a9286",
+      "downloadedAt": "2026-10-08T13:21:16.500Z",
+      "savedAs": "2020-Algebra-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 907006
+    },
+    "2020-Coordinate-geometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Coordinate-geometry-IGCSE-0444.pdf",
+      "bytes": 330102,
+      "sha256": "4ce9876c6f0a77d5bb6e1acb6118c53d2b062a617b5a7033115b8ef8a342772a",
+      "downloadedAt": "2026-10-08T13:21:18.513Z",
+      "savedAs": "2020-Coordinate-geometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 406055
+    },
+    "2020-Functions-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Functions-IGCSE-0444.pdf",
+      "bytes": 384067,
+      "sha256": "f043bdaf9a9b8cdaf30134abad3e69e2d7a233c8dd31d2147c214ef51b4a78d0",
+      "downloadedAt": "2026-10-08T13:21:20.455Z",
+      "savedAs": "2020-Functions-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 462851
+    },
+    "2020-Geometrical-Mensuration-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "bytes": 600751,
+      "sha256": "acbaffd306269fe5d9bb18d23353b4c0277cfdc11d0a46dcbd3b0d56dceb2733",
+      "downloadedAt": "2026-10-08T13:21:22.422Z",
+      "savedAs": "2020-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 686177
+    },
+    "2020-Geometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Geometry-IGCSE-0444.pdf",
+      "bytes": 697872,
+      "sha256": "8db6222249172c05e9afb0f9d7329d020a45f55c6f49aca357288f071e1cbff2",
+      "downloadedAt": "2026-10-08T13:21:24.406Z",
+      "savedAs": "2020-Geometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 786545
+    },
+    "2020-Numbers-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Numbers-IGCSE-0444.pdf",
+      "bytes": 985998,
+      "sha256": "b2647881f833226bf7417cbc54e22587c1a91cf7158a49e321da0d99721787d7",
+      "downloadedAt": "2026-10-08T13:21:26.498Z",
+      "savedAs": "2020-Numbers-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 1097532
+    },
+    "2020-Probability-and-Statistics-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Probability-and-Statistics-IGCSE-0444.pdf",
+      "bytes": 911722,
+      "sha256": "baedd802696e52bbaaebed654796b11c2ea3094d4dc6884c8b60d474e2813ad9",
+      "downloadedAt": "2026-10-08T13:21:28.606Z",
+      "savedAs": "2020-Probability-and-Statistics-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 1001566
+    },
+    "2020-Transformations-and-Vectors-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "bytes": 526878,
+      "sha256": "8153e081ceaab9b8f0e1343799a57f11e38a52b92c5af6892d7324527c2570e6",
+      "downloadedAt": "2026-10-08T13:21:30.669Z",
+      "savedAs": "2020-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 604806
+    },
+    "2020-Trigonometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Trigonometry-IGCSE-0444.pdf",
+      "bytes": 366520,
+      "sha256": "f90987ccd9e5d95a62ec5f86a05333e3338548bb13230e62ab882b74719acfc6",
+      "downloadedAt": "2026-10-08T13:21:32.644Z",
+      "savedAs": "2020-Trigonometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 443437
+    },
+    "2022N-Algebra-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Algebra-IGCSE-Math-0444.pdf",
+      "bytes": 161616,
+      "sha256": "7e8922ec170ce8ddf89772b21c8fc343548823aab6c97b946a6f9ff28214a8b0",
+      "downloadedAt": "2026-10-08T13:21:52.550Z",
+      "savedAs": "2022N-Algebra-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 237776
+    },
+    "2022N-Coordinate-geometry-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Coordinate-geometry-IGCSE-Math-0444.pdf",
+      "bytes": 119969,
+      "sha256": "91362aa6d58647d468e5817a4ea02ac16521182a65fce5234083249cda2b7966",
+      "downloadedAt": "2026-10-08T13:21:54.499Z",
+      "savedAs": "2022N-Coordinate-geometry-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 193236
+    },
+    "2022N-Functions-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Functions-IGCSE-Math-0444.pdf",
+      "bytes": 234352,
+      "sha256": "caa01bcd1b0b6ee7355781a41f7492649baae2ec109dba628f7ce1193fda5ad3",
+      "downloadedAt": "2026-10-08T13:21:56.443Z",
+      "savedAs": "2022N-Functions-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 309439
+    },
+    "2022N-Geometrical-Mensuration-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Geometrical-Mensuration-IGCSE-Math-0444.pdf",
+      "bytes": 249781,
+      "sha256": "08ca481dbab4d0c685f873a6eaa74fd539c9dd83a72f18b4c1ed84b86ccc8ee3",
+      "downloadedAt": "2026-10-08T13:21:58.380Z",
+      "savedAs": "2022N-Geometrical-Mensuration-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 326310
+    },
+    "2022N-Geometry-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Geometry-IGCSE-Math-0444.pdf",
+      "bytes": 173335,
+      "sha256": "bb43d18bc4b78269f248ff4b2b106c8c780248eba7c299887e2425a0c72b2582",
+      "downloadedAt": "2026-10-08T13:22:00.324Z",
+      "savedAs": "2022N-Geometry-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 246774
+    },
+    "2022N-Numbers-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Numbers-IGCSE-Math-0444.pdf",
+      "bytes": 297440,
+      "sha256": "0c3a52371f01386f632fb33720d94645ad8a1c8354aa541eed3c72b8064f98c6",
+      "downloadedAt": "2026-10-08T13:22:02.257Z",
+      "savedAs": "2022N-Numbers-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 379693
+    },
+    "2022N-Probability-and-Statistics-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Probability-and-Statistics-IGCSE-Math-0444.pdf",
+      "bytes": 358585,
+      "sha256": "084535c14de13fa9c618c724d7c87501f64c46e12b73c2a4ad34aa65d832d72e",
+      "downloadedAt": "2026-10-08T13:22:04.293Z",
+      "savedAs": "2022N-Probability-and-Statistics-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 435814
+    },
+    "2022N-Transformations-and-Vectors-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Transformations-and-Vectors-IGCSE-Math-0444.pdf",
+      "bytes": 145450,
+      "sha256": "86033405107e450dcb2b6dddcdeecbe07d0fad27455b811eb70018924c5af8df",
+      "downloadedAt": "2026-10-08T13:22:06.270Z",
+      "savedAs": "2022N-Transformations-and-Vectors-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 219053
+    },
+    "2023-Algebra-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Algebra-IGCSE-Math-0444.pdf",
+      "bytes": 233792,
+      "sha256": "6d901136b44c6b6c07c45e73ce724207301679d877bcb5e5e5eee7c470180546",
+      "downloadedAt": "2026-10-08T13:22:12.282Z",
+      "savedAs": "2023-Algebra-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 309817
+    },
+    "2023-Coordinate-geometry-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Coordinate-geometry-IGCSE-Math-0444.pdf",
+      "bytes": 142912,
+      "sha256": "0bf2f314216e8147f265e5a07f24df7d1f39c542c8fafd9dea74d7d4441dfee4",
+      "downloadedAt": "2026-10-08T13:22:14.196Z",
+      "savedAs": "2023-Coordinate-geometry-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 216109
+    },
+    "2023-Functions-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Functions-IGCSE-Math-0444.pdf",
+      "bytes": 113291,
+      "sha256": "818a190c58603b3696ccaa9df4b94e76f0dcaf1ef707b0af102b2efd4165a508",
+      "downloadedAt": "2026-10-08T13:22:16.121Z",
+      "savedAs": "2023-Functions-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 186535
+    },
+    "2023-Geometrical-Mensuration-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Geometrical-Mensuration-IGCSE-Math-0444.pdf",
+      "bytes": 327176,
+      "sha256": "2f7618a12b4a26371df65d279bd70955757c7ca101c54a3128403b6b38abc5a4",
+      "downloadedAt": "2026-10-08T13:22:18.159Z",
+      "savedAs": "2023-Geometrical-Mensuration-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 404654
+    },
+    "2023-Geometry-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Geometry-IGCSE-Math-0444.pdf",
+      "bytes": 166603,
+      "sha256": "0df27c38f7691cb714356b3b3ec439974e3c8aa4b46ee062047f3766485e37a2",
+      "downloadedAt": "2026-10-08T13:22:20.100Z",
+      "savedAs": "2023-Geometry-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 241150
+    },
+    "2023-Numbers-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Numbers-IGCSE-Math-0444.pdf",
+      "bytes": 268412,
+      "sha256": "d8bcb6be72be4bfee132fa003b0f71cdb184d0e26f9fccff3a48771695a633d7",
+      "downloadedAt": "2026-10-08T13:22:22.035Z",
+      "savedAs": "2023-Numbers-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 348541
+    },
+    "2023-Probability-and-Statistics-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Probability-and-Statistics-IGCSE-Math-0444.pdf",
+      "bytes": 346408,
+      "sha256": "664fba57ac7e750545c66cd6a081d0f79a99b62cd993edb27384849d179bcf5e",
+      "downloadedAt": "2026-10-08T13:22:24.034Z",
+      "savedAs": "2023-Probability-and-Statistics-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 422406
+    },
+    "2023-Transformations-and-Vectors-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Transformations-and-Vectors-IGCSE-Math-0444.pdf",
+      "bytes": 149543,
+      "sha256": "34d42ee019bb4fde4aa6aaabfb1b42abaaba26e72f348516f0c4e59c6f74b545",
+      "downloadedAt": "2026-10-08T13:22:25.971Z",
+      "savedAs": "2023-Transformations-and-Vectors-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 223055
+    },
+    "2023-Trigonometry-IGCSE-Math-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023-Trigonometry-IGCSE-Math-0444.pdf",
+      "bytes": 130768,
+      "sha256": "8923bdec4f12c27ba3555d30363976270e4c203ad3761d4de9734fb85e8cd021",
+      "downloadedAt": "2026-10-08T13:22:27.913Z",
+      "savedAs": "2023-Trigonometry-IGCSE-Math-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 204237
+    },
+    "2022N-Algebra-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Algebra-IGCSE-0444-Math.pdf",
+      "bytes": 305207,
+      "sha256": "0e3d1af7e7c107cce1dea0e98d2b29cedcdc38085e1cd3714494394efe364fb6",
+      "downloadedAt": "2026-10-08T13:22:33.459Z",
+      "savedAs": "2022N-Algebra-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 381380
+    },
+    "2022N-Coordinate-geometry-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Coordinate-geometry-IGCSE-0444-Math.pdf",
+      "bytes": 247420,
+      "sha256": "b040d001f3278c5eb19d0aeb0ce79739f7f717e48b7f87744b423b8dd8897f83",
+      "downloadedAt": "2026-10-08T13:22:35.392Z",
+      "savedAs": "2022N-Coordinate-geometry-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 320265
+    },
+    "2022N-Functions-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Functions-IGCSE-0444-Math.pdf",
+      "bytes": 364160,
+      "sha256": "b62a09c8c3d7104068cdb70d6426b0875676e259aa623c2e46aa93693c763e86",
+      "downloadedAt": "2026-10-08T13:22:37.351Z",
+      "savedAs": "2022N-Functions-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 439688
+    },
+    "2022N-Geometrical-Mensuration-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Geometrical-Mensuration-IGCSE-0444-Math.pdf",
+      "bytes": 289893,
+      "sha256": "c13d75e783c0e4af323784d620eb16fb4ddf732baba3bf7a2e8b8dc49722e110",
+      "downloadedAt": "2026-10-08T13:22:39.321Z",
+      "savedAs": "2022N-Geometrical-Mensuration-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 363678
+    },
+    "2022N-Geometry-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Geometry-IGCSE-0444-Math.pdf",
+      "bytes": 305113,
+      "sha256": "9961f6c2188abe73209b4fabbe1663af9138fbe017b656daf2b848b5ad0f00af",
+      "downloadedAt": "2026-10-08T13:22:41.305Z",
+      "savedAs": "2022N-Geometry-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 380280
+    },
+    "2022N-Numbers-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Numbers-IGCSE-0444-Math.pdf",
+      "bytes": 326017,
+      "sha256": "54d06889fcfb64f2c3ab60f4c2fff39810529569c1b2dd84f118b312a89902c7",
+      "downloadedAt": "2026-10-08T13:22:43.290Z",
+      "savedAs": "2022N-Numbers-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 401753
+    },
+    "2022N-Probability-and-Statistics-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Probability-and-Statistics-IGCSE-0444-Math.pdf",
+      "bytes": 326032,
+      "sha256": "89d0d9a0deae3eb43db9ac248ee20f602af65cfda42fde68d0b89437354d7cf2",
+      "downloadedAt": "2026-10-08T13:22:45.234Z",
+      "savedAs": "2022N-Probability-and-Statistics-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 400780
+    },
+    "2022N-Transformations-and-Vectors-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Transformations-and-Vectors-IGCSE-0444-Math.pdf",
+      "bytes": 311716,
+      "sha256": "21c5b0a40740a10ee6e091fc502429c4059284a9349d01ee047155ea6f9035be",
+      "downloadedAt": "2026-10-08T13:22:47.163Z",
+      "savedAs": "2022N-Transformations-and-Vectors-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 385633
+    },
+    "2022N-Trigonometry-IGCSE-0444-Math.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Trigonometry-IGCSE-0444-Math.pdf",
+      "bytes": 292902,
+      "sha256": "36fe4681ed414796d35612f694b7a927d4164cd9f3b0d34fdcc244123b9dbdc4",
+      "downloadedAt": "2026-10-08T13:22:49.113Z",
+      "savedAs": "2022N-Trigonometry-IGCSE-0444-Math.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 366835
+    },
+    "2022-Algebra-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Algebra-IGCSE-0444.pdf",
+      "bytes": 408162,
+      "sha256": "e8a2f218e82656025548ac854fd55c3d5008312a6e1d01fb8185d097e9382ffb",
+      "downloadedAt": "2026-10-08T13:22:54.637Z",
+      "savedAs": "2022-Algebra-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 486327
+    },
+    "2022-Functions-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Functions-IGCSE-0444.pdf",
+      "bytes": 335932,
+      "sha256": "232e9dfe2360a7febfdc17cd38d69710d00a9b64b9d5333bb74f0d96820ce5b5",
+      "downloadedAt": "2026-10-08T13:22:56.605Z",
+      "savedAs": "2022-Functions-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 410885
+    },
+    "2022-Geometrical-Mensuration-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "bytes": 309491,
+      "sha256": "7de16aaca95285f28bb8644cfae8deb1e5c88764ed6d696d68760a62c57d0bb7",
+      "downloadedAt": "2026-10-08T13:22:58.631Z",
+      "savedAs": "2022-Geometrical-Mensuration-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 382760
+    },
+    "2022-Geometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Geometry-IGCSE-0444.pdf",
+      "bytes": 247744,
+      "sha256": "ccf1689a1904f46d05425faeb62229d0455ecd46501a204578b7e16eac290d07",
+      "downloadedAt": "2026-10-08T13:23:00.558Z",
+      "savedAs": "2022-Geometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 320356
+    },
+    "2022-Numbers-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Numbers-IGCSE-0444.pdf",
+      "bytes": 376984,
+      "sha256": "79f43f42beb594ed4b9bce360c76535d32b46ef532535a707af5168084d73657",
+      "downloadedAt": "2026-10-08T13:23:02.528Z",
+      "savedAs": "2022-Numbers-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 454757
+    },
+    "2022-Probability-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Probability-IGCSE-0444.pdf",
+      "bytes": 363297,
+      "sha256": "01b8d037dbf903de9d7484ad37a5c0247c00ee0e0ded3e19684795d2ab73e120",
+      "downloadedAt": "2026-10-08T13:23:04.616Z",
+      "savedAs": "2022-Probability-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 437954
+    },
+    "2022-Transformations-and-Vectors-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "bytes": 265692,
+      "sha256": "99bbe1f9c9ef58cbdb9b00e62990bf715de1e03d762ad8cfbf9ee6627c1aa421",
+      "downloadedAt": "2026-10-08T13:23:06.543Z",
+      "savedAs": "2022-Transformations-and-Vectors-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 339346
+    },
+    "2022-Trigonometry-IGCSE-0444.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022-Trigonometry-IGCSE-0444.pdf",
+      "bytes": 324357,
+      "sha256": "182a71211682ac3fc9c6f39e543ffafb18b2dd60d6e3756eb6a68422d16d36e4",
+      "downloadedAt": "2026-10-08T13:23:08.549Z",
+      "savedAs": "2022-Trigonometry-IGCSE-0444.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 399126
+    },
+    "0444_s20_qp_31_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_qp_31_solved.pdf",
+      "bytes": 5057221,
+      "sha256": "74cf693b0cfcc074b9ef1790a5c6d73ddc66845608b97d420591e274bf914d24",
+      "downloadedAt": "2026-10-08T13:23:15.955Z",
+      "savedAs": "0444_s20_qp_31_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 5138014
+    },
+    "0444_s19_qp_41_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_qp_41_solved.pdf",
+      "bytes": 5308762,
+      "sha256": "4367f3b05a6659147cc1838704b5f296905cb76bc9870e115a8e8079fae95e5a",
+      "downloadedAt": "2026-10-08T13:23:19.687Z",
+      "savedAs": "0444_s19_qp_41_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 5388343
+    },
+    "0444_s18_qp_31_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_qp_31_solved.pdf",
+      "bytes": 5277394,
+      "sha256": "4f629209f8ee84076d18830fc2f893ec3c5253a7730a07dd23fa14ef53f9822f",
+      "downloadedAt": "2026-10-08T13:23:22.928Z",
+      "savedAs": "0444_s18_qp_31_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 5355924
+    },
+    "2023N-Algebra-IGCSE-0444-Math-US_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023N-Algebra-IGCSE-0444-Math-US_solved.pdf",
+      "bytes": 465728,
+      "sha256": "d7bc2c9543c25f0a2db30af052bfe7c9002fee64cc270c412e03922981c0b855",
+      "downloadedAt": "2026-10-08T13:23:29.413Z",
+      "savedAs": "2023N-Algebra-IGCSE-0444-Math-US_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 540764
+    },
+    "2023N-Probability-and-Statistics-IGCSE-0444-Math-US_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023N-Probability-and-Statistics-IGCSE-0444-Math-US_solved.pdf",
+      "bytes": 767286,
+      "sha256": "7b1aa590a7482ad63efa4f1d46c1dd45a1cc4e946e01c0ccd198ed7437039021",
+      "downloadedAt": "2026-10-08T13:23:32.104Z",
+      "savedAs": "2023N-Probability-and-Statistics-IGCSE-0444-Math-US_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 844644
+    },
+    "2022N-Functions-IGCSE-0444_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2022N-Functions-IGCSE-0444_solved.pdf",
+      "bytes": 911973,
+      "sha256": "44b2070774c48fbf97c5648c3cee8c37f676bb45139e7ec11e809f35f69092fa",
+      "downloadedAt": "2026-10-08T13:23:38.167Z",
+      "savedAs": "2022N-Functions-IGCSE-0444_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 987450
+    },
+    "2023J-Trigonometry-IGCSE-0444-Math-US_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2023J-Trigonometry-IGCSE-0444-Math-US_solved.pdf",
+      "bytes": 195456,
+      "sha256": "72afe7c46fbbfb218e9e8cb03b2b364fadcb92f28df6a295f8e2c30d97482837",
+      "downloadedAt": "2026-10-08T13:23:40.365Z",
+      "savedAs": "2023J-Trigonometry-IGCSE-0444-Math-US_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 268913
+    },
+    "2021-Numbers-IGCSE-0444_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2021-Numbers-IGCSE-0444_solved.pdf",
+      "bytes": 1605952,
+      "sha256": "ccae8b10ad8456d0771b77c153482eda1c36acef2b8f532819a52311d20d1071",
+      "downloadedAt": "2026-10-08T13:24:00.602Z",
+      "savedAs": "2021-Numbers-IGCSE-0444_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 1689233
+    },
+    "2020-Algebra-IGCSE-0444_solved.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/2020-Algebra-IGCSE-0444_solved.pdf",
+      "bytes": 2887686,
+      "sha256": "1e00b78c06252c63a4fa71d08d3d94e451398fbb84521f1872c058f0ab12df8f",
+      "downloadedAt": "2026-10-08T13:24:07.172Z",
+      "savedAs": "2020-Algebra-IGCSE-0444_solved.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 2977865
+    },
+    "0444_s22_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_er.pdf",
+      "bytes": 1340318,
+      "sha256": "5047db7da5b74faac54f067f4f754dd1b7ff1cf1fb8b3146bb29630bcc6d9cd1",
+      "downloadedAt": "2026-10-08T13:24:27.492Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1405158
+    },
+    "0444_s22_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_gt.pdf",
+      "bytes": 125988,
+      "sha256": "f50d615d65dd4fe363d17f823ebcaded5435a5cfb4495449f9c51dc273c1d2ac",
+      "downloadedAt": "2026-10-08T13:24:30.271Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 199641
+    },
+    "0444_s22_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_ms_21.pdf",
+      "bytes": 327990,
+      "sha256": "e394e3766b226d4fc928afaf2e78c489170c6bbcccc6a587302f912245fe384d",
+      "downloadedAt": "2026-10-08T13:24:32.450Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 401732
+    },
+    "0444_s22_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_ms_41.pdf",
+      "bytes": 308396,
+      "sha256": "e964ac4270dee20ad939e771f970c85101e714ba6e1a42cb0c09ae1d0013234d",
+      "downloadedAt": "2026-10-08T13:24:34.551Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 382846
+    },
+    "0444_s22_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_qp_21.pdf",
+      "bytes": 2217120,
+      "sha256": "9872fb3ad28d0ea3ae220349130c50f260c408c94813e412dbe39829d56cd0f9",
+      "downloadedAt": "2026-10-08T13:24:36.946Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2243297
+    },
+    "0444_s22_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s22_qp_41.pdf",
+      "bytes": 1474994,
+      "sha256": "03cfda3a3db231babef3c4e05d79961052660fe7b6686d23665a13a1741de921",
+      "downloadedAt": "2026-10-08T13:24:39.349Z",
+      "savedAs": "2022 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1492482
+    },
+    "0444_w21_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_er.pdf",
+      "bytes": 1029073,
+      "sha256": "e13dfcf968366a73e83840d76f0bea5b69291b3dad17dab50aac3745764ad800",
+      "downloadedAt": "2026-10-08T13:24:45.760Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1103840
+    },
+    "0444_w21_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_gt.pdf",
+      "bytes": 130513,
+      "sha256": "1586255461d5fe6b433a3b98b1fffce2639fb72d1450599629980d186cc1a9a3",
+      "downloadedAt": "2026-10-08T13:24:48.163Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 202730
+    },
+    "0444_w21_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_ms_23.pdf",
+      "bytes": 283020,
+      "sha256": "5de51f236449e5fd27771fe61f748bc025778116cf2c3d5a1a3932a59c4b3cf6",
+      "downloadedAt": "2026-10-08T13:24:50.401Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 351492
+    },
+    "0444_w21_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_ms_43.pdf",
+      "bytes": 320799,
+      "sha256": "c39d772061c56931561b5bf4b839b6b6dc804feb18cbaedac85d4b92bed104a9",
+      "downloadedAt": "2026-10-08T13:24:52.651Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 389057
+    },
+    "0444_w21_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_qp_23.pdf",
+      "bytes": 1072567,
+      "sha256": "ed72f9bfcf77edec68155580f4d12f42e9e980bc945c625a8b8874792cfc1857",
+      "downloadedAt": "2026-10-08T13:24:55.072Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1104988
+    },
+    "0444_w21_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w21_qp_43.pdf",
+      "bytes": 2680574,
+      "sha256": "1ecb01cdf94ba2765d8042514def2ebf1d018e72aaba603a86190c6aabb76f28",
+      "downloadedAt": "2026-10-08T13:24:57.786Z",
+      "savedAs": "2021 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2698884
+    },
+    "0444_s21_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_er.pdf",
+      "bytes": 1432114,
+      "sha256": "98d6dd3777efbeaf5f963f6d13a65f746270fbf95d11da0979e4ad6a9d45361f",
+      "downloadedAt": "2026-10-08T13:25:17.994Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1507501
+    },
+    "0444_s21_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_gt.pdf",
+      "bytes": 129483,
+      "sha256": "e966f8374c2206b755929abb3a99b4555969c7d83de49b992539152c0b4e6808",
+      "downloadedAt": "2026-10-08T13:25:20.817Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 201702
+    },
+    "0444_s21_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_ms_21.pdf",
+      "bytes": 284413,
+      "sha256": "e215813e5e35d9c6e24b2d36f3fc6d68cac179ba06d27eac0731f7f56f08f74f",
+      "downloadedAt": "2026-10-08T13:25:22.962Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 352820
+    },
+    "0444_s21_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_ms_41.pdf",
+      "bytes": 310317,
+      "sha256": "71920ec38a8081f1ab1a7d00c68f3d52ba476563e06c87aee26a88eb0dc22f7d",
+      "downloadedAt": "2026-10-08T13:25:25.016Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 378403
+    },
+    "0444_s21_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_qp_21.pdf",
+      "bytes": 1307601,
+      "sha256": "1ca5ab0218a6e6e282b47160d5d60fc41c9d5f3adf837c708239adfe7294a432",
+      "downloadedAt": "2026-10-08T13:25:27.179Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1343232
+    },
+    "0444_s21_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s21_qp_41.pdf",
+      "bytes": 1514566,
+      "sha256": "77887bcbcfbc8d3082ed146923451a01beba7f626cecf9ca03cc8cff4e71a964",
+      "downloadedAt": "2026-10-08T13:25:29.771Z",
+      "savedAs": "2021 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1538758
+    },
+    "0444_w20_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_er.pdf",
+      "bytes": 767448,
+      "sha256": "ea2741d307c48e98c6057cf23af19aca3516e31ed27b80cf81a6ec5d79e795f1",
+      "downloadedAt": "2026-10-08T13:25:36.073Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 844043
+    },
+    "0444_w20_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_gt.pdf",
+      "bytes": 132865,
+      "sha256": "6eebb26605f372c4bf2abc00fa9d7e9bd943360599647552ffea33d18563aac9",
+      "downloadedAt": "2026-10-08T13:25:38.761Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 205151
+    },
+    "0444_w20_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_ms_13.pdf",
+      "bytes": 223327,
+      "sha256": "9771e41cd4feddf16e829c4f9366696b8dd53545c3ef2319e9335be5c43d6efa",
+      "downloadedAt": "2026-10-08T13:25:40.959Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 292843
+    },
+    "0444_w20_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_ms_23.pdf",
+      "bytes": 249491,
+      "sha256": "514fc112a987297229f90db3c814091a99501d22d713ed28c51cd6fb152b2eac",
+      "downloadedAt": "2026-10-08T13:25:43.067Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 318026
+    },
+    "0444_w20_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_ms_33.pdf",
+      "bytes": 257510,
+      "sha256": "11999dbbb81c489ce59d3cacea496aeeeeb4cb9c30b1d2b2344e04da82eff865",
+      "downloadedAt": "2026-10-08T13:25:45.196Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 325839
+    },
+    "0444_w20_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_ms_43.pdf",
+      "bytes": 291530,
+      "sha256": "6a0665a689f4070feb8d7868179ded2caa70317bb4f81112c799f8c2b520c305",
+      "downloadedAt": "2026-10-08T13:25:47.420Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 359545
+    },
+    "0444_w20_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_qp_13.pdf",
+      "bytes": 1316312,
+      "sha256": "cc0a06d738dc3693151b23f921f7bd55d96e055947dd24e6c3ad6c8dd997387c",
+      "downloadedAt": "2026-10-08T13:25:49.817Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1361042
+    },
+    "0444_w20_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_qp_23.pdf",
+      "bytes": 1920528,
+      "sha256": "6546347d2f2041c8ea537000894a601c1cecd148fbedb63ec8621e1c59efca57",
+      "downloadedAt": "2026-10-08T13:25:52.291Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1948659
+    },
+    "0444_w20_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_qp_33.pdf",
+      "bytes": 1503277,
+      "sha256": "5e4f14d1aea4cb15f554f8f4fcacd3944f3b4996d05c16406af0bcdcc48e223c",
+      "downloadedAt": "2026-10-08T13:25:54.782Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1535809
+    },
+    "0444_w20_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w20_qp_43.pdf",
+      "bytes": 1461654,
+      "sha256": "66150f8ff76edc32bd0c6103a8b94a425e40cb0bef4d356781fed253b1723a95",
+      "downloadedAt": "2026-10-08T13:25:57.180Z",
+      "savedAs": "2020 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1478495
+    },
+    "0444_s20_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_ms_11.pdf",
+      "bytes": 272130,
+      "sha256": "90c441a17f99fb1eb551d931437c75d1248a114f81c178ee67b7a90d876aee1f",
+      "downloadedAt": "2026-10-08T13:26:17.205Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 339348
+    },
+    "0444_s20_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_ms_21.pdf",
+      "bytes": 291611,
+      "sha256": "64c3bc50cd123335fc83f0d2c1ebeef734472d6cc1cdf3a0a4fec884b1d25ff2",
+      "downloadedAt": "2026-10-08T13:26:19.310Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 358428
+    },
+    "0444_s20_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_ms_31.pdf",
+      "bytes": 281277,
+      "sha256": "0002d75a8ffc681187419061ed74396c1a696662a970de35abfddf059ef1cf12",
+      "downloadedAt": "2026-10-08T13:26:21.433Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 349014
+    },
+    "0444_s20_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_ms_41.pdf",
+      "bytes": 314758,
+      "sha256": "4e531cf4d03778c8e27ff11351e6b7d1cb0fe711557d2ba37e923d869018090f",
+      "downloadedAt": "2026-10-08T13:26:23.688Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 382203
+    },
+    "0444_s20_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_qp_11.pdf",
+      "bytes": 2057245,
+      "sha256": "6706a69e100cfe1bdf511d0d76aa76c3178b665cd9dff7186ac082c85b0ae2e4",
+      "downloadedAt": "2026-10-08T13:26:26.130Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2111685
+    },
+    "0444_s20_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_qp_21.pdf",
+      "bytes": 1456447,
+      "sha256": "3d16d8b02e3e2ad3acfe32d2b30da2f2cac86406931b7fff6682e4b09ce8330b",
+      "downloadedAt": "2026-10-08T13:26:28.519Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1482485
+    },
+    "0444_s20_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_qp_31.pdf",
+      "bytes": 5057221,
+      "sha256": "74cf693b0cfcc074b9ef1790a5c6d73ddc66845608b97d420591e274bf914d24",
+      "downloadedAt": "2026-10-08T13:26:31.700Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 5138057
+    },
+    "0444_s20_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s20_qp_41.pdf",
+      "bytes": 1463624,
+      "sha256": "fe2a599179b684065a47bec061d044717ba9baf9e4d21f5726f6bf87388d0647",
+      "downloadedAt": "2026-10-08T13:26:34.097Z",
+      "savedAs": "2020 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1483983
+    },
+    "0444_w19_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_er.pdf",
+      "bytes": 971104,
+      "sha256": "c0847c72e6a0f8b55d04865c1a29de327f4269521a04706c3a3070dd97ee7dfa",
+      "downloadedAt": "2026-10-08T13:26:40.442Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1045900
+    },
+    "0444_w19_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_gt.pdf",
+      "bytes": 111457,
+      "sha256": "205763d378eef2ac2b7845bb5ce0b3879a82066abbe1d327c00e75ee1aa0ffd3",
+      "downloadedAt": "2026-10-08T13:26:42.652Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 183017
+    },
+    "0444_w19_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_ms_23.pdf",
+      "bytes": 219334,
+      "sha256": "064a391727e3579450725f5c13206f29a151480f02f3467183a5c0d695dbb180",
+      "downloadedAt": "2026-10-08T13:26:44.716Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 286815
+    },
+    "0444_w19_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_ms_43.pdf",
+      "bytes": 227217,
+      "sha256": "720eca6d3ffe7a24bc9d91d86b005fcc3095b103afc42f136297660c68377cc9",
+      "downloadedAt": "2026-10-08T13:26:46.888Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 294766
+    },
+    "0444_w19_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_qp_23.pdf",
+      "bytes": 540884,
+      "sha256": "63400e9228f9e3de51c63cb8a9c96419ec3c6f6d1b74960c440f6d26cfce4988",
+      "downloadedAt": "2026-10-08T13:26:48.956Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 576500
+    },
+    "0444_w19_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w19_qp_43.pdf",
+      "bytes": 661827,
+      "sha256": "af86f7d516a973b9bfd97636ad33807c7b707c2a10e673503c0f611a8212aae6",
+      "downloadedAt": "2026-10-08T13:26:52.766Z",
+      "savedAs": "2019 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 691244
+    },
+    "0444_s19_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_er.pdf",
+      "bytes": 1704589,
+      "sha256": "0f9c9495e6ee05398212d74cb10ba396407b11e618de1b909e96b4b1f8870e38",
+      "downloadedAt": "2026-10-08T13:27:13.494Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1781992
+    },
+    "0444_s19_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_gt.pdf",
+      "bytes": 113350,
+      "sha256": "eb9af93d1460b5acab66295adff92ad24156923ca40f9ba23cd4e38948575ed1",
+      "downloadedAt": "2026-10-08T13:27:16.129Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 184918
+    },
+    "0444_s19_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_ms_11.pdf",
+      "bytes": 188045,
+      "sha256": "635582cbd12cb3641b94cdc3af566917bd2b85e0ae9432b1bf310e0b025d1e4b",
+      "downloadedAt": "2026-10-08T13:27:18.380Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 256557
+    },
+    "0444_s19_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_ms_21.pdf",
+      "bytes": 196857,
+      "sha256": "9c6da390c0ef89d960809183d15a8820c3e2436b7aca33a9ea5a1375155d3244",
+      "downloadedAt": "2026-10-08T13:27:20.407Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 265083
+    },
+    "0444_s19_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_ms_31.pdf",
+      "bytes": 195773,
+      "sha256": "4a008f5aa599cf3978eb0c27fdca4b92861bfe701783d885cd4ac39da08667a0",
+      "downloadedAt": "2026-10-08T13:27:22.468Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 264292
+    },
+    "0444_s19_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_ms_41.pdf",
+      "bytes": 235298,
+      "sha256": "c76c8b84de8f3a0e458caa8c88a4408375321dc6ddef87d1ea01e5d4d03954de",
+      "downloadedAt": "2026-10-08T13:27:24.588Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 302975
+    },
+    "0444_s19_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_qp_11.pdf",
+      "bytes": 1647371,
+      "sha256": "085710f9f31e360052ae0d51eb22f70b88ed7943d6e5535f244997d5e01ce041",
+      "downloadedAt": "2026-10-08T13:27:26.780Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1709569
+    },
+    "0444_s19_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_qp_21.pdf",
+      "bytes": 1821601,
+      "sha256": "2d73bbcd0d021231b59a39423397a64b85fc18120189a14f6b65ff349bd3f377",
+      "downloadedAt": "2026-10-08T13:27:29.154Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1879995
+    },
+    "0444_s19_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_qp_31.pdf",
+      "bytes": 2621546,
+      "sha256": "164dce954f6ce179bdd07b1a2a52d63d1fb029cd3ede4094fdbd98528b402346",
+      "downloadedAt": "2026-10-08T13:27:31.696Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2665195
+    },
+    "0444_s19_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s19_qp_41.pdf",
+      "bytes": 2558434,
+      "sha256": "34d83690ef976e52a99bc280821e03fdc429dee6614d5873eb6fe03d7d19ef30",
+      "downloadedAt": "2026-10-08T13:27:34.231Z",
+      "savedAs": "2019 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2592377
+    },
+    "0444_w18_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_er.pdf",
+      "bytes": 1340328,
+      "sha256": "206ef075759432bbccc265e232e6a3595bb3eab398bcaecc5f0c764e9a96aa5a",
+      "downloadedAt": "2026-10-08T13:27:54.656Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1417263
+    },
+    "0444_w18_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_gt.pdf",
+      "bytes": 113582,
+      "sha256": "81075c534baf56f37de10a7afe7b7e98050d4c89371f9c0b15f9d12ae9113401",
+      "downloadedAt": "2026-10-08T13:27:57.393Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 185147
+    },
+    "0444_w18_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_ms_13.pdf",
+      "bytes": 208058,
+      "sha256": "38fe80229f92e191ed242e502f2952200c743acb020b0576bc7681b3c1958be9",
+      "downloadedAt": "2026-10-08T13:27:59.577Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 275790
+    },
+    "0444_w18_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_ms_23.pdf",
+      "bytes": 228151,
+      "sha256": "0e7e461e7db9fde4e4eb6eef5879bf7abb08385de039c1ced40472586d086a7a",
+      "downloadedAt": "2026-10-08T13:28:01.825Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 295563
+    },
+    "0444_w18_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_ms_33.pdf",
+      "bytes": 234773,
+      "sha256": "2b62cce2589cfa29bd6022da109c8148586a1cade4de6bbdd6bf5781ef36da4a",
+      "downloadedAt": "2026-10-08T13:28:04.136Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 301572
+    },
+    "0444_w18_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_ms_43.pdf",
+      "bytes": 248750,
+      "sha256": "c4daed9745b96762b3aab843e2e7d2ca4742aa32c6bd991f687c96822f68fcc5",
+      "downloadedAt": "2026-10-08T13:28:06.146Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 315965
+    },
+    "0444_w18_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_qp_13.pdf",
+      "bytes": 1865816,
+      "sha256": "20794583e7b7b6ff3f8a47cd6f716a3dba6efb576d7c95d41324e05523590f85",
+      "downloadedAt": "2026-10-08T13:28:08.409Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1921801
+    },
+    "0444_w18_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_qp_23.pdf",
+      "bytes": 1752477,
+      "sha256": "622b65e2862388faf71becf6f419c758f13577b88e0a48ffefd2ff5c085b7d18",
+      "downloadedAt": "2026-10-08T13:28:10.916Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1810999
+    },
+    "0444_w18_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_qp_33.pdf",
+      "bytes": 2373825,
+      "sha256": "c940e7caab7ccfced290c71991570a53ec997e84033a2142a3cd0f5ec8fdb180",
+      "downloadedAt": "2026-10-08T13:28:13.395Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2429881
+    },
+    "0444_w18_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w18_qp_43.pdf",
+      "bytes": 2846093,
+      "sha256": "2fe581f706bda5fd6dc79074d45257e541d87ee66f3123773775e51d75ab9e27",
+      "downloadedAt": "2026-10-08T13:28:15.901Z",
+      "savedAs": "2018 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2894645
+    },
+    "0444_s18_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_er.pdf",
+      "bytes": 1536463,
+      "sha256": "aaa4d680008ce38e8f522ca82eb2b5f1dfe6de520311f0f41f9a1beed7458bef",
+      "downloadedAt": "2026-10-08T13:28:21.890Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1614601
+    },
+    "0444_s18_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_gt.pdf",
+      "bytes": 113481,
+      "sha256": "3533f9e296406918871a11ca70dedc2f0ebd67951f2b556f4d0712958fc96185",
+      "downloadedAt": "2026-10-08T13:28:25.088Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 185047
+    },
+    "0444_s18_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_ms_11.pdf",
+      "bytes": 197836,
+      "sha256": "da224cba2848c1dbf31118c01e61a13a0b663714f1ee8d9744a2d1408cc799cf",
+      "downloadedAt": "2026-10-08T13:28:27.282Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 266229
+    },
+    "0444_s18_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_ms_21.pdf",
+      "bytes": 222629,
+      "sha256": "164ab6e735a669d58a3c6a72764aae940b90beb660f7f3485928d87317ef1abf",
+      "downloadedAt": "2026-10-08T13:28:29.653Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 290172
+    },
+    "0444_s18_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_ms_31.pdf",
+      "bytes": 206339,
+      "sha256": "689c809cea953b4adf97f5276b613739ec20d7070f9442b54f7ff61408864757",
+      "downloadedAt": "2026-10-08T13:28:31.787Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 274371
+    },
+    "0444_s18_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_ms_41.pdf",
+      "bytes": 222475,
+      "sha256": "c2339b0ef6c3e6a65a61ccfa7aa637b395b2ab9bfdaeef35937c6aeaebeaa8d3",
+      "downloadedAt": "2026-10-08T13:28:34.135Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 290611
+    },
+    "0444_s18_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_qp_11.pdf",
+      "bytes": 1832076,
+      "sha256": "1461bbc3a8b8f26ea692b68b494e614a5c2298dfb34f68a38dcf574e5c554891",
+      "downloadedAt": "2026-10-08T13:28:36.412Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1889525
+    },
+    "0444_s18_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_qp_21.pdf",
+      "bytes": 1984628,
+      "sha256": "80f29a1c5283a6b0977f9040f8a61b4452dc17e8be2d03fd852d146438c3eda0",
+      "downloadedAt": "2026-10-08T13:28:38.895Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2040010
+    },
+    "0444_s18_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_qp_31.pdf",
+      "bytes": 2814687,
+      "sha256": "64f082b11f43fbb3979fd20bed0c3f5aa3e307eb52a73da85e35125f6e1901dd",
+      "downloadedAt": "2026-10-08T13:28:41.373Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2868480
+    },
+    "0444_s18_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s18_qp_41.pdf",
+      "bytes": 2701097,
+      "sha256": "1bca4d73b5c97b57d2bb4eacece42cd2631c89b6491407aa7bee3b58166fde6c",
+      "downloadedAt": "2026-10-08T13:28:44.009Z",
+      "savedAs": "2018 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2752552
+    },
+    "0444_w17_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_er.pdf",
+      "bytes": 642541,
+      "sha256": "a59e5c2ed284be20b4451bc862948ab78089dc589cfa80ad8a18ac84bf7fa7ac",
+      "downloadedAt": "2026-10-08T13:29:03.792Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 717283
+    },
+    "0444_w17_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_gt.pdf",
+      "bytes": 111803,
+      "sha256": "01e43a4d5d7bf76a7411c3ad93a15e8487e48f223f5a19f87a7ce0a48c378f8c",
+      "downloadedAt": "2026-10-08T13:29:06.229Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 183365
+    },
+    "0444_w17_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_ms_23.pdf",
+      "bytes": 211209,
+      "sha256": "8293225d89cd39c270405b5093b7e765ff4c5db57ce1dd1bba2584a75e758190",
+      "downloadedAt": "2026-10-08T13:29:08.435Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 278771
+    },
+    "0444_w17_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_ms_43.pdf",
+      "bytes": 224530,
+      "sha256": "68f6d5320ba8db35a59c3ad7316a0cd8df154c64e7aac17b78a9c8b0d10ed89c",
+      "downloadedAt": "2026-10-08T13:29:10.567Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 292263
+    },
+    "0444_w17_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_qp_23.pdf",
+      "bytes": 1889592,
+      "sha256": "cc34707d9041fc871f748d28f46e8d2b4a288ac25a1d62b9401069646e228a2a",
+      "downloadedAt": "2026-10-08T13:29:13.000Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1946706
+    },
+    "0444_w17_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w17_qp_43.pdf",
+      "bytes": 2313613,
+      "sha256": "fabc430429f227431d45a9963523f44a221d2a9d0cd80f49af6209ac1c234ae7",
+      "downloadedAt": "2026-10-08T13:29:15.582Z",
+      "savedAs": "2017 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2369133
+    },
+    "0444_s17_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_er.pdf",
+      "bytes": 1551457,
+      "sha256": "1a1d6bcd66a54e91a2bc9e093fe2a291479f2f8b3f3e60de8fb30af677abb60c",
+      "downloadedAt": "2026-10-08T13:29:21.923Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1629146
+    },
+    "0444_s17_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_gt.pdf",
+      "bytes": 92303,
+      "sha256": "f91f790f4ec162bd46ccb65410e318cdfa11513b5878b5e0156a9c9c84430cbc",
+      "downloadedAt": "2026-10-08T13:29:25.163Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 163865
+    },
+    "0444_s17_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_ms_11.pdf",
+      "bytes": 252736,
+      "sha256": "035a4a4267044a4b9c90cbbc6830960fad0f48c47810ee8e629b640e25264f53",
+      "downloadedAt": "2026-10-08T13:29:27.244Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 319928
+    },
+    "0444_s17_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_ms_21.pdf",
+      "bytes": 302122,
+      "sha256": "ccc55b04f5f0c6271bc87a9701050ba3a9427d94b4fe4f25b5157b541a14928a",
+      "downloadedAt": "2026-10-08T13:29:29.334Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 366906
+    },
+    "0444_s17_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_ms_31.pdf",
+      "bytes": 274791,
+      "sha256": "16b4c5e14b13db68a6b5d3b003843ccae6242202e746c7f82e5b8ba9e08037b2",
+      "downloadedAt": "2026-10-08T13:29:31.532Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 342398
+    },
+    "0444_s17_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_ms_41.pdf",
+      "bytes": 289969,
+      "sha256": "d23ce63a5ac771cdfd419113519b5f1bcea9a06d24a4b0bb42136e32aa988c19",
+      "downloadedAt": "2026-10-08T13:29:33.773Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 356936
+    },
+    "0444_s17_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_qp_11.pdf",
+      "bytes": 1909840,
+      "sha256": "4574ec3403a44a5771e81873346ee661ea2f141ce1449c1f975c39cb2dd6a1af",
+      "downloadedAt": "2026-10-08T13:29:36.211Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1967274
+    },
+    "0444_s17_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_qp_21.pdf",
+      "bytes": 2296974,
+      "sha256": "d3169e4da288397c4328a21d51065e746364e8c43cd171bfdc3bb4687c043244",
+      "downloadedAt": "2026-10-08T13:29:38.602Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2347299
+    },
+    "0444_s17_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_qp_31.pdf",
+      "bytes": 2709496,
+      "sha256": "81e189a8883a0db70fae155d0b859fe4e97d21a579a44e434adfb0d65c79559f",
+      "downloadedAt": "2026-10-08T13:29:41.296Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2766596
+    },
+    "0444_s17_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s17_qp_41.pdf",
+      "bytes": 2548373,
+      "sha256": "e96a1cd3b452e892ccfda99aec9fe8a3576878a57cc2deae2c81905ec6352cfa",
+      "downloadedAt": "2026-10-08T13:29:43.776Z",
+      "savedAs": "2017 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 2600984
+    },
+    "0444_w16_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_er.pdf",
+      "bytes": 1441562,
+      "sha256": "a628875824be2ce99bb1c21da97016be188b2487d9000c25042515e4a8242146",
+      "downloadedAt": "2026-10-08T13:30:05.011Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1518633
+    },
+    "0444_w16_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_gt.pdf",
+      "bytes": 82734,
+      "sha256": "38f988046b5711bc55b238352e607c0adff4c152263e3928ebf99301823f7576",
+      "downloadedAt": "2026-10-08T13:30:08.137Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 154287
+    },
+    "0444_w16_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_ms_13.pdf",
+      "bytes": 202928,
+      "sha256": "57d0a5e6e7b1e9b59e9ad742f08886f9ab4da1eaf3401d55a181bc6966039c76",
+      "downloadedAt": "2026-10-08T13:30:10.344Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 271889
+    },
+    "0444_w16_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_ms_23.pdf",
+      "bytes": 237729,
+      "sha256": "3e81472dff93c5012341c841d8317e546c29f0f4ba47d53b77fcbde9a9ddbbc7",
+      "downloadedAt": "2026-10-08T13:30:12.555Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 305870
+    },
+    "0444_w16_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_ms_33.pdf",
+      "bytes": 211361,
+      "sha256": "50af03b364e9c3ed702ec672d7d1c17fe77204bd50fa3930e67f80e725042cde",
+      "downloadedAt": "2026-10-08T13:30:14.776Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 280299
+    },
+    "0444_w16_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_ms_43.pdf",
+      "bytes": 262484,
+      "sha256": "715c4956ff24940648673ad7866c74cf545fa6367f2d31edff398be717f50de3",
+      "downloadedAt": "2026-10-08T13:30:17.546Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 330917
+    },
+    "0444_w16_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_qp_13.pdf",
+      "bytes": 881206,
+      "sha256": "bbc7921135b3906777d9c468ba4288019865f130c72acb464cec95ab46063928",
+      "downloadedAt": "2026-10-08T13:30:20.068Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 938804
+    },
+    "0444_w16_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_qp_23.pdf",
+      "bytes": 1078929,
+      "sha256": "14adc2255a948880125799d25a81b0884e028fa2bfa8c9c8e33405780e6d6afe",
+      "downloadedAt": "2026-10-08T13:30:22.424Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1116575
+    },
+    "0444_w16_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_qp_33.pdf",
+      "bytes": 1172565,
+      "sha256": "c2b33427cf1036fe7a267a75a5b5b61b17812130b3767faf81c7cfa9fecf1cdd",
+      "downloadedAt": "2026-10-08T13:30:24.969Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1206245
+    },
+    "0444_w16_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w16_qp_43.pdf",
+      "bytes": 1087418,
+      "sha256": "df887426019e760bdc2407a73e44e2e37b678c456d3b037fbf1c5871305ab149",
+      "downloadedAt": "2026-10-08T13:30:27.369Z",
+      "savedAs": "2016 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1122147
+    },
+    "0444_s16_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_er.pdf",
+      "bytes": 1443482,
+      "sha256": "397f1c35282133c2f44ec96cf6b762645598987de52773ba46de47342fbd0453",
+      "downloadedAt": "2026-10-08T13:30:47.797Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1458389
+    },
+    "0444_s16_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_gt.pdf",
+      "bytes": 27742,
+      "sha256": "a9a87b7e8b59bc51f99dcb489126b8bbd2ffa57a936b7110b1541f0b52437108",
+      "downloadedAt": "2026-10-08T13:30:50.627Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 97465
+    },
+    "0444_s16_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_ms_11.pdf",
+      "bytes": 146611,
+      "sha256": "f097ba5c79d984b18c9ec2410d3e65c65b3ef2efea5480d27d22e16cc7a094e6",
+      "downloadedAt": "2026-10-08T13:30:52.839Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 205019
+    },
+    "0444_s16_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_ms_21.pdf",
+      "bytes": 255340,
+      "sha256": "1295756fe4bdfc1a62d64d2c500c903af73054bd8bacc4202195a3eacdb26086",
+      "downloadedAt": "2026-10-08T13:30:55.010Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 269072
+    },
+    "0444_s16_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_ms_31.pdf",
+      "bytes": 167223,
+      "sha256": "7876a0cd6030b3dc9de17a0581f48c5aa398a380f0def48c6c05f9134af2e6f7",
+      "downloadedAt": "2026-10-08T13:30:57.595Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 220274
+    },
+    "0444_s16_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_ms_41.pdf",
+      "bytes": 379861,
+      "sha256": "663ad2b0c5ad0279a2dcb7d41a614924bbc4fbeafb56093282a0684b5aa6ae09",
+      "downloadedAt": "2026-10-08T13:30:59.829Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 349621
+    },
+    "0444_s16_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_qp_11.pdf",
+      "bytes": 927746,
+      "sha256": "c6f500f669258cbae28872f2c6b5b9c1801d01dd7181e24f3522494d489aa3c1",
+      "downloadedAt": "2026-10-08T13:31:02.273Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 984498
+    },
+    "0444_s16_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_qp_21.pdf",
+      "bytes": 1005762,
+      "sha256": "afecc3a58a0ed44caa01cc58ad2e723ef0e471b1a355e8efb7813c0a8d050aff",
+      "downloadedAt": "2026-10-08T13:31:04.532Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1048857
+    },
+    "0444_s16_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_qp_31.pdf",
+      "bytes": 1040016,
+      "sha256": "116c6f540f5e8fd79d074bc2e84cbb6c3d921e2a3ebcfbc72795e33340ad5134",
+      "downloadedAt": "2026-10-08T13:31:06.770Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1092965
+    },
+    "0444_s16_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s16_qp_41.pdf",
+      "bytes": 1187131,
+      "sha256": "1e167374eab65eb57259e32b62d7ca69fa8a46334393c596be4979fbe3d18955",
+      "downloadedAt": "2026-10-08T13:31:09.210Z",
+      "savedAs": "2016 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1208717
+    },
+    "0444_w15_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_gt.pdf",
+      "bytes": 27675,
+      "sha256": "4bcb036a29c88ba34aaf19d0119fa6969968bfa0cd67e4a9cbdfa87f89d29eca",
+      "downloadedAt": "2026-10-08T13:31:15.211Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 97389
+    },
+    "0444_w15_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_ms_13.pdf",
+      "bytes": 139730,
+      "sha256": "2a3ec5cbf4461d3ffcd05b77045275a96ce06d22cce88d7e4a94aeb41f63397c",
+      "downloadedAt": "2026-10-08T13:31:17.565Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 193931
+    },
+    "0444_w15_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_ms_23.pdf",
+      "bytes": 232989,
+      "sha256": "75cfa47b0af3f0a0bbe7015b5aa38ee9af78df21470d245a058471427340479d",
+      "downloadedAt": "2026-10-08T13:31:19.864Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 253715
+    },
+    "0444_w15_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_ms_33.pdf",
+      "bytes": 149768,
+      "sha256": "3567ea48f54d8b6c54c32e88be4ff1fd6047ee9014995ff67372b2fba851f2e6",
+      "downloadedAt": "2026-10-08T13:31:22.108Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 203998
+    },
+    "0444_w15_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_ms_43.pdf",
+      "bytes": 262678,
+      "sha256": "01a5b8c757a9c2bdac12f492f7ba0d5e9cabe84b56cc20f21c6b42ec78e2955c",
+      "downloadedAt": "2026-10-08T13:31:24.179Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 276581
+    },
+    "0444_w15_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_qp_13.pdf",
+      "bytes": 501858,
+      "sha256": "44c2e6bc514ea13c8a89dac99743229c659a5b4908fa62f5ff730c0bbbdc1be1",
+      "downloadedAt": "2026-10-08T13:31:26.673Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 555852
+    },
+    "0444_w15_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_qp_23.pdf",
+      "bytes": 930761,
+      "sha256": "9189229832951fa9e3ad6246e6f92680e8284d1247c02dd42921f4b3ed2485c6",
+      "downloadedAt": "2026-10-08T13:31:29.081Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 972907
+    },
+    "0444_w15_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_qp_33.pdf",
+      "bytes": 604660,
+      "sha256": "2558a4c844bde5bb1fc0a9f099b5361865f8acd68cb32d3702eaba57152a5b1b",
+      "downloadedAt": "2026-10-08T13:31:31.535Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 652802
+    },
+    "0444_w15_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w15_qp_43.pdf",
+      "bytes": 1096032,
+      "sha256": "a4e7264ce9feaa7e4cbb0f6f028696eea8540927ba8bb2672d2a35aae6ba7c1c",
+      "downloadedAt": "2026-10-08T13:31:33.860Z",
+      "savedAs": "2015 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 1141224
+    },
+    "0444_s15_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_gt.pdf",
+      "bytes": 43636,
+      "sha256": "c271d84cc17d3878a1f664f0c9638f3027f18a4e445b04bfb6411675475f7840",
+      "downloadedAt": "2026-10-08T13:31:53.513Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 117408
+    },
+    "0444_s15_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_ms_11.pdf",
+      "bytes": 157074,
+      "sha256": "ac6949b11c8f20c0cb65fee789dc49a33809c7e2eceaa6dc88c4cd8ba0ee60de",
+      "downloadedAt": "2026-10-08T13:31:55.520Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 262647
+    },
+    "0444_s15_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_ms_21.pdf",
+      "bytes": 314916,
+      "sha256": "2d076f8a1e1d4e1208394c2d6ae8b5c28c19dc9fd4158a406f6ee65866f2f15a",
+      "downloadedAt": "2026-10-08T13:31:57.637Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 314118
+    },
+    "0444_s15_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_ms_31.pdf",
+      "bytes": 195667,
+      "sha256": "58e53b2fce796e956be89cbff001c2ebbc9c6b9231d94f13d3d8123dd1c77c50",
+      "downloadedAt": "2026-10-08T13:31:59.959Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 292542
+    },
+    "0444_s15_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_ms_41.pdf",
+      "bytes": 261257,
+      "sha256": "0c47eb469aa279a7a11e4b345d0dc3dfa801d49c25f9c27b1212032a8e530553",
+      "downloadedAt": "2026-10-08T13:32:02.429Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 345269
+    },
+    "0444_s15_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_qp_11.pdf",
+      "bytes": 321115,
+      "sha256": "4253d688aa247386e89352b2dde9c881ea2331aefcae8981eb816f1f900a03e6",
+      "downloadedAt": "2026-10-08T13:32:04.890Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 435590
+    },
+    "0444_s15_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_qp_21.pdf",
+      "bytes": 524647,
+      "sha256": "0162e1759fe78199e2d9bef097a90982bede22ccc5a4454840e93ce1c498eac7",
+      "downloadedAt": "2026-10-08T13:32:07.091Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 620620
+    },
+    "0444_s15_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_qp_31.pdf",
+      "bytes": 546255,
+      "sha256": "e6347ee154850e9a3396e12dad12fb5e71c105b5925875dd24b1d89411f20a7b",
+      "downloadedAt": "2026-10-08T13:32:09.497Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 662669
+    },
+    "0444_s15_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s15_qp_41.pdf",
+      "bytes": 670652,
+      "sha256": "54c9039613130edf2b061d0f2dc6efd57c3a1ad203339b961abacdda12e56913",
+      "downloadedAt": "2026-10-08T13:32:12.027Z",
+      "savedAs": "2015 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 769868
+    },
+    "0444_w14_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_11.pdf",
+      "bytes": 151300,
+      "sha256": "fee0bf2074917de82ac3e1dc42f7189da099c7784417686204d7cdc23ffd4d25",
+      "downloadedAt": "2026-10-08T13:32:18.274Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 258547
+    },
+    "0444_w14_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_13.pdf",
+      "bytes": 150689,
+      "sha256": "8d367c39ad9a9733b2af7920580aa642a3ec8b96e671b8a708d60e25ea2c6f9c",
+      "downloadedAt": "2026-10-08T13:32:20.639Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 255967
+    },
+    "0444_w14_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_23.pdf",
+      "bytes": 218456,
+      "sha256": "41082299d43be3d63803dfc7c6cbb03d4df4d2a51ffbae5003097861310727ef",
+      "downloadedAt": "2026-10-08T13:32:22.874Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 254091
+    },
+    "0444_w14_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_31.pdf",
+      "bytes": 176278,
+      "sha256": "22790c0766bc62cf340f931f03488e62b867f6ae1d6d45227e1af1abe0127126",
+      "downloadedAt": "2026-10-08T13:32:25.095Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 278409
+    },
+    "0444_w14_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_33.pdf",
+      "bytes": 152165,
+      "sha256": "15f2afe1dd9a070cf050907c90993392b35334681cd4e14438675846c24f0a36",
+      "downloadedAt": "2026-10-08T13:32:27.433Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 262366
+    },
+    "0444_w14_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_ms_43.pdf",
+      "bytes": 398726,
+      "sha256": "fc74792b81cd48c929895c7363c3b4c9f59a4e85433c22b845067e838829b226",
+      "downloadedAt": "2026-10-08T13:32:29.799Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 439149
+    },
+    "0444_w14_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_11.pdf",
+      "bytes": 390128,
+      "sha256": "713d35e319f24af2c1eacf143ce7d01bde97d4371bd4e706eacaac10edefa1c9",
+      "downloadedAt": "2026-10-08T13:32:32.320Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 519533
+    },
+    "0444_w14_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_13.pdf",
+      "bytes": 345642,
+      "sha256": "f9215d3f73f33183b75963ba3ef82a39f8187b0d4c8a4365e41885f38bea41bf",
+      "downloadedAt": "2026-10-08T13:32:34.479Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 474159
+    },
+    "0444_w14_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_23.pdf",
+      "bytes": 397192,
+      "sha256": "f3e400c3f971e5ef4558fcf846b703509927f9141f43bff16ea91eb7fe727cb6",
+      "downloadedAt": "2026-10-08T13:32:36.848Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 528305
+    },
+    "0444_w14_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_31.pdf",
+      "bytes": 442611,
+      "sha256": "950504ed7cb3fde5df20bc7d87c9c01c9158d8f2e639dccad69ac283e81dd155",
+      "downloadedAt": "2026-10-08T13:32:39.345Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 583856
+    },
+    "0444_w14_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_33.pdf",
+      "bytes": 470905,
+      "sha256": "94df3e91944116609bd9a3e87338e0c8b13d085abea1f1cfc8db123064989023",
+      "downloadedAt": "2026-10-08T13:32:41.948Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": false,
+      "savedBytes": 538581
+    },
+    "0444_w14_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w14_qp_43.pdf",
+      "bytes": 498117,
+      "sha256": "d54251958313fdd2efbb4e631aad0874e9278081ded71649d1b8eb98c071010f",
+      "downloadedAt": "2026-10-08T13:32:44.763Z",
+      "savedAs": "2014 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 634384
+    },
+    "0444_s13_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_er.pdf",
+      "bytes": 3660029,
+      "sha256": "c026f315363f5de83c1580f484cbb74670c86d17e1b9e6fc8db9008b1c355634",
+      "downloadedAt": "2026-10-08T13:33:05.200Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 4533444
+    },
+    "0444_s13_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_gt.pdf",
+      "bytes": 43576,
+      "sha256": "c7a9124379e1be2b8adb45a742defca032d6a2e62f62ec31d3219aed023e9a70",
+      "downloadedAt": "2026-10-08T13:33:08.446Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 117131
+    },
+    "0444_s13_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_ms_11.pdf",
+      "bytes": 148741,
+      "sha256": "3f5e9c1b9fde6d1cf82663047db80efc9515d91fdd8ec12edfdd6d16a0f52955",
+      "downloadedAt": "2026-10-08T13:33:10.557Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 255232
+    },
+    "0444_s13_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_ms_21.pdf",
+      "bytes": 277239,
+      "sha256": "7c47c6914a8e9f0abe87b422a9c3abf7a4fded4e2ec86c5b3a928ada86f5d436",
+      "downloadedAt": "2026-10-08T13:33:13.697Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 356874
+    },
+    "0444_s13_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_ms_31.pdf",
+      "bytes": 163677,
+      "sha256": "d086dec7142ce75868f30246612dbaa9d0123d25307d501bd82b9cd44818813e",
+      "downloadedAt": "2026-10-08T13:33:16.234Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 269057
+    },
+    "0444_s13_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_ms_41.pdf",
+      "bytes": 299444,
+      "sha256": "a7bdc7a58a7de8abab81eef5b751fa25c5309b9f7234e13db6335c48287739f0",
+      "downloadedAt": "2026-10-08T13:33:18.564Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 390133
+    },
+    "0444_s13_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_qp_11.pdf",
+      "bytes": 362545,
+      "sha256": "dd83825efc99fa2cb71c7f156a51b20eac0346f4db975ff3a7705f0cc0f8adaa",
+      "downloadedAt": "2026-10-08T13:33:20.887Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 477956
+    },
+    "0444_s13_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_qp_21.pdf",
+      "bytes": 420181,
+      "sha256": "fc5d0747a5fed84601ffc1538171779fa61cc78734fad6747e52ce2e462de5e7",
+      "downloadedAt": "2026-10-08T13:33:23.289Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 539186
+    },
+    "0444_s13_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_qp_31.pdf",
+      "bytes": 514820,
+      "sha256": "9bfb9b2cf566e65e0247c514ee964208ece2a79021df6154ca358c67f5b0d69f",
+      "downloadedAt": "2026-10-08T13:33:25.673Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 638795
+    },
+    "0444_s13_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s13_qp_41.pdf",
+      "bytes": 489603,
+      "sha256": "c2e384f25daa6507a10d9bc4cf0db77b251c39862d249514e6cacb26ae5fa4b3",
+      "downloadedAt": "2026-10-08T13:33:27.985Z",
+      "savedAs": "2013 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 620230
+    },
+    "0444_s14_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_er.pdf",
+      "bytes": 2695112,
+      "sha256": "61941d55b7fdc37eec71ed094ed8cb0e1cc19b828c32bf90dd595e52eb310ab9",
+      "downloadedAt": "2026-10-08T13:33:30.583Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 3601185
+    },
+    "0444_s14_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_gt.pdf",
+      "bytes": 42549,
+      "sha256": "f78dcca9ecdf97bf2bed4749b00eaf013d2add9f1602211d3995db7d652997ea",
+      "downloadedAt": "2026-10-08T13:33:33.873Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 115652
+    },
+    "0444_s14_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_ms_11.pdf",
+      "bytes": 161493,
+      "sha256": "2ee19f64d1ef3d5724aab4b81e56f75238658ffae88e31df05e133aa2a8e273c",
+      "downloadedAt": "2026-10-08T13:33:35.975Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 265167
+    },
+    "0444_s14_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_ms_21.pdf",
+      "bytes": 221415,
+      "sha256": "fd10d42533fdb2568153528cc8855d5b9d0c034daa7c886eab8e1776254c3a0a",
+      "downloadedAt": "2026-10-08T13:33:38.421Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 303471
+    },
+    "0444_s14_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_ms_31.pdf",
+      "bytes": 189340,
+      "sha256": "6bfe26cb4f7d43ad28b0baa8e67466a0a7188f0d81616e0a2ada2eee8f8e92c8",
+      "downloadedAt": "2026-10-08T13:33:40.728Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 287991
+    },
+    "0444_s14_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_ms_41.pdf",
+      "bytes": 228462,
+      "sha256": "ea7fe9e8788318d955cc6988e66c2caa51954249f41a9e9a7e5128524f49ca94",
+      "downloadedAt": "2026-10-08T13:33:43.030Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 320250
+    },
+    "0444_s14_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_qp_11.pdf",
+      "bytes": 331526,
+      "sha256": "f110fa4d35e6f36b0140fb0c02e1d2942743fd6954103c8df26decb818c34f1b",
+      "downloadedAt": "2026-10-08T13:33:45.515Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 461557
+    },
+    "0444_s14_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_qp_21.pdf",
+      "bytes": 362605,
+      "sha256": "f9f039ce780720685affa32a1c2b36a1249dc6bf4b6b06f24d8ffb7d34a54cd2",
+      "downloadedAt": "2026-10-08T13:33:47.809Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 492812
+    },
+    "0444_s14_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_qp_31.pdf",
+      "bytes": 390377,
+      "sha256": "d5906780763d737c0fd4a2c239a95bcd57b2adf2a0b57428f7ccde5c14543cbd",
+      "downloadedAt": "2026-10-08T13:33:50.213Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 521872
+    },
+    "0444_s14_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_s14_qp_41.pdf",
+      "bytes": 601869,
+      "sha256": "1e2c9732a704905916e5ffb0e0694bba82165f3b80b1d34a48a6100514d293ee",
+      "downloadedAt": "2026-10-08T13:33:52.803Z",
+      "savedAs": "2014 May-June - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 747603
+    },
+    "0444_w13_er.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_er.pdf",
+      "bytes": 7255122,
+      "sha256": "219069e6a9358e3e2e893ecf13f7defef64b7d3091979709beff4b466608fc48",
+      "downloadedAt": "2026-10-08T13:34:00.168Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Examiner Report.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 8908775
+    },
+    "0444_w13_gt.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_gt.pdf",
+      "bytes": 92866,
+      "sha256": "d42880d2924285f60a54dbe296c6c0b6d4ed3ab3f64d48cbcbdafeacb4545fdb",
+      "downloadedAt": "2026-10-08T13:34:04.969Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Grade Thresholds.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 207055
+    },
+    "0444_w13_ms_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_11.pdf",
+      "bytes": 142541,
+      "sha256": "59a77bc6fe2e544946e7dce5549abdc54347ecf55cb8e1fe109aabf90b492a16",
+      "downloadedAt": "2026-10-08T13:34:07.285Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 253233
+    },
+    "0444_w13_ms_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_13.pdf",
+      "bytes": 182237,
+      "sha256": "ef6f9be668b461f2fcad327b2dbe90ffa5b6a38c162c00d06a819687ff332868",
+      "downloadedAt": "2026-10-08T13:34:09.471Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 13.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 281258
+    },
+    "0444_w13_ms_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_21.pdf",
+      "bytes": 368938,
+      "sha256": "6868d7cb2b7152d2b425bdab860b81f994c90a50183bb45a8bc9332265d96087",
+      "downloadedAt": "2026-10-08T13:34:11.656Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 411830
+    },
+    "0444_w13_ms_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_23.pdf",
+      "bytes": 168371,
+      "sha256": "cbe2cd1326cd4624cc34d56bfde9d0d59081abffe81ad6c3e8e72f52e5b70247",
+      "downloadedAt": "2026-10-08T13:34:14.031Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 23.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 269899
+    },
+    "0444_w13_ms_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_31.pdf",
+      "bytes": 182711,
+      "sha256": "9a13ac7cb0b397a48464db83091144e3a7ff6d75cc1eb79187ae4d9118eab0e4",
+      "downloadedAt": "2026-10-08T13:34:16.317Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 284139
+    },
+    "0444_w13_ms_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_33.pdf",
+      "bytes": 186143,
+      "sha256": "45414ee0a28e28d1ec8b4c879bf1c81a99b5ccfdce9f233277f2f157f0e387bb",
+      "downloadedAt": "2026-10-08T13:34:18.619Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 33.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 284257
+    },
+    "0444_w13_ms_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_41.pdf",
+      "bytes": 286472,
+      "sha256": "2c70918c8c95107f8c8e20ff686963463509cfa6ef9b56ec0b055c30d4a0d3ee",
+      "downloadedAt": "2026-10-08T13:34:20.852Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 356825
+    },
+    "0444_w13_ms_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_ms_43.pdf",
+      "bytes": 266796,
+      "sha256": "ad353e9b5ff33b084271822c04b45f0a097d2bc93e7dba5d832c09d948758e0c",
+      "downloadedAt": "2026-10-08T13:34:23.221Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Mark Scheme - Paper 43.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 352178
+    },
+    "0444_w13_qp_11.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_11.pdf",
+      "bytes": 346902,
+      "sha256": "6c0399de97e8ca5047f4d1d2959256ce8b658de0023d7dbff115b64bc8cafe39",
+      "downloadedAt": "2026-10-08T13:34:25.568Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 11.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 461218
+    },
+    "0444_w13_qp_13.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_13.pdf",
+      "bytes": 357404,
+      "sha256": "81d29990cf3ec3d4c767a2381e6b9801dd7526bae9b0d016787590e9a23ac200",
+      "downloadedAt": "2026-10-08T13:34:27.827Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 13.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 474210
+    },
+    "0444_w13_qp_21.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_21.pdf",
+      "bytes": 402206,
+      "sha256": "2780dc12b8e7d0cf8346af075d1a66b351049b7ca65956e8d660b64fa793b042",
+      "downloadedAt": "2026-10-08T13:34:30.187Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 21.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 519926
+    },
+    "0444_w13_qp_23.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_23.pdf",
+      "bytes": 366786,
+      "sha256": "a26707e719ab9609b53f047cb6a9aa2c50b0fc6d08a829471a0d913f8a489a4d",
+      "downloadedAt": "2026-10-08T13:34:32.357Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 23.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 483012
+    },
+    "0444_w13_qp_31.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_31.pdf",
+      "bytes": 434581,
+      "sha256": "e48f4b075b5b2e5fdd342988b0d247bb977421908db3b6175f67e5d481c6f5be",
+      "downloadedAt": "2026-10-08T13:34:34.645Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 31.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 554371
+    },
+    "0444_w13_qp_33.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_33.pdf",
+      "bytes": 449181,
+      "sha256": "089dcf73189b15e3d7196900837a9d2c8c693647cbf5c6df7593080ef7a1a69d",
+      "downloadedAt": "2026-10-08T13:34:36.910Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 33.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 573534
+    },
+    "0444_w13_qp_41.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_41.pdf",
+      "bytes": 518544,
+      "sha256": "68dd19427128a73df7457ca5e39cb1e74c9c1b0d58761e4766616ef6fa616df0",
+      "downloadedAt": "2026-10-08T13:34:39.170Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 41.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 647195
+    },
+    "0444_w13_qp_43.pdf": {
+      "source": "https://pastpapers.papacambridge.com/download_file.php?files=https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/0444_w13_qp_43.pdf",
+      "bytes": 676032,
+      "sha256": "e87cf3f43c275702532cfaab2b23d32bee6cfc3548d30e0c79da19e2aa6e2d0c",
+      "downloadedAt": "2026-10-08T13:34:41.783Z",
+      "savedAs": "2013 Oct-Nov - Mathematics 0444 - Question Paper - Paper 43.pdf",
+      "watermarkRemoved": true,
+      "savedBytes": 814351
     }
   }
 }

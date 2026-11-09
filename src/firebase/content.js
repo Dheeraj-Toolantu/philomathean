@@ -38,7 +38,7 @@ const parseLegacyPaperMetadata = (data = {}) => {
 
 const normalize = (snapshot, publicView = false) => snapshot.docs.map((item) => {
 	const data = parseLegacyPaperMetadata(item.data())
-	if (publicView) return { id: item.id, title: data.title, pathway: data.pathway, subjectName: data.subjectName, subjectCode: data.subjectCode, subject: data.subject, paperType: data.paperType, year: data.year, session: data.session, topic: data.topic, access: data.access || 'premium', freeDownloadUrl: data.access === 'free' ? data.freeDownloadUrl : undefined, published: data.published, status: data.status, previewAvailable: Boolean(data.previewAvailable) }
+	if (publicView) return { id: item.id, title: data.title, pathway: data.pathway, subjectName: data.subjectName, subjectCode: data.subjectCode, subject: data.subject, paperType: data.paperType, resourceType: data.resourceType, year: data.year, session: data.session, topic: data.topic, access: data.access || 'premium', freeDownloadUrl: data.access === 'free' ? data.freeDownloadUrl : undefined, published: data.published, status: data.status, previewAvailable: Boolean(data.previewAvailable) }
 	return { id: item.id, ...data }
 })
 

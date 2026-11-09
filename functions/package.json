@@ -7,7 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint .",
-    "upload-papers": "node scripts/bulk-upload-past-papers.cjs"
+    "upload-papers": "node scripts/bulk-upload-past-papers.cjs",
+    "test": "node --test scripts/*.test.cjs"
   },
   "dependencies": {
     "firebase-admin": "^13.0.0",

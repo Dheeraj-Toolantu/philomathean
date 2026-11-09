@@ -35,6 +35,13 @@ const SUBJECTS = ['IGCSE International Maths 0607', 'IGCSE Additional Maths 0606
 const PROGRAMMES = ['IGCSE Mathematics', 'IBDP Mathematics', 'AS & A Level', 'IB MYP', 'Grades 6–8 Foundation', 'Entrance exams', 'General']
 const readTab = () => { const tab = new URLSearchParams(window.location.search).get('tab'); return TABS.some(([id]) => id === tab) ? tab : 'tests' }
 const settled = (result, fallback = []) => result.status === 'fulfilled' ? result.value : fallback
+const markSaveError = (error) => {
+  const code = String(error?.code || '')
+  if (code.includes('permission-denied')) return 'Firestore denied this save. Confirm you’re signed in with the teacher account and that the latest Firestore rules are deployed.'
+  if (['unavailable', 'network-request-failed', 'deadline-exceeded'].some((part) => code.includes(part))) return 'The connection to Firestore failed. Check your connection and try saving again.'
+  if (code.includes('resource-exhausted')) return 'This save exceeded Firestore’s write limit. Split the marks into smaller groups and try again.'
+  return `The marks could not be saved${code ? ` (Firebase: ${code})` : ''}. Check your connection and try again.`
+}
 
 export function Stars({ value, size = 15 }) {
   return <span className="tp-stars" aria-label={value ? `${value} out of 5` : 'Not rated'}>{[1, 2, 3, 4, 5].map((n) => <Star key={n} size={size} className={value >= n - 0.25 ? '' : 'off'} fill={value >= n - 0.25 ? 'currentColor' : 'none'} />)}</span>
@@ -247,7 +254,11 @@ function MarksDrawer({ initial, students, me, onClose, onSaved }) {
       await saveTestMarks(test, entries, me, initial.test?.testDate)
       const remedialNote = remedialCount ? ` ${remedialCount} sent to remedial.` : ''
       onSaved(`Marks saved for ${filled.length} student${filled.length === 1 ? '' : 's'}.${remedialNote}`)
-    } catch { setError('The marks could not be saved. Check your connection and try again.'); setBusy(false) }
+    } catch (saveError) {
+      console.error('Unable to save test marks.', saveError)
+      setError(markSaveError(saveError))
+      setBusy(false)
+    }
   }
   return <Drawer open wide title={initial.marks ? 'Edit test marks' : 'Enter test marks'} subtitle="Students see their marks, your comments and whether they have a remedial worksheet." locked={busy} onClose={onClose}>
     <form className="adm-form" onSubmit={submit} noValidate>
