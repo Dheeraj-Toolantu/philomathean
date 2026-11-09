@@ -87,10 +87,15 @@ const paperFields = (values) => ({
 	topic: values.paperType === 'topic-wise' ? values.topic.trim() : null,
 	access: values.access,
 })
+const memberLinks = collection(db, 'memberPaperLinks')
+// A premium paper's download link is readable only by Gold members (see firestore.rules); free papers carry theirs publicly.
+const writeMemberLink = (writer, id, values, downloadUrl) => values.access === 'premium' && values.published !== false && downloadUrl
+	? writer.set(doc(memberLinks, id), { url: downloadUrl, updatedAt: serverTimestamp() })
+	: writer.delete(doc(memberLinks, id))
 const publicPaper = (values, id, version, freeDownloadUrl) => ({ ...paperFields(values), freeDownloadUrl: values.access === 'free' ? (freeDownloadUrl || null) : null, status: 'published', published: values.published !== false, previewAvailable: false, resourceId: id, version, updatedAt: serverTimestamp() })
-export const createPaper = async (values, uid, filePath, fileName, fileSize, freeDownloadUrl) => { const paperRef = doc(papersCollection); const batch = writeBatch(db); batch.set(paperRef, { ...paperFields(values), filePath, fileName, fileSize, contentType: 'application/pdf', status: 'published', published: values.published !== false, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); batch.set(doc(publicPapersCollection, paperRef.id), publicPaper(values, paperRef.id, 1, freeDownloadUrl)); await batch.commit(); return paperRef.id }
-export const updatePaper = (id, values, uid, version, fileDetails = {}, freeDownloadUrl) => runTransaction(db, async (transaction) => { const paperRef = doc(db, 'pastPaperResources', id); const publicRef = doc(db, 'publicPastPapers', id); const snapshot = await transaction.get(paperRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(paperRef, { ...paperFields(values), ...fileDetails, status: 'published', published: values.published !== false, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }); transaction.set(publicRef, publicPaper(values, id, version + 1, freeDownloadUrl)) })
-export const removePaper = (id) => { const batch = writeBatch(db); batch.delete(doc(db, 'pastPaperResources', id)); batch.delete(doc(db, 'publicPastPapers', id)); return batch.commit() }
+export const createPaper = async (values, uid, filePath, fileName, fileSize, freeDownloadUrl) => { const paperRef = doc(papersCollection); const batch = writeBatch(db); batch.set(paperRef, { ...paperFields(values), filePath, fileName, fileSize, contentType: 'application/pdf', status: 'published', published: values.published !== false, version: 1, createdBy: uid, updatedBy: uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); batch.set(doc(publicPapersCollection, paperRef.id), publicPaper(values, paperRef.id, 1, freeDownloadUrl)); writeMemberLink(batch, paperRef.id, values, freeDownloadUrl); await batch.commit(); return paperRef.id }
+export const updatePaper = (id, values, uid, version, fileDetails = {}, freeDownloadUrl) => runTransaction(db, async (transaction) => { const paperRef = doc(db, 'pastPaperResources', id); const publicRef = doc(db, 'publicPastPapers', id); const snapshot = await transaction.get(paperRef); if (!snapshot.exists() || snapshot.data().version !== version) throw new Error('CONFLICT'); transaction.update(paperRef, { ...paperFields(values), ...fileDetails, status: 'published', published: values.published !== false, version: version + 1, updatedBy: uid, updatedAt: serverTimestamp() }); transaction.set(publicRef, publicPaper(values, id, version + 1, freeDownloadUrl)); writeMemberLink(transaction, id, values, freeDownloadUrl) })
+export const removePaper = (id) => { const batch = writeBatch(db); batch.delete(doc(db, 'pastPaperResources', id)); batch.delete(doc(db, 'publicPastPapers', id)); batch.delete(doc(memberLinks, id)); return batch.commit() }
 
 // Admin listing. Papers are listed from the normalised public mirror (every paper has one, hidden ones
 // included) so filters work on legacy records too; the full private record is loaded only when needed.
@@ -112,6 +117,8 @@ export const getAdminPapersPage = async ({ filters, pageSize, cursor }) => {
 	}
 }
 export const countAdminPapers = async (filters) => (await getCountFromServer(query(publicPapersCollection, ...paperConstraints(filters)))).data().count
+// The download link of a members-only paper; Firestore refuses the read unless the student's Gold plan is active.
+export const getMemberPaperLink = async (id) => { const snapshot = await getDoc(doc(memberLinks, id)); if (!snapshot.exists()) throw new Error('NOT_FOUND'); return snapshot.data().url }
 export const getAdminPaper = async (id) => { const snapshot = await getDoc(doc(db, 'pastPaperResources', id)); if (!snapshot.exists()) throw new Error('NOT_FOUND'); return { id: snapshot.id, ...parseLegacyPaperMetadata(snapshot.data()) } }
 
 export const getAdminResultsPage = async ({ pageSize, cursor }) => { const snapshot = await getDocs(query(resultsCollection, orderBy('sortOrder'), ...(cursor ? [startAfter(cursor)] : []), limit(pageSize))); return { items: snapshot.docs.map((item) => ({ id: item.id, ...item.data() })), cursor: snapshot.docs.at(-1) } }
