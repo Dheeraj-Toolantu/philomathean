@@ -59,3 +59,17 @@ test('question papers and mark schemes pair into one entry per paper', () => {
   assert.equal(sets.find((set) => set.session === 'Oct-Nov').questionPaper, undefined)
   assert.deepEqual(groupPapers(sets).map((group) => group.papers.length), [1, 2])
 })
+
+test('solved papers join their question paper and mark scheme in one entry', () => {
+  const extra = { year: 2026, session: 'May-June' }
+  const sets = pairPapers([
+    paper('IGCSE-MATHEMATICS - 0607-22 - May-June 2026', extra),
+    paper('IGCSE-MATHEMATICS - 0607-22 - May-June 2026 - Mark Scheme', extra),
+    paper('IGCSE-MATHEMATICS - 0607-22 - May-June 2026 - Solution', extra),
+  ])
+  assert.equal(sets.length, 1)
+  assert.equal(sets[0].kind, 'question-paper')
+  assert.ok(sets[0].questionPaper && sets[0].markScheme && sets[0].solution)
+  assert.equal(paper('IGCSE-MATHEMATICS - 0607-11 - May-June 2026 - Solved Paper').kind, 'solution')
+  assert.deepEqual(filterPapers(sets.flatMap((set) => set.papers), { query: 'solved paper' }).map((item) => item.kind), ['solution'])
+})

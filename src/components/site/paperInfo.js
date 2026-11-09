@@ -24,7 +24,7 @@ export const describePaper = (paper) => {
   const labelled = title.match(/\b(?:question\s*paper|mark\s*scheme|qp|ms)[\s_-]*(\d)(\d)\b/i)
   const code = joined ? { syllabus: joined[1], number: joined[2], variant: joined[3] }
     : labelled ? { syllabus: subjectCode, number: labelled[1], variant: labelled[2] } : null
-  const kind = /\b(?:worked\s+)?solutions?\b/i.test(title) ? 'solution' : /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme' : 'question-paper'
+  const kind = /\b(?:worked\s+)?solutions?\b|\bsolved\s+papers?\b/i.test(title) ? 'solution' : /mark\s*scheme|\bms\b/i.test(title) ? 'mark-scheme' : 'question-paper'
   const name = paper.paperType === 'topic-wise' ? (paper.topic || title)
     : code ? `Paper ${code.number} · Variant ${code.variant}` : title
   const subjectName = titleCase(paper.subjectName || paper.subject || 'General')
@@ -63,7 +63,7 @@ export const pairPapers = (papers) => {
 
 const matches = (paper, query) => {
   if (!query) return true
-  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${{ 'mark-scheme': 'mark scheme ms', solution: 'solution worked answers' }[paper.kind] || 'question paper qp'}`.toLowerCase()
+  const haystack = `${paper.title} ${paper.name} ${paper.code} ${paper.year || ''} ${paper.session || ''} ${paper.topic || ''} ${{ 'mark-scheme': 'mark scheme ms', solution: 'solved paper solution worked answers' }[paper.kind] || 'question paper qp'}`.toLowerCase()
   return query.toLowerCase().split(/\s+/).filter(Boolean).every((word) => haystack.includes(word.replace('/', '-')) || haystack.includes(word))
 }
 
