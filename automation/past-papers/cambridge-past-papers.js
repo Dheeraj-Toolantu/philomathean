@@ -160,7 +160,7 @@ export const extractLinks = (html, baseUrl) => {
       const url = new URL(decodeEntities(href.trim()), baseUrl)
       if (!/^https?:$/.test(url.protocol)) continue
       url.hash = ''
-      const text = decodeEntities(inner.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim()
+      const text = decodeEntities(inner.replace(/<!--[\s\S]*?-->/g, ' ').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim()
       links.push({ href: url.href, text })
     } catch {
       // Not a URL; ignore.
@@ -193,9 +193,10 @@ const SERIES = [
   [/\b(?:oct(?:ober)?[\s-]*)?nov(?:ember)?\b/i, 'w'],
 ]
 const TYPES = [
-  [/specimen\s+(?:paper\s+)?mark\s+scheme/i, 'sm'],
-  [/specimen\s+(?:paper\s+)?insert/i, 'si'],
-  [/specimen\s+(?:paper\s+)?(?:examiner\s+)?report/i, 'sr'],
+  // Cambridge writes "2025 Specimen Paper 1 Mark Scheme", with the paper number in the middle.
+  [/specimen\s+(?:paper\s+)?(?:\d{1,2}\s+)?mark\s+scheme/i, 'sm'],
+  [/specimen\s+(?:paper\s+)?(?:\d{1,2}\s+)?insert/i, 'si'],
+  [/specimen\s+(?:paper\s+)?(?:\d{1,2}\s+)?(?:examiner\s+)?report/i, 'sr'],
   [/specimen\s+paper/i, 'sp'],
   [/mark\s+scheme/i, 'ms'],
   [/question\s+paper/i, 'qp'],
