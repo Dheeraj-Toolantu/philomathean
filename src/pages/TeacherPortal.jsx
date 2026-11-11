@@ -4,7 +4,7 @@ import {
 } from 'lucide-react'
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/config'
-import { listStudents, subscribeStreakWall } from '../firebase/student'
+import { listStudents, subscribeStreakWall, withoutTeachers } from '../firebase/student'
 import {
   deleteMaterial, deleteScheduledTest, deleteTest, getTeacherRequest, listAllMarks, listAllRatings, listMaterials, listRatingsForTeacher, listSchedule, listTeachers,
   requestTeacherAccess, saveMaterial, saveScheduledTest, saveTestMarks, setRemedialDone, subscribeStaff, withdrawTeacherRequest,
@@ -123,7 +123,9 @@ function Workspace({ staff }) {
   const { toasts, notify, dismiss } = useToasts()
   const load = useCallback(() => {
     Promise.allSettled([listAllMarks(), listStudents(500), listSchedule(), listMaterials(), staff.admin ? listAllRatings() : listRatingsForTeacher(staff.user.uid), listTeachers()]).then((results) => {
-      const [marks, students, schedule, materials, ratings, teachers] = results.map((result) => settled(result))
+      const [marks, allStudents, schedule, materials, ratings, teachers] = results.map((result) => settled(result))
+      // An account that is now a teacher may still have its old student profile; it isn't a student any more.
+      const students = withoutTeachers(allStudents, teachers)
       setData({ marks, students, schedule, materials, ratings, teachers, failed: results.some((result) => result.status === 'rejected') })
     })
   }, [staff])
